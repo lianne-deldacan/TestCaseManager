@@ -16,10 +16,10 @@ class TestCasesImport implements ToModel, WithHeadingRow
   public function model(array $row)
   {
     return new TestCase([
-      'test_case_no'     => $row['test_case_no'],    // Ensure column names match exactly
+      'test_case_no'     => $row['test_case_no'],    
       'test_environment' => $row['test_environment'],
       'tester'           => $row['tester'],
-      'date_of_input'    => $row['date'],             // Check the column name matches your file
+      'date_of_input'    => $row['date'],             
       'test_title'       => $row['test_title'],
       'test_description' => $row['test_description'],
       'status'           => $row['status'],

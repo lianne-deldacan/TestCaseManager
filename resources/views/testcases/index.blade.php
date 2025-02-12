@@ -37,7 +37,7 @@
                     <textarea id="test_description" name="test_description" class="form-control" rows="3" required></textarea>
                 </div>
                 <div class="col-md-4">
-                    <label for="status" class="form-label">Pass or Fail</label>
+                    <label for="status" class="form-label">Status</label>
                     <select id="status" name="status" class="form-select" required>
                         <option value="Pass">Pass</option>
                         <option value="Fail">Fail</option>
@@ -77,10 +77,65 @@
         <a href="{{ route('testcases.export.csv') }}" class="btn btn-info"><i class="bi bi-file-earmark-spreadsheet"></i> Export CSV</a>
         <a href="{{ route('testcases.export.excel') }}" class="btn btn-warning"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
         <a href="{{ route('testcases.export.pdf') }}" class="btn btn-danger"><i class="bi bi-file-earmark-pdf"></i> Export PDF</a>
-        <button class="btn btn-dark" onclick="window.print()"><i class="bi bi-printer"></i> Print Table</button>
     </div>
 </div>
 
+<style>
+@media print {
+    @page {
+        size: A4 portrait; 
+        margin: 10mm;
+    }
+
+    body * {
+        display: none; 
+    }
+
+    #testcasesTable, #testcasesTable * {
+        display: table; 
+    }
+
+    #testcasesTable {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: auto; 
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 6px;
+        text-align: left;
+        font-size: 12px;
+        word-wrap: break-word; 
+    }
+}
+</style>
+
+<button class="btn btn-dark" onclick="printTable()">
+    <i class="bi bi-printer"></i> Print Table
+</button>
+
+<script>
+function printTable() {
+    var printWindow = window.open("", "", "width=800,height=1000");
+    
+    printWindow.document.write("<html><head><title>Print Table</title>");
+    printWindow.document.write("<style>");
+    printWindow.document.write("@page { size: A4 portrait; margin: 10mm; }");
+    printWindow.document.write("body { margin: 0; padding: 0; }");
+    printWindow.document.write("table { width: 100%; border-collapse: collapse; table-layout: auto; }");
+    printWindow.document.write("th, td { border: 1px solid black; padding: 6px; text-align: left; font-size: 12px; word-wrap: break-word; }");
+    printWindow.document.write("</style>");
+    printWindow.document.write("</head><body>");
+    printWindow.document.write(document.getElementById("testcasesTable").outerHTML);
+    printWindow.document.write("</body></html>");
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+}
+</script>
 
     <div class="mt-4">
         <table id="testcasesTable" class="table table-striped table-bordered">
@@ -92,7 +147,7 @@
                     <th>Date</th>
                     <th>Title</th>
                     <th>Description</th>
-                    <th>Pass/Fail</th>
+                    <th>Status</th>
                     <th>Priority</th>
                     <th>Severity</th>
                     <th>Screenshot</th>

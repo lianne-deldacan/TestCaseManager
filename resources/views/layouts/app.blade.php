@@ -23,7 +23,6 @@
         @yield('content')
     </main>
 
-    <!-- Example of footer -->
     <footer>
         <p>&copy; 2025 My Application</p>
     </footer>

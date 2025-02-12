@@ -49,21 +49,31 @@ class TestCaseController extends Controller
         }
     }
 
-    // Import Function
     public function import(Request $request)
     {
         try {
             $request->validate([
                 'file' => 'required|mimes:csv,xlsx|max:2048',
             ]);
-
-            Excel::import(new TestCasesImport, $request->file('file'));
-
+    
+            // Move the uploaded file to a temporary location
+            $file = $request->file('file');
+    
+            if (!$file->isValid()) {
+                return back()->with('error', 'Invalid file uploaded.');
+            }
+    
+            Excel::import(new TestCasesImport, $file);
+    
             return back()->with('success', 'Test Cases imported successfully.');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            return back()->with('error', 'Import Failed: ' . $failures[0]->errors()[0]);
         } catch (\Exception $e) {
+            \Log::error('Import Error: ' . $e->getMessage());
             return back()->with('error', 'Import Failed: ' . $e->getMessage());
         }
-    }
+    }    
 
     // Export CSV
     public function exportCSV()
