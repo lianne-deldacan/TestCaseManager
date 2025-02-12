@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestCaseController;
 
 Route::get('/', function () {
-    return view('welcome'); // or your custom view
+    return view('welcome');
 });
 
 Route::get('/testcases', [TestCaseController::class, 'index'])->name('testcases.index');

@@ -168,10 +168,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     timer: 1500
                 });
 
-                // Clear form fields after success
                 form.reset();
 
-                // Append new row to the table dynamically
                 let newRow = `
                     <tr>
                         <td>${data.test_case.test_case_no}</td>

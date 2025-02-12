@@ -56,7 +56,7 @@ class TestCaseController extends Controller
         }
     }
 
-  //Import
+    //Import file (MODIFIED)
     public function import(Request $request)
     {
         try {
@@ -101,7 +101,6 @@ class TestCaseController extends Controller
         }
     }
 
-    
     // Export CSV
     public function exportCSV()
     {
