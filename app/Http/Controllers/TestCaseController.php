@@ -41,40 +41,67 @@ class TestCaseController extends Controller
             ]);
 
             // Store data in database
-            TestCase::create($request->all());
+            $testCase = TestCase::create($request->all());
 
-            return redirect()->route('testcases.index')->with('success', 'Test Case added successfully.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Test Case added successfully.',
+                'test_case' => $testCase
+            ]);
         } catch (\Exception $e) {
-            return back()->with('error', 'Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
     }
 
+  //Import
     public function import(Request $request)
     {
         try {
             $request->validate([
-                'file' => 'required|mimes:csv,xlsx|max:2048',
+                'file' => 'required|mimes:xlsx,csv|max:2048',
             ]);
-    
-            // Move the uploaded file to a temporary location
+
             $file = $request->file('file');
-    
+
             if (!$file->isValid()) {
                 return back()->with('error', 'Invalid file uploaded.');
             }
-    
-            Excel::import(new TestCasesImport, $file);
-    
-            return back()->with('success', 'Test Cases imported successfully.');
+
+            // Debugging: Check file content before importing
+            $data = \Maatwebsite\Excel\Facades\Excel::toCollection(new TestCasesImport, $file);
+
+            // Access the first collection (index 0)
+            $rows = $data->first();
+
+            // Now loop through each row correctly
+            foreach ($rows as $row) {
+                TestCase::create([
+                    'test_case_no'     => $row['test_case_no'],
+                    'test_environment' => $row['test_environment'],
+                    'tester'           => $row['tester'],
+                    'date_of_input'    => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['date_of_input']),
+                    'test_title'       => $row['test_title'],
+                    'test_description' => $row['test_description'],
+                    'status'           => $row['status'],
+                    'priority'         => $row['priority'],
+                    'severity'         => $row['severity'],
+                    'screenshot'       => $row['screenshot'],
+                ]);
+            }
+
+            return response()->json(['message' => 'Import successful']);
+
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $failures = $e->failures();
-            return back()->with('error', 'Import Failed: ' . $failures[0]->errors()[0]);
+            return back()->with('error', 'Import Failed: Validation error in the file.');
         } catch (\Exception $e) {
-            \Log::error('Import Error: ' . $e->getMessage());
             return back()->with('error', 'Import Failed: ' . $e->getMessage());
         }
-    }    
+    }
 
+    
     // Export CSV
     public function exportCSV()
     {
@@ -100,10 +127,11 @@ class TestCaseController extends Controller
     {
         try {
             $testCases = TestCase::all();
-            $pdf = Pdf::loadView('exports.testcases_pdf', compact('testCases'));
+            $pdf = Pdf::loadView('exports.testcases_pdf', compact('testCases'))->setPaper('A4', 'portrait');
             return $pdf->download('testcases.pdf');
-        } catch (\Exception $e) {
+     }   catch (\Exception $e) {
             return back()->with('error', 'PDF Export Failed: ' . $e->getMessage());
-        }
+         }
     }
+
 }

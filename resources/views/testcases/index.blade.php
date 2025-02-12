@@ -66,76 +66,20 @@
         </form>
     </div>
 
-<div class="mt-4">
-    <div class="d-flex flex-wrap align-items-center gap-2">
+    <div class="mt-4 d-flex flex-wrap align-items-center gap-2">
         <form id="importForm" action="{{ route('testcases.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
             @csrf
-            <input type="file" name="file" class="form-control w-auto" required>
-            <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Import Test Cases</button>
+            <div class="d-flex align-items-center border rounded px-2">
+                <input type="file" name="file" class="form-control border-0">
+            </div>
+            <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Import</button>
         </form>
 
         <a href="{{ route('testcases.export.csv') }}" class="btn btn-info"><i class="bi bi-file-earmark-spreadsheet"></i> Export CSV</a>
         <a href="{{ route('testcases.export.excel') }}" class="btn btn-warning"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
         <a href="{{ route('testcases.export.pdf') }}" class="btn btn-danger"><i class="bi bi-file-earmark-pdf"></i> Export PDF</a>
+        <button class="btn btn-dark" onclick="printTable()"><i class="bi bi-printer"></i> Print</button>
     </div>
-</div>
-
-<style>
-@media print {
-    @page {
-        size: A4 portrait; 
-        margin: 10mm;
-    }
-
-    body * {
-        display: none; 
-    }
-
-    #testcasesTable, #testcasesTable * {
-        display: table; 
-    }
-
-    #testcasesTable {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: auto; 
-    }
-
-    th, td {
-        border: 1px solid black;
-        padding: 6px;
-        text-align: left;
-        font-size: 12px;
-        word-wrap: break-word; 
-    }
-}
-</style>
-
-<button class="btn btn-dark" onclick="printTable()">
-    <i class="bi bi-printer"></i> Print Table
-</button>
-
-<script>
-function printTable() {
-    var printWindow = window.open("", "", "width=800,height=1000");
-    
-    printWindow.document.write("<html><head><title>Print Table</title>");
-    printWindow.document.write("<style>");
-    printWindow.document.write("@page { size: A4 portrait; margin: 10mm; }");
-    printWindow.document.write("body { margin: 0; padding: 0; }");
-    printWindow.document.write("table { width: 100%; border-collapse: collapse; table-layout: auto; }");
-    printWindow.document.write("th, td { border: 1px solid black; padding: 6px; text-align: left; font-size: 12px; word-wrap: break-word; }");
-    printWindow.document.write("</style>");
-    printWindow.document.write("</head><body>");
-    printWindow.document.write(document.getElementById("testcasesTable").outerHTML);
-    printWindow.document.write("</body></html>");
-
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
-}
-</script>
 
     <div class="mt-4">
         <table id="testcasesTable" class="table table-striped table-bordered">
@@ -172,5 +116,140 @@ function printTable() {
         </table>
     </div>
 </div>
+
+<script>
+function printTable() {
+    var printWindow = window.open('', '', 'width=800,height=1000');
+    printWindow.document.write('<html><head><title>Print Table</title>');
+    printWindow.document.write('<style>');
+    printWindow.document.write('@page { size: A4 landscape; margin: 10mm; }');
+    printWindow.document.write('body { font-family: Arial, sans-serif; margin: 10px; }');
+    printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
+    printWindow.document.write('th, td { border: 1px solid black; padding: 8px; text-align: left; font-size: 12px; }');
+    printWindow.document.write('</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(document.getElementById('testcasesTable').outerHTML);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+}
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!--Swal for Add-->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form[action='{{ route('testcases.store') }}']");
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        let formData = new FormData(form);
+
+        fetch(form.action, {
+            method: form.method,
+            body: formData,
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
+            }
+        })
+        .then(response => response.json()) 
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Test Case Added!",
+                    text: "Your test case has been successfully added.",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                // Clear form fields after success
+                form.reset();
+
+                // Append new row to the table dynamically
+                let newRow = `
+                    <tr>
+                        <td>${data.test_case.test_case_no}</td>
+                        <td>${data.test_case.test_environment}</td>
+                        <td>${data.test_case.tester}</td>
+                        <td>${data.test_case.date_of_input}</td>
+                        <td>${data.test_case.test_title}</td>
+                        <td>${data.test_case.test_description}</td>
+                        <td>${data.test_case.status}</td>
+                        <td>${data.test_case.priority}</td>
+                        <td>${data.test_case.severity}</td>
+                        <td>${data.test_case.screenshot}</td>
+                    </tr>
+                `;
+                document.querySelector("#testcasesTable tbody").innerHTML += newRow;
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: data.message || "Something went wrong!",
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Failed to add test case. Please try again.",
+            });
+        });
+    });
+});
+
+</script>
+
+<!--Swal for Import-->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const importForm = document.getElementById("importForm");
+
+    importForm.addEventListener("submit", function (event) {
+        event.preventDefault(); 
+
+        let formData = new FormData(importForm);
+
+        fetch(importForm.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Import Successful!",
+                    text: data.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                    location.reload(); 
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Import Error:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Import Failed!",
+                text: "Something went wrong. Please try again.",
+            });
+        });
+    });
+});
+</script>
+
 
 @endsection

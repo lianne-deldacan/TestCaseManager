@@ -3,19 +3,38 @@
 <head>
     <title>Test Cases Report</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 10px; 
         }
         th, td {
-            border: 1px solid black;
-            padding: 8px;
+            padding: 5px;
             text-align: left;
+            border: 1px solid black;
+            word-wrap: break-word; 
+        }
+        td {
+            max-width: 200px; 
+            overflow: hidden;
+        }
+        td.screenshot {
+            max-width: 150px; 
+            overflow: hidden;
+            text-align: center;
+        }
+        img {
+            max-width: 100px; 
+            height: auto;
         }
     </style>
 </head>
 <body>
-    <h2>Test Cases Report</h2>
+    <h2 style="text-align: center;">Test Cases Report</h2>
     <table>
         <thead>
             <tr>
@@ -43,7 +62,13 @@
                     <td>{{ $case->status }}</td>
                     <td>{{ $case->priority }}</td>
                     <td>{{ $case->severity }}</td>
-                    <td>{{ $case->screenshot }}</td>
+                    <td class="screenshot">
+                        @if(filter_var($case->screenshot, FILTER_VALIDATE_URL))
+                            <img src="{{ $case->screenshot }}">
+                        @else
+                            {{ $case->screenshot }}
+                        @endif
+                    </td>
                 </tr>
             @endforeach
         </tbody>
