@@ -32,7 +32,7 @@ class TestCaseController extends Controller
 
         return view('testcases.index', [
             'projectId' => $project->id,
-            'projectName' => $project->name,
+            'projectName' => $project->project_name,
             'testCases' => $testCases, // Pass test cases to the view
         ]);
     }

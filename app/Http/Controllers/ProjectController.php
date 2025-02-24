@@ -20,7 +20,9 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('projects.create');
+        $projects = Project::all(); 
+        $nextID = Project::max('id') + 1;
+        return view('projects.create', compact('projects', 'nextID'));
     }
 
     /**
@@ -28,25 +30,48 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        try {
+            $request->validate([
+                'service' => 'required',
+                'project_name' => 'required',
+                'project_manager' => 'required|string',
+            ]);
 
-        $project = Project::create([
-            'name' => $request->name,
-            'description' => $request->description,
-        ]);
+            // Store data in database
+            $project = Project::create($request->all());
 
-        return redirect()->route('testcases.create', ['project_id' => $project->id])
-            ->with('success', 'Project created successfully! Now add test cases.');
+            // Check if the request expects a JSON response
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Project added successfully.',
+                    'project' => $project
+                ]);
+            }
+
+            // If not a JSON request, redirect with a success message
+            return redirect()->route('testcases.create', ['project_id' => $project->id])
+                ->with('success', 'Project created successfully! Now add test cases.');
+        } catch (\Exception $e) {
+            // Handle error for both web and JSON responses
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->back()->withErrors(['error' => 'Error: ' . $e->getMessage()]);
+        }
     }
+
 
 
 
     /**
      * Display the specified resource.
      */
+
     public function show(string $id)
     {
         $project = Project::with('testCases')->find($id);

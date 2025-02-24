@@ -10,10 +10,10 @@ Class Project extends Model
     use HasFactory;
 
       protected $fillable = [
-        'id',
-        'name',
-        'description'
-      ];
+        'service',
+        'project_name',
+        'project_manager'
+    ];
 
     public function testCases()
     {
