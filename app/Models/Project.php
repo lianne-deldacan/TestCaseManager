@@ -11,8 +11,8 @@ Class Project extends Model
 
       protected $fillable = [
         'service',
-        'project_name',
-        'project_manager'
+        'name',
+        'manager'
     ];
 
     public function testCases()

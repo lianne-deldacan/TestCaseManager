@@ -17,15 +17,15 @@
                 </div>
                 <div class="col-md-6">
                     <label for="project_id" class="form-label">Project ID</label>
-                    <input type="text" id="project_id" name="project_id" class="form-control" disabled value="{{ $nextID }}">
+                    <input type="text" id="project_id" name="id" class="form-control" readonly value="{{ $nextID }}">
                 </div>
                 <div class="col-md-6">
                     <label for="project_name" class="form-label">Project Name</label>
-                    <input type="text" id="project_name" name="project_name" class="form-control" required>
+                    <input type="text" id="project_name" name="name" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                     <label for="project_manager" class="form-label">Project Manager</label>
-                    <input type="text" id="project_manager" name="project_manager" class="form-control" required>
+                    <input type="text" id="project_manager" name="manager" class="form-control" required>
                 </div>
             </div>
             <div class="text-center mt-4">
@@ -52,8 +52,8 @@
                 <tr>
                     <td>{{ $project->id }}</td>
                     <td>{{ $project->service }}</td>
-                    <td>{{ $project->project_name }}</td>
-                    <td>{{ $project->project_manager }}</td>
+                    <td>{{ $project->name }}</td>
+                    <td>{{ $project->manager }}</td>
                 @endforeach
             </tbody>
         </table>
@@ -87,15 +87,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     showConfirmButton: false,
                     timer: 1500
                 });
-
+                window.location.href = data.redirect_url;
                 form.reset();
 
                 let newRow = `
                     <tr>
                         <td>${data.project.id}</td>
                         <td>${data.project.service}</td>
-                        <td>${data.project.project_name}</td>
-                        <td>${data.project.project_manager}</td>
+                        <td>${data.project.name}</td>
+                        <td>${data.project.manager}</td>
                     </tr>
                 `;
                 document.querySelector("#projectsTable tbody").innerHTML += newRow;
