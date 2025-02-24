@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TestCase;
+use App\Models\Project;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TestCasesExport;
 use App\Imports\TestCasesImport;
@@ -15,39 +16,69 @@ class TestCaseController extends Controller
 {
     public function index()
     {
-        $testCases = TestCase::all();
-        return view('testcases.index', compact('testCases'));
+        $testCases = TestCase::with('project')->get(); 
+        return view('testcases.index', compact('testCases')); 
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('testcases.create');
+        $project = Project::find($request->query('project_id'));
+
+        if (!$project) {
+            return redirect()->route('projects.index')->with('error', 'Project not found.');
+        }
+
+        $testCases = TestCase::where('project_id', $project->id)->get(); // Fetch test cases for the project
+
+        return view('testcases.index', [
+            'projectId' => $project->id,
+            'projectName' => $project->name,
+            'testCases' => $testCases, // Pass test cases to the view
+        ]);
     }
+
+
 
     public function store(Request $request)
     {
         try {
             $request->validate([
-                'test_case_no' => 'required',
-                'test_environment' => 'required',
-                'tester' => 'required',
+                'project_id' => 'required|exists:projects,id',
+                'test_case_no' => 'required|string|max:255',
+                'test_environment' => 'required|string|max:255',
+                'tester' => 'required|string|max:255',
                 'date_of_input' => 'required|date',
-                'test_title' => 'required',
-                'test_description' => 'required',
-                'status' => 'required',
-                'priority' => 'required',
-                'severity' => 'required',
+                'test_title' => 'required|string|max:255',
+                'test_description' => 'required|string',
+                'status' => 'required|string|max:255',
+                'priority' => 'required|string|max:255',
+                'severity' => 'required|string|max:255',
                 'screenshot' => 'nullable|string',
             ]);
 
-            // Store data in database
-            $testCase = TestCase::create($request->all());
+            // Retrieve the project
+            $project = Project::findOrFail($request->project_id);
+
+            // Create test case
+            $testCase = TestCase::create([
+                'project_id' => $request->project_id,
+                'test_case_no' => $request->test_case_no,
+                'test_environment' => $request->test_environment,
+                'tester' => $request->tester,
+                'date_of_input' => $request->date_of_input,
+                'test_title' => $request->test_title,
+                'test_description' => $request->test_description,
+                'status' => $request->status,
+                'priority' => $request->priority,
+                'severity' => $request->severity,
+                'screenshot' => $request->screenshot,
+            ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Test Case added successfully.',
                 'test_case' => $testCase
-            ]);
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -55,6 +86,7 @@ class TestCaseController extends Controller
             ], 500);
         }
     }
+
 
     //Import file (MODIFIED)
     public function import(Request $request)

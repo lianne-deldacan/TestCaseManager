@@ -2,11 +2,21 @@
 
 @section('content')
 
+
+
 <div class="container mt-5">
     <div class="card shadow-lg p-4">
         <h2 class="text-center mb-4">Test Case Form</h2>
+
         <form action="{{ route('testcases.store') }}" method="POST">
             @csrf
+            <div class="mb-3">
+                <label class="form-label">Project Name</label>
+                <input type="text" class="form-control" value="{{ $projectName }}" readonly>
+            </div>
+
+            <input type="hidden" name="project_id" value="{{ $projectId }}">
+
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="test_case_no" class="form-label">Test Case No.</label>
@@ -14,15 +24,26 @@
                 </div>
                 <div class="col-md-6">
                     <label for="test_environment" class="form-label">Test Environment</label>
-                    <input type="text" id="test_environment" name="test_environment" class="form-control" required>
+                    <select id="test_environment" name="test_environment" class="form-control" required>
+                        <option value="development">Development (DEV)</option>
+                        <option value="testing">Testing (TEST)</option>
+                        <option value="staging">Staging (STG)</option>
+                        <option value="uat">UAT (User Acceptance Testing)</option>
+                        <option value="performance_testing">Performance Testing</option>
+                        <option value="security_testing">Security Testing</option>
+                        <option value="production">Production (PROD)</option>
+                        <option value="sandbox">Sandbox</option>
+                        <option value="integration_testing">Integration Testing</option>
+                        <option value="regression_testing">Regression Testing</option>
+                    </select>
                 </div>
                 <div class="col-md-6">
                     <label for="tester" class="form-label">Tester</label>
                     <input type="text" id="tester" name="tester" class="form-control" required>
                 </div>
-                <div class="col-md-6">
-                    <label for="date_of_input" class="form-label">Date of Input</label>
-                    <input type="date" id="date_of_input" name="date_of_input" class="form-control" required>
+                <div class="col-md-6"> 
+                   <label for="date_of_input" class="form-label">Date of Input</label>
+                   <input type="text" id="date_of_input" name="date_of_input" class="form-control" value="{{ date('Y-m-d') }}" required readonly>
                 </div>
                 <div class="col-md-6">
                     <label for="test_title" class="form-label">Test Title</label>
@@ -39,8 +60,9 @@
                 <div class="col-md-4">
                     <label for="status" class="form-label">Status</label>
                     <select id="status" name="status" class="form-select" required>
-                        <option value="Pass">Pass</option>
-                        <option value="Fail">Fail</option>
+                        <option value="Pending" {{ old('status', $status ?? 'Pending') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="Pass" {{ old('status', $status ?? '') == 'Pass' ? 'selected' : '' }}>Pass</option>
+                        <option value="Fail" {{ old('status', $status ?? '') == 'Fail' ? 'selected' : '' }}>Fail</option>
                     </select>
                 </div>
                 <div class="col-md-4">
@@ -82,39 +104,41 @@
     </div>
 
     <div class="mt-4">
-        <table id="testcasesTable" class="table table-striped table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>Test Case No.</th>
-                    <th>Environment</th>
-                    <th>Tester</th>
-                    <th>Date</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                    <th>Severity</th>
-                    <th>Screenshot</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($testCases as $case)
-                <tr>
-                    <td>{{ $case->test_case_no }}</td>
-                    <td>{{ $case->test_environment }}</td>
-                    <td>{{ $case->tester }}</td>
-                    <td>{{ $case->date_of_input }}</td>
-                    <td>{{ $case->test_title }}</td>
-                    <td>{{ $case->test_description }}</td>
-                    <td>{{ $case->status }}</td>
-                    <td>{{ $case->priority }}</td>
-                    <td>{{ $case->severity }}</td>
-                    <td>{{ $case->screenshot }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+    <table id="testcasesTable" class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Project ID</th>
+                <th>Project Name</th>
+                <th>Test Case No.</th>
+                <th>Environment</th>
+                <th>Tester</th>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Severity</th>
+                <th>Screenshot</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($testCases as $case)
+            <tr>
+                <td>{{ $case->project->name }}</td>
+                <td>{{ $case->test_case_no }}</td>
+                <td>{{ $case->test_environment }}</td>
+                <td>{{ $case->tester }}</td>
+                <td>{{ $case->date_of_input }}</td>
+                <td>{{ $case->test_title }}</td>
+                <td>{{ $case->test_description }}</td>
+                <td>{{ $case->status }}</td>
+                <td>{{ $case->priority }}</td>
+                <td>{{ $case->severity }}</td>
+                <td>{{ $case->screenshot }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 
 <script>
@@ -171,20 +195,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 form.reset();
 
                 let newRow = `
-                    <tr>
-                        <td>${data.test_case.test_case_no}</td>
-                        <td>${data.test_case.test_environment}</td>
-                        <td>${data.test_case.tester}</td>
-                        <td>${data.test_case.date_of_input}</td>
-                        <td>${data.test_case.test_title}</td>
-                        <td>${data.test_case.test_description}</td>
-                        <td>${data.test_case.status}</td>
-                        <td>${data.test_case.priority}</td>
-                        <td>${data.test_case.severity}</td>
-                        <td>${data.test_case.screenshot}</td>
-                    </tr>
-                `;
-                document.querySelector("#testcasesTable tbody").innerHTML += newRow;
+                <tr>
+                    <td>${data.test_case.project_id}</td>
+                    <td>${data.test_case.project_name}</td>
+                    <td>${data.test_case.test_case_no}</td>
+                    <td>${data.test_case.test_environment}</td>
+                    <td>${data.test_case.tester}</td>
+                    <td>${data.test_case.date_of_input}</td>
+                    <td>${data.test_case.test_title}</td>
+                    <td>${data.test_case.test_description}</td>
+                    <td>${data.test_case.status}</td>
+                    <td>${data.test_case.priority}</td>
+            <td>${data.test_case.severity}</td>
+        <td>${data.test_case.screenshot}</td>
+    </tr>
+`;
+document.querySelector("#testcasesTable tbody").innerHTML += newRow;
+
             } else {
                 Swal.fire({
                     icon: "error",
@@ -248,6 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
 
 
 @endsection

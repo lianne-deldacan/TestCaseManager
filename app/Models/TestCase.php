@@ -10,6 +10,8 @@ class TestCase extends Model
     use HasFactory;
 
     protected $fillable = [
+        'project_id',         
+        'project_name',       // Optional, but if stored, should be fillable
         'test_case_no',
         'test_environment',
         'tester',
@@ -21,5 +23,12 @@ class TestCase extends Model
         'priority',
         'severity'
     ];
-}
 
+    /**
+     * Define relationship with Project model.
+     */
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
+    }
+}
