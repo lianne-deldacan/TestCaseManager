@@ -23,7 +23,12 @@ Route::get('/testcases/export/pdf', [TestCaseController::class, 'exportPDF'])->n
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
 Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
-Route::get('/projects/{id}', [ProjectController::class, 'show'])->name('projects.show');
+
+//Route for getting the list of projects based on service.
+Route::get('/get-projects/{service}', [ProjectController::class, 'getProjects']);
+Route::get('/', function () {
+    return view('landing');  
+});
 
 
 

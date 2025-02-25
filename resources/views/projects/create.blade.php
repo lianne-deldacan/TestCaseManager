@@ -15,7 +15,7 @@
                         <option value="Marketing">Marketing</option>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label for="project_id" class="form-label">Project ID</label>
                     <input type="text" id="project_id" name="id" class="form-control" readonly value="{{ $nextID }}">
                 </div>

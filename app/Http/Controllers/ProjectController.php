@@ -108,4 +108,15 @@ class ProjectController extends Controller
         $project->delete();
         return response()->json(['message' => 'Project deleted successfully']);
     }
+
+
+    //TESTING
+    public function getProjects($service)
+    {
+        // Retrieve projects where service matches
+        $projects = Project::where('service', $service)->pluck('name', 'id');
+
+        // Return as JSON response
+        return response()->json($projects);
+    }
 }
