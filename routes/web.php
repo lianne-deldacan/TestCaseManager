@@ -26,9 +26,8 @@ Route::post('/projects', [ProjectController::class, 'store'])->name('projects.st
 
 //Route for getting the list of projects based on service.
 Route::get('/get-projects/{service}', [ProjectController::class, 'getProjects']);
-Route::get('/', function () {
-    return view('landing');  
-});
+Route::get('/add', function () { return view('/testcases/add-landing');});
+Route::get('/', function () { return view('index');});
 
 
 

@@ -44,8 +44,6 @@ class ProjectController extends Controller
                 'success' => true,
                 'message' => 'Project added successfully.',
                 'project' => $project,
-                'redirect_url' => route('testcases.create', ['project_id' => $project->id]) 
-                //Redirect to /testcases/create after creating project.
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -54,12 +52,7 @@ class ProjectController extends Controller
             ], 500);
         }
     }
-        // return redirect()->route('testcases.create', ['project_id' => $project->id])
-         //   ->with('success', 'Project created successfully! Now add test cases.');
     
-
-
-
     /**
      * Display the specified resource.
      */

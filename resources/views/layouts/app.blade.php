@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,22 +16,53 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
+
 <body>
-    <header>
-        <h1>Test Case</h1>
-    </header>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="flex-shrink-0 p-3 text-white" style="width: 280px; background-color: #777AAC; min-height: 100vh;">
+            <a href="/" class="d-flex justify-content-center pb-3 mb-3 link-light text-decoration-none">
+                <img src="{{ asset('logo.png') }}" alt="Logo" width="150">
+            </a>
+            <ul class="list-unstyled ps-0">
+                <li class="mb-1 border-bottom">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
+                        data-bs-toggle="collapse" data-bs-target="#project-collapse" aria-expanded="true">
+                        Project
+                    </button>
+                    <div class="collapse show" id="project-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
+                            <li><a href="/projects/create" class="text-white d-inline-flex text-decoration-none rounded">Add Project</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="mb-1 border-bottom">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white" 
+                        data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                        Test Cases
+                    </button>
+                    <div class="collapse show" id="dashboard-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
+                            <li><a href="#" class="text-white d-inline-flex text-decoration-none rounded">View Test Cases</a></li>
+                            <li><a href="/add" class="text-white d-inline-flex text-decoration-none rounded">Add Test Case</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
 
-    <!-- Main content -->
-    <main>
-        @yield('content')
-    </main>
+        <!-- Main content -->
+        <main class="flex-grow-1 p-4">
+            @yield('content')
+        </main>
+    </div>
 
-    <footer>
+    <footer class="text-center mt-4">
         <p>&copy; 2025 Test Cases</p>
     </footer>
 
     <!--Bootstrap-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- jQuery (Required by DataTables) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- DataTables JS (Updated Version) -->

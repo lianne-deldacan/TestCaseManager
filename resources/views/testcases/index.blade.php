@@ -124,6 +124,7 @@
         <tbody>
             @foreach ($testCases as $case)
             <tr>
+                <td>{{ $case->project->id }}</td>
                 <td>{{ $case->project->name }}</td>
                 <td>{{ $case->test_case_no }}</td>
                 <td>{{ $case->test_environment }}</td>

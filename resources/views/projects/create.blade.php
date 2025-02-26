@@ -87,7 +87,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     showConfirmButton: false,
                     timer: 1500
                 });
-                window.location.href = data.redirect_url;
                 form.reset();
 
                 let newRow = `
