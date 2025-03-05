@@ -115,4 +115,40 @@ class ProjectController extends Controller
         // Return as JSON response
         return response()->json($projects);
     }
+
+    
+    public function getTableData()
+    {
+        $projects = Project::all(); // Fetch all projects
+        return response()->json($projects); // Return JSON for table
+    }
+
+    public function filter(Request $request)
+    {
+        $query = Project::query();
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+    }
+    
+    if ($request->has('category')) {
+        $query->where('category', $request->category);
+    }
+
+    $projects = $query->get();
+    return response()->json($projects);
+    }
+
+    public function paginate($page)
+    {
+        $projects = Project::paginate(10, ['*'], 'page', $page);
+        return response()->json($projects);
+    }
+
+    public function sort($column, $direction)
+    {
+        $projects = Project::orderBy($column, $direction)->get();
+        return response()->json($projects);
+    }
+
 }
