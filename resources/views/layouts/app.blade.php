@@ -8,7 +8,7 @@
 
     <title>My Application</title>
     <link rel="stylesheet" href="{{ asset('styles.css') }}">
-    
+
     <!-- DataTables CSS (Updated Version) -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
 
@@ -24,11 +24,10 @@
     <!--Bootstrap icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    
+
 </head>
 
 <body>
-<<<<<<< HEAD
     <div class="d-flex">
         <!-- Sidebar -->
         <div class="flex-shrink-0 p-3 text-white" style="width: 280px; background-color: #777AAC; min-height: 100vh;">
@@ -49,7 +48,7 @@
                     </div>
                 </li>
                 <li class="mb-1 border-bottom">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white" 
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
                         data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
                         Test Cases
                     </button>
@@ -61,7 +60,7 @@
                     </div>
                 </li>
                 <li class="mb-1 border-bottom">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white" 
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
                         data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
                         Issues
                     </button>
@@ -72,7 +71,7 @@
                     </div>
                 </li>
                 <li class="mb-1 border-bottom">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white" 
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
                         data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
                         Category
                     </button>
@@ -86,59 +85,11 @@
                 </li>
             </ul>
         </div>
-=======
->>>>>>> 26f70e2db6db63d0218d3560600dc428ef67bb64
-
-<div class="d-flex">
-    <!-- Sidebar -->
-    <div class="flex-shrink-0 p-3 text-white" style="width: 280px; background-color: #777AAC; min-height: 100vh;">
-        <a href="/" class="d-flex justify-content-center pb-3 mb-3 link-light text-decoration-none">
-            <img src="{{ asset('logo.png') }}" alt="Logo" width="150">
-        </a>
-        <ul class="list-unstyled ps-0">
-            <li class="mb-1 border-bottom">
-                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
-                    data-bs-toggle="collapse" data-bs-target="#project-collapse" aria-expanded="true">
-                    Project
-                </button>
-                <div class="collapse show" id="project-collapse">
-                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
-                        <li><a href="/projects/create" class="text-white d-inline-flex text-decoration-none rounded">Add Project</a></li>
-                        <li><a href="/projects" class="text-white d-inline-flex text-decoration-none rounded">View Projects</a></li>
-                    </ul>
-                </div>
-            </li>
-            <li class="mb-1 border-bottom">
-                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white" 
-                    data-bs-toggle="collapse" data-bs-target="#testcase-collapse" aria-expanded="true">
-                    Test Cases
-                </button>
-                <div class="collapse show" id="testcase-collapse">
-                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
-                        <li><a href="/testcases" class="text-white d-inline-flex text-decoration-none rounded">View Test Cases</a></li>
-                        <li><a href="/add" class="text-white d-inline-flex text-decoration-none rounded">Add Test Case</a></li>
-                    </ul>
-                </div>
-            </li>
-            <li class="mb-1 border-bottom">
-                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white" 
-                    data-bs-toggle="collapse" data-bs-target="#issue-collapse" aria-expanded="true">
-                    Issues
-                </button>
-                <div class="collapse show" id="issue-collapse">
-                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
-                        <li><a href="#" class="text-white d-inline-flex text-decoration-none rounded">View Issues</a></li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
+        <!-- Main content -->
+        <main class="flex-grow-1 p-4">
+            @yield('content')
+        </main>
     </div>
-
-    <!-- Main content -->
-    <main class="flex-grow-1 p-4">
-        @yield('content')
-    </main>
-</div>
 
 
     <footer class="text-center mt-4">
@@ -164,4 +115,5 @@
         });
     </script>
 </body>
+
 </html>
