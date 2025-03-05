@@ -9,9 +9,13 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable=[
+    protected $fillable = [
         'name',
-        'description',
-        'action'
+        'description'
     ];
+
+    public function testCases()
+    {
+        return $this->hasMany(TestCase::class);
+    }
 }

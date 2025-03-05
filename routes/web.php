@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\TestCaseController;
 use App\Http\Controllers\ProjectController;
-
+use App\Http\Controllers\CategoryController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -39,6 +39,14 @@ Route::get('/', function () { return view('index');});
 Route::put('/testcases/{id}', [TestCaseController::class, 'update'])->name('testcases.update');
 Route::delete('/delete-case/{id}', [TestCaseController::class, 'destroy'])->name('delete-case');
 Route::get('/execute/{id}', [TestCaseController::class, 'execute'])->name('execute');
+
+//Route for Categories
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
 
 

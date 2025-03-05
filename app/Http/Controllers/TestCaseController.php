@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TestCase;
 use App\Models\Project;
+use App\Models\Category;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TestCasesExport;
 use App\Imports\TestCasesImport;
@@ -51,10 +52,11 @@ class TestCaseController extends Controller
         }
 
         $testCases = TestCase::where('project_id', $project->id)->get(); // Fetch test cases for the project
-
+        $categories = Category::all();
         return view('testcases.index', [
             'projectId' => $project->id,
             'projectName' => $project->name,
+            'categories' => $categories,
             'service' => $project->service,
             'testCases' => $testCases, // Pass test cases to the view
         ]);
@@ -91,7 +93,7 @@ class TestCaseController extends Controller
                 'test_case_no' => 'required|string|max:255',
                 'test_title' => 'required|string|max:255',
                 'test_step' => 'required|string|max:255',
-                'category' => 'required|string|max:255',
+                'category_id' => 'required|integer|exists:categories,id',
                 'tester' => 'required|string|max:255',
                 'date_of_input' => 'required|date',
                 'status' => 'required|string|max:255',
@@ -107,7 +109,7 @@ class TestCaseController extends Controller
                 'test_case_no' => $request->test_case_no,
                 'test_title' => $request->test_title,
                 'test_step' => $request->test_step,
-                'category' => $request->category,
+                'category_id' => $request->category_id,
                 'tester' => $request->tester,
                 'date_of_input' => $request->date_of_input,
                 'status' => $request->status,
@@ -138,33 +140,20 @@ class TestCaseController extends Controller
             $file = $request->file('file');
 
             if (!$file->isValid()) {
-                return back()->with('error', 'Invalid file uploaded.');
+                return response()->json(['error' => 'Invalid file uploaded.'], 400);
             }
 
-            $data = Excel::toCollection(new TestCasesImport, $file);
-
-            foreach ($data->first() as $row) {
-                TestCase::create([
-                    'test_case_no'     => $row['test_case_no'],
-                    'test_environment' => $row['test_environment'],
-                    'tester'           => $row['tester'],
-                    'date_of_input'    => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['date_of_input']),
-                    'test_title'       => $row['test_title'],
-                    'test_description' => $row['test_description'],
-                    'status'           => $row['status'],
-                    'priority'         => $row['priority'],
-                    'severity'         => $row['severity'],
-                    'screenshot'       => $row['screenshot'],
-                ]);
-            }
+            Excel::import(new TestCasesImport, $file);
 
             return response()->json(['message' => 'Import successful']);
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            return back()->with('error', 'Import Failed: Validation error in the file.');
+            return response()->json(['error' => 'Validation error in the file.', 'details' => $e->failures()], 422);
         } catch (\Exception $e) {
-            return back()->with('error', 'Import Failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Import Failed', 'details' => $e->getMessage()], 500);
         }
     }
+
+
 
     // Export CSV
     public function exportCSV()

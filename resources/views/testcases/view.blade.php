@@ -26,7 +26,7 @@
                     <td>{{ $case->test_case_no }}</td>
                     <td>{{ $case->test_title }}</td>
                     <td>{{ $case->test_step }}</td>
-                    <td>{{ $case->category }}</td>
+                    <td>{{ $case->category->name }}</td>
                     <td>{{ $case->date_of_input }}</td>
                     <td>{{ $case->status }}</td>
                 </tr>

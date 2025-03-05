@@ -10,12 +10,12 @@ class TestCase extends Model
     use HasFactory;
 
     protected $fillable = [
-        'project_id',         
+        'project_id',
         'project_name',       // Optional, but if stored, should be fillable
         'test_case_no',
         'test_title',
         'test_step',
-        'category',
+        'category_id',
         'priority',
         'tester',
         'status',
@@ -28,5 +28,9 @@ class TestCase extends Model
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

@@ -6,7 +6,6 @@ use App\Models\TestCase;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-
 class TestCasesExport implements FromCollection, WithHeadings
 {
   /**
@@ -14,7 +13,22 @@ class TestCasesExport implements FromCollection, WithHeadings
    */
   public function collection()
   {
-    return TestCase::select('test_case_no', 'test_environment', 'tester', 'date_of_input', 'test_title', 'test_description', 'status', 'priority', 'severity', 'screenshot')->get();
+    return TestCase::with(['project', 'category']) // Eager load relationships
+      ->get()
+      ->map(function ($case) {
+        return [
+          'Project Name' => $case->project->name ?? 'N/A',
+          'Service' => $case->project->service ?? 'N/A',
+          'Tester' => $case->tester,
+          'Test Case No.' => $case->test_case_no,
+          'Test Title' => $case->test_title,
+          'Test Step' => $case->test_step,
+          'Category' => $case->category->name ?? 'N/A',
+          'Date' => $case->date_of_input,
+          'Priority' => $case->priority,
+          'Status' => $case->status,
+        ];
+      });
   }
 
   /**
@@ -22,6 +36,6 @@ class TestCasesExport implements FromCollection, WithHeadings
    */
   public function headings(): array
   {
-    return ['Test Case No.', 'Environment', 'Tester', 'Date', 'Title', 'Description', 'Pass/Fail', 'Priority', 'Severity', 'Screenshot'];
+    return ['Project Name', 'Service', 'Tester', 'Test Case No.', 'Test Title', 'Test Step', 'Category', 'Date', 'Priority', 'Status'];
   }
 }
