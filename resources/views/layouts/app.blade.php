@@ -20,7 +20,6 @@
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <!--Bootstrap icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -55,10 +54,6 @@
                     </button>
                     <div class="collapse show" id="dashboard-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
-<<<<<<< HEAD
-                            <li><a href="/testcases" class="text-white d-inline-flex text-decoration-none rounded">View Test Cases</a></li>
-                            <li><a href="/add" class="text-white d-inline-flex text-decoration-none rounded">Add Test Case</a></li>
-=======
                             <li><a href="{{ route('landing', ['page' => 'add']) }}" class="text-white d-inline-flex text-decoration-none rounded">Add Test Cases</a></li>
                             <li><a href="{{ route('landing', ['page' => 'view']) }}" class="text-white d-inline-flex text-decoration-none rounded">View Test Case</a></li>
                         </ul>
@@ -72,7 +67,19 @@
                     <div class="collapse show" id="dashboard-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
                             <li><a href="#" class="text-white d-inline-flex text-decoration-none rounded">View Issues</a></li>
->>>>>>> f191f4d76e99b599ff5718bf79048765ca12d4a8
+                        </ul>
+                    </div>
+                </li>
+                <li class="mb-1 border-bottom">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white" 
+                        data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                        Category
+                    </button>
+                    <div class="collapse show" id="dashboard-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
+                            <li><a href="#" class="text-white d-inline-flex text-decoration-none rounded">View Categories</a></li>
+                            <li><a href="#" class="text-white d-inline-flex text-decoration-none rounded">Add Category</a></li>
+                            <li><a href="#" class="text-white d-inline-flex text-decoration-none rounded">View Categories</a></li>
                         </ul>
                     </div>
                 </li>

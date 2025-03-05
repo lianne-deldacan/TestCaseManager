@@ -55,6 +55,7 @@ class TestCaseController extends Controller
         return view('testcases.index', [
             'projectId' => $project->id,
             'projectName' => $project->name,
+            'service' => $project->service,
             'testCases' => $testCases, // Pass test cases to the view
         ]);
     }
@@ -88,15 +89,13 @@ class TestCaseController extends Controller
             $request->validate([
                 'project_id' => 'required|exists:projects,id',
                 'test_case_no' => 'required|string|max:255',
-                'test_environment' => 'required|string|max:255',
+                'test_title' => 'required|string|max:255',
+                'test_step' => 'required|string|max:255',
+                'category' => 'required|string|max:255',
                 'tester' => 'required|string|max:255',
                 'date_of_input' => 'required|date',
-                'test_title' => 'required|string|max:255',
-                'test_description' => 'required|string',
                 'status' => 'required|string|max:255',
                 'priority' => 'required|string|max:255',
-                'severity' => 'required|string|max:255',
-                'screenshot' => 'nullable|string',
             ]);
 
             // Retrieve the project
@@ -106,15 +105,13 @@ class TestCaseController extends Controller
             $testCase = TestCase::create([
                 'project_id' => $request->project_id,
                 'test_case_no' => $request->test_case_no,
-                'test_environment' => $request->test_environment,
+                'test_title' => $request->test_title,
+                'test_step' => $request->test_step,
+                'category' => $request->category,
                 'tester' => $request->tester,
                 'date_of_input' => $request->date_of_input,
-                'test_title' => $request->test_title,
-                'test_description' => $request->test_description,
                 'status' => $request->status,
                 'priority' => $request->priority,
-                'severity' => $request->severity,
-                'screenshot' => $request->screenshot,
             ]);
 
             return response()->json([
