@@ -1,8 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-<h1>Test Cases for {{ $project->name }}</h1>  
+<h1>Test Cases for {{ $project->name }}</h1>
 <div class="mt-4">
+    <div class="mt-4 d-flex flex-wrap align-items-center gap-2">
+        <a href="{{ route('testcases.export.csv') }}" class="btn btn-info">
+            <i class="bi bi-file-earmark-spreadsheet"></i> Export CSV
+        </a>
+        <a href="{{ route('testcases.export.excel') }}" class="btn btn-warning">
+            <i class="bi bi-file-earmark-excel"></i> Export Excel
+        </a>
+        <a href="{{ route('testcases.export.pdf') }}" class="btn btn-danger">
+            <i class="bi bi-file-earmark-pdf"></i> Export PDF
+        </a>
+        <button class="btn btn-dark" onclick="printTable()">
+            <i class="bi bi-printer"></i> Print
+        </button>
+    </div>
     <table id="testcasesTable" class="table table-striped table-bordered">
         <thead class="table-dark">
             <tr>
@@ -18,20 +32,39 @@
             </tr>
         </thead>
         <tbody>
-                @foreach ($testCases as $case)
-                <tr>
-                    <td>{{ $case->project->name }}</td>
-                    <td>{{ $case->project->service }}</td>
-                    <td>{{ $case->tester }}</td>
-                    <td>{{ $case->test_case_no }}</td>
-                    <td>{{ $case->test_title }}</td>
-                    <td>{{ $case->test_step }}</td>
-                    <td>{{ $case->category->name }}</td>
-                    <td>{{ $case->date_of_input }}</td>
-                    <td>{{ $case->status }}</td>
-                </tr>
-                @endforeach
-            </tbody>
+            @foreach ($testCases as $case)
+            <tr>
+                <td>{{ $case->project->name }}</td>
+                <td>{{ $case->project->service }}</td>
+                <td>{{ $case->tester }}</td>
+                <td>{{ $case->test_case_no }}</td>
+                <td>{{ $case->test_title }}</td>
+                <td>{{ $case->test_step }}</td>
+                <td>{{ $case->category->name }}</td>
+                <td>{{ $case->date_of_input }}</td>
+                <td>{{ $case->status }}</td>
+            </tr>
+            @endforeach
+        </tbody>
     </table>
 </div>
 @endsection
+<script>
+    function printTable() {
+        var printWindow = window.open('', '', 'width=800,height=1000');
+        printWindow.document.write('<html><head><title>Print Table</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('@page { size: A4 landscape; margin: 10mm; }');
+        printWindow.document.write('body { font-family: Arial, sans-serif; margin: 10px; }');
+        printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
+        printWindow.document.write('th, td { border: 1px solid black; padding: 8px; text-align: left; font-size: 12px; }');
+        printWindow.document.write('</style>');
+        printWindow.document.write('</head><body>');
+        printWindow.document.write(document.getElementById('testcasesTable').outerHTML);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    }
+</script>
