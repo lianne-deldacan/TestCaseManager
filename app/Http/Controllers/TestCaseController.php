@@ -14,14 +14,40 @@ use Illuminate\Http\Response;
 
 class TestCaseController extends Controller
 {
+
+    public function view(Request $request)
+    {
+        $project = Project::find($request->project_id);
+
+        if (!$project) {
+            return redirect()->back()->with('error', 'Project not found');
+        }
+
+        $testCases = TestCase::with('project')->where('project_id', $project->id)->get();
+
+        return view('testcases.view', compact('testCases', 'project'));
+    }
+
+
+    //show landing page
+    public function showLanding(Request $request)
+    {
+        return view('landing');
+    }
+
     public function index()
     {
+<<<<<<< HEAD
         $testCases = TestCase::with('project')->get(); // Retrieve all test cases with their projects
 
         $projectName = $testCases->isNotEmpty() ? $testCases->first()->project->name : 'Default Project Name';
         $projectId = $testCases->isNotEmpty() ? $testCases->first()->project->id : null;
 
         return view('testcases.index', compact('testCases', 'projectName', 'projectId'));
+=======
+        $testCases = TestCase::with('project')->get();
+        return view('testcases.index', compact('testCases'));
+>>>>>>> f191f4d76e99b599ff5718bf79048765ca12d4a8
     }
 
     public function create(Request $request)
@@ -151,7 +177,6 @@ class TestCaseController extends Controller
             }
 
             return response()->json(['message' => 'Import successful']);
-
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             return back()->with('error', 'Import Failed: Validation error in the file.');
         } catch (\Exception $e) {
@@ -186,9 +211,8 @@ class TestCaseController extends Controller
             $testCases = TestCase::all();
             $pdf = Pdf::loadView('exports.testcases_pdf', compact('testCases'))->setPaper('A4', 'portrait');
             return $pdf->download('testcases.pdf');
-     }   catch (\Exception $e) {
+        } catch (\Exception $e) {
             return back()->with('error', 'PDF Export Failed: ' . $e->getMessage());
-         }
+        }
     }
-
 }

@@ -1,13 +1,15 @@
 @extends('layouts.app')
 
-
 @section('content')
-<!-- This is the landing page for Adding Test Cases -->
+<!-- Universal Landing Page -->
 <div class="container d-flex justify-content-center mt-5">
     <div class="card shadow-lg p-4" style="width: 100%; max-width: 800px;">
-        <h2 class="text-center mb-4">New Test Case Form</h2>
+        <h2 class="text-center mb-4">Select a Project</h2>
+
         <form id="service-form" class="text-center">
             @csrf
+            <input type="hidden" id="action-type" value="{{ request()->query('page') }}"> <!-- Stores Add/View -->
+
             <div class="row g-3 justify-content-center">
                 <div class="col-md-6">
                     <label for="service-select" class="form-label">Select Service:</label>
@@ -24,7 +26,7 @@
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <button type="submit" class="btn btn-primary">Add Test Case</button>
+                    <button type="submit" class="btn btn-primary">Continue</button>
                 </div>
             </div>
         </form>
@@ -36,7 +38,7 @@
     $(document).ready(function() {
         // Fetch projects when a service is selected
         $('#service-select').change(function() {
-            let service = $(this).val(); 
+            let service = $(this).val();
 
             if (service) {
                 $.ajax({
@@ -61,13 +63,20 @@
             }
         });
 
-        // Redirect to test cases page on form submission
+        // Handle form submission
         $('#service-form').submit(function(event) {
             event.preventDefault();
             let projectId = $('#project-select').val();
+            let actionType = $('#action-type').val(); // Get action (add/view)
 
             if (projectId) {
-                window.location.href = "{{ route('testcases.create', ['project_id' => '']) }}" + projectId;
+                if (actionType === "add") {
+                    window.location.href = "{{ route('testcases.create', ['project_id' => '']) }}" + projectId;
+                } else if (actionType === "view") {
+                    window.location.href = "{{ route('testcases.view', ['project_id' => '']) }}" + projectId;
+                } else {
+                    alert("Invalid action type.");
+                }
             } else {
                 alert('Please select a project.');
             }

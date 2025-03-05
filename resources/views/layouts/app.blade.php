@@ -44,6 +44,7 @@
                     <div class="collapse show" id="project-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
                             <li><a href="/projects/create" class="text-white d-inline-flex text-decoration-none rounded">Add Project</a></li>
+                            <li><a href="/projects" class="text-white d-inline-flex text-decoration-none rounded">View Projects</a></li>
                         </ul>
                     </div>
                 </li>
@@ -54,8 +55,24 @@
                     </button>
                     <div class="collapse show" id="dashboard-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
+<<<<<<< HEAD
                             <li><a href="/testcases" class="text-white d-inline-flex text-decoration-none rounded">View Test Cases</a></li>
                             <li><a href="/add" class="text-white d-inline-flex text-decoration-none rounded">Add Test Case</a></li>
+=======
+                            <li><a href="{{ route('landing', ['page' => 'add']) }}" class="text-white d-inline-flex text-decoration-none rounded">Add Test Cases</a></li>
+                            <li><a href="{{ route('landing', ['page' => 'view']) }}" class="text-white d-inline-flex text-decoration-none rounded">View Test Case</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="mb-1 border-bottom">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white" 
+                        data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                        Issues
+                    </button>
+                    <div class="collapse show" id="dashboard-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
+                            <li><a href="#" class="text-white d-inline-flex text-decoration-none rounded">View Issues</a></li>
+>>>>>>> f191f4d76e99b599ff5718bf79048765ca12d4a8
                         </ul>
                     </div>
                 </li>

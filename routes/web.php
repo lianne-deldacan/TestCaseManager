@@ -14,6 +14,8 @@ Route::get('/testcases', [TestCaseController::class, 'index'])->name('testcases.
 Route::get('/testcases/create', [TestCaseController::class, 'create'])->name('testcases.create');
 Route::post('/testcases', [TestCaseController::class, 'store'])->name('testcases.store');
 
+Route::get('/testcases/view', [TestCaseController::class, 'view'])->name('testcases.view');
+
 Route::post('/testcases/import', [TestCaseController::class, 'import'])->name('testcases.import');
 Route::get('/testcases/export/csv', [TestCaseController::class, 'exportCSV'])->name('testcases.export.csv');
 Route::get('/testcases/export/excel', [TestCaseController::class, 'exportExcel'])->name('testcases.export.excel');
@@ -21,12 +23,16 @@ Route::get('/testcases/export/pdf', [TestCaseController::class, 'exportPDF'])->n
 
 // Project routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+
+
 Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
 Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
 
 //Route for getting the list of projects based on service.
 Route::get('/get-projects/{service}', [ProjectController::class, 'getProjects']);
-Route::get('/add', function () { return view('/testcases/add-landing');});
+Route::get('/select', [TestCaseController::class, 'showLanding'])->name('landing');
+
+//Home page
 Route::get('/', function () { return view('index');});
 
 //Route for edit, delete, get
