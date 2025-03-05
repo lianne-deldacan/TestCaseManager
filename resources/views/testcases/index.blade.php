@@ -2,80 +2,37 @@
 
 @section('content')
 
-
-
 <div class="container mt-5">
     <div class="card shadow-lg p-4">
         <h2 class="text-center mb-4">Test Case Form</h2>
 
         <form action="{{ route('testcases.store') }}" method="POST">
             @csrf
-            <div class="mb-3">
-                <label class="form-label">Project Name</label>
-                <input type="text" class="form-control" value="{{ $projectName }}" readonly>
-            </div>
-
-            <input type="hidden" name="project_id" value="{{ $projectId }}">
-
+            
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="test_case_no" class="form-label">Test Case No.</label>
                     <input type="text" id="test_case_no" name="test_case_no" class="form-control" required>
                 </div>
                 <div class="col-md-6">
-                    <label for="test_environment" class="form-label">Test Environment</label>
-                    <select id="test_environment" name="test_environment" class="form-control" required>
-                        <option value="development">Development (DEV)</option>
-                        <option value="testing">Testing (TEST)</option>
-                        <option value="staging">Staging (STG)</option>
-                        <option value="uat">UAT (User Acceptance Testing)</option>
-                        <option value="performance_testing">Performance Testing</option>
-                        <option value="security_testing">Security Testing</option>
-                        <option value="production">Production (PROD)</option>
-                        <option value="sandbox">Sandbox</option>
-                        <option value="integration_testing">Integration Testing</option>
-                        <option value="regression_testing">Regression Testing</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="tester" class="form-label">Tester</label>
-                    <input type="text" id="tester" name="tester" class="form-control" required>
-                </div>
-                <div class="col-md-6"> 
-                   <label for="date_of_input" class="form-label">Date of Input</label>
-                   <input type="text" id="date_of_input" name="date_of_input" class="form-control" value="{{ date('Y-m-d') }}" required readonly>
-                </div>
-                <div class="col-md-6">
                     <label for="test_title" class="form-label">Test Title</label>
                     <input type="text" id="test_title" name="test_title" class="form-control" required>
                 </div>
                 <div class="col-md-6">
-                    <label for="screenshot" class="form-label">Screenshot (URL or Text)</label>
-                    <input type="text" id="screenshot" name="screenshot" class="form-control">
+                    <label for="test_step" class="form-label">Test Step</label>
+                    <input type="text" id="test_step" name="test_step" class="form-control" required>
                 </div>
-                <div class="col-md-12">
-                    <label for="test_description" class="form-label">Test Description</label>
-                    <textarea id="test_description" name="test_description" class="form-control" rows="3" required></textarea>
+                <div class="col-md-6">
+                    <label for="category" class="form-label">Category</label>
+                    <input type="text" id="category" name="category" class="form-control" required>
                 </div>
-                <div class="col-md-4">
-                    <label for="status" class="form-label">Status</label>
-                    <select id="status" name="status" class="form-select" required>
-                        <option value="Pending" {{ old('status', $status ?? 'Pending') == 'Pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="Pass" {{ old('status', $status ?? '') == 'Pass' ? 'selected' : '' }}>Pass</option>
-                        <option value="Fail" {{ old('status', $status ?? '') == 'Fail' ? 'selected' : '' }}>Fail</option>
-                    </select>
+                <div class="col-md-6">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" id="date" name="date" class="form-control" required>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label for="priority" class="form-label">Priority</label>
-                    <select id="priority" name="priority" class="form-select" required>
-                        <option value="High">High</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Low">Low</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="severity" class="form-label">Severity</label>
-                    <select id="severity" name="severity" class="form-select" required>
+                    <select id="priority" name="priority" class="form-control" required>
                         <option value="High">High</option>
                         <option value="Medium">Medium</option>
                         <option value="Low">Low</option>
@@ -87,60 +44,143 @@
             </div>
         </form>
     </div>
-
-    <div class="mt-4 d-flex flex-wrap align-items-center gap-2">
-        <form id="importForm" action="{{ route('testcases.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
-            @csrf
-            <div class="d-flex align-items-center border rounded px-2">
-                <input type="file" name="file" class="form-control border-0">
-            </div>
-            <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Import</button>
-        </form>
-
-        <a href="{{ route('testcases.export.csv') }}" class="btn btn-info"><i class="bi bi-file-earmark-spreadsheet"></i> Export CSV</a>
-        <a href="{{ route('testcases.export.excel') }}" class="btn btn-warning"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
-        <a href="{{ route('testcases.export.pdf') }}" class="btn btn-danger"><i class="bi bi-file-earmark-pdf"></i> Export PDF</a>
-        <button class="btn btn-dark" onclick="printTable()"><i class="bi bi-printer"></i> Print</button>
-    </div>
-
-    <div class="mt-4">
-    <table id="testcasesTable" class="table table-striped table-bordered">
-        <thead class="table-dark">
-            <tr>
-                <th>Project ID</th>
-                <th>Project Name</th>
-                <th>Test Case No.</th>
-                <th>Environment</th>
-                <th>Tester</th>
-                <th>Date</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Severity</th>
-                <th>Screenshot</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($testCases as $case)
-            <tr>
-                <td>{{ $case->project->id }}</td>
-                <td>{{ $case->project->name }}</td>
-                <td>{{ $case->test_case_no }}</td>
-                <td>{{ $case->test_environment }}</td>
-                <td>{{ $case->tester }}</td>
-                <td>{{ $case->date_of_input }}</td>
-                <td>{{ $case->test_title }}</td>
-                <td>{{ $case->test_description }}</td>
-                <td>{{ $case->status }}</td>
-                <td>{{ $case->priority }}</td>
-                <td>{{ $case->severity }}</td>
-                <td>{{ $case->screenshot }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
 </div>
+
+<div class="mt-4 d-flex flex-wrap align-items-center gap-2">
+    <form id="importForm" action="{{ route('testcases.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
+        @csrf
+        <div class="d-flex align-items-center border rounded px-2">
+            <input type="file" name="file" class="form-control border-0">
+        </div>
+        <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Import</button>
+    </form>
+
+    <a href="{{ route('testcases.export.csv') }}" class="btn btn-info"><i class="bi bi-file-earmark-spreadsheet"></i> Export CSV</a>
+    <a href="{{ route('testcases.export.excel') }}" class="btn btn-warning"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
+    <a href="{{ route('testcases.export.pdf') }}" class="btn btn-danger"><i class="bi bi-file-earmark-pdf"></i> Export PDF</a>
+    <button class="btn btn-dark" onclick="printTable()"><i class="bi bi-printer"></i> Print</button>
+</div>
+
+<div class="mt-4">
+ <table id="testcasesTable" class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Test Case No.</th>
+            <th>Test Title</th>
+            <th>Category</th>
+            <th>Date of Input</th>
+            <th>Test Step</th>
+            <th>Priority</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($testCases as $case)
+        <tr>
+            <td>{{ $case->test_case_no }}</td>
+            <td>{{ $case->test_title }}</td>
+            <td>{{ $case->category }}</td>
+            <td>{{ $case->date_of_input }}</td>
+            <td>{{ $case->test_step }}</td>
+            <td>{{ $case->priority }}</td>
+            <td>
+                <button class="btn btn-primary btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#editModal"
+                        data-id="{{ $case->id }}"
+                        data-title="{{ $case->test_title }}"
+                        data-category="{{ $case->category }}"
+                        data-date="{{ $case->date_of_input }}"
+                        data-step="{{ $case->test_step }}"
+                        data-priority="{{ $case->priority }}">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-danger btn-sm delete-btn" data-id="{{ $case->id }}">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <button class="btn btn-success btn-sm execute-btn">
+                    <i class="bi bi-play-fill"></i>
+                </button>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Test Case</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="mb-3">
+                        <label for="edit-title" class="form-label">Test Title</label>
+                        <input type="text" name="test_title" id="edit-title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-category" class="form-label">Category</label>
+                        <input type="text" name="category" id="edit-category" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-date" class="form-label">Date</label>
+                        <input type="date" name="date_of_input" id="edit-date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-step" class="form-label">Test Step</label>
+                        <input type="text" name="test_step" id="edit-step" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-priority" class="form-label">Priority</label>
+                        <select name="priority" id="edit-priority" class="form-control" required>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const editModal = document.getElementById("editModal");
+    editModal.addEventListener("show.bs.modal", function (event) {
+        const button = event.relatedTarget;
+        const id = button.getAttribute("data-id");
+        const title = button.getAttribute("data-title");
+        const category = button.getAttribute("data-category");
+        const date = button.getAttribute("data-date");
+        const step = button.getAttribute("data-step");
+        const priority = button.getAttribute("data-priority");
+
+        const form = document.getElementById("editForm");
+        form.action = `/testcases/${id}`;
+        form.querySelector("#edit-id").value = id;
+        form.querySelector("#edit-title").value = title;
+        form.querySelector("#edit-category").value = category;
+        form.querySelector("#edit-date").value = date;
+        form.querySelector("#edit-step").value = step;
+        form.querySelector("#edit-priority").value = priority;
+    });
+});
+</script>
+
+</script>
 
 <script>
 function printTable() {
@@ -164,6 +204,124 @@ function printTable() {
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Populate Edit Modal
+    document.addEventListener("DOMContentLoaded", function () {
+        const editModal = document.getElementById("editModal");
+        const editForm = document.getElementById("editForm");
+
+        editModal.addEventListener("show.bs.modal", function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute("data-id");
+            const title = button.getAttribute("data-title");
+            const step = button.getAttribute("data-step");
+
+            editForm.action = `/testcases/${id}`;
+            editForm.querySelector("#editTitle").value = title;
+            editForm.querySelector("#editStep").value = step;
+        });
+
+        // Handle Delete Action
+        document.querySelectorAll(".delete-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                const id = this.getAttribute("data-id");
+                if (confirm("Are you sure you want to delete this test case?")) {
+                    fetch(`/testcases/${id}`, {
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Test case deleted successfully.");
+                            location.reload();
+                        } else {
+                            alert("Failed to delete the test case.");
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+                }
+            });
+        });
+    });
+</script>
+
+<!--DELETE FUNCTION-->
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+    let dataTable;
+
+    // Check if DataTable is already initialized
+    if ($.fn.DataTable.isDataTable('#testcasesTable')) {
+        dataTable = $('#testcasesTable').DataTable(); // Use the existing instance
+    } else {
+        dataTable = $('#testcasesTable').DataTable(); // Initialize DataTable
+    }
+
+    // Handle delete button click
+    $('#testcasesTable').on('click', '.delete-btn', function () {
+        const button = $(this);
+        const rowId = button.data('id'); // Get row ID
+
+        // SweetAlert confirmation
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If user confirms, proceed with deletion
+                fetch(`/delete-case/${rowId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log('Row deleted successfully:', data);
+                        const row = button.closest('tr');
+                        dataTable.row(row).remove().draw(); // Remove and redraw table
+
+                        // SweetAlert success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'The row has been deleted.',
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+
+                        // SweetAlert error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed!',
+                            text: 'Unable to delete the row. Please try again.',
+                        });
+                    });
+            }
+        });
+    });
+});
+
+
+</script>
+
 
 <!--Swal for Add-->
 <script>
@@ -197,15 +355,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 let newRow = `
                 <tr>
-                    <td>${data.test_case.project_id}</td>
-                    <td>${data.test_case.project_name}</td>
                     <td>${data.test_case.test_case_no}</td>
-                    <td>${data.test_case.test_environment}</td>
-                    <td>${data.test_case.tester}</td>
-                    <td>${data.test_case.date_of_input}</td>
                     <td>${data.test_case.test_title}</td>
-                    <td>${data.test_case.test_description}</td>
-                    <td>${data.test_case.status}</td>
+                    <td>${data.test_case.category}</td>
+                    <td>${data.test_case.date_of_input}</td>
+                    <td>${data.test_case.test_step}</td>
                     <td>${data.test_case.priority}</td>
             <td>${data.test_case.severity}</td>
         <td>${data.test_case.screenshot}</td>
@@ -280,3 +434,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 @endsection
+

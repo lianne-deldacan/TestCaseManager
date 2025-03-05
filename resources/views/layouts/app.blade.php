@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>My Application</title>
     <link rel="stylesheet" href="{{ asset('styles.css') }}">
+    
     <!-- DataTables CSS (Updated Version) -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
 
@@ -15,6 +18,14 @@
     <!--Swal CDN link-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!--Bootstrap icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    
 </head>
 
 <body>
@@ -43,7 +54,7 @@
                     </button>
                     <div class="collapse show" id="dashboard-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
-                            <li><a href="#" class="text-white d-inline-flex text-decoration-none rounded">View Test Cases</a></li>
+                            <li><a href="/testcases" class="text-white d-inline-flex text-decoration-none rounded">View Test Cases</a></li>
                             <li><a href="/add" class="text-white d-inline-flex text-decoration-none rounded">Add Test Case</a></li>
                         </ul>
                     </div>

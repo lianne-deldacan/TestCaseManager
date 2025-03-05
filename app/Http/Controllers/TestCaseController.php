@@ -10,14 +10,18 @@ use App\Exports\TestCasesExport;
 use App\Imports\TestCasesImport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Http\Response;
 
 class TestCaseController extends Controller
 {
     public function index()
     {
-        $testCases = TestCase::with('project')->get(); 
-        return view('testcases.index', compact('testCases')); 
+        $testCases = TestCase::with('project')->get(); // Retrieve all test cases with their projects
+
+        $projectName = $testCases->isNotEmpty() ? $testCases->first()->project->name : 'Default Project Name';
+        $projectId = $testCases->isNotEmpty() ? $testCases->first()->project->id : null;
+
+        return view('testcases.index', compact('testCases', 'projectName', 'projectId'));
     }
 
     public function create(Request $request)
@@ -37,6 +41,28 @@ class TestCaseController extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $testCase = TestCase::findOrFail($id);
+
+        $testCase->update($request->only([
+            'test_title',
+            'category',
+            'date_of_input',
+            'test_step',
+            'priority',
+        ]));
+
+        return redirect()->route('testcases.index')->with('success', 'Test case updated successfully!');
+    }
+
+    public function destroy($id)
+    {
+        $case = TestCase::findOrFail($id);
+        $case->delete();
+
+        return response()->json(['message' => 'Case deleted successfully.']);
+    }
 
 
     public function store(Request $request)

@@ -29,6 +29,10 @@ Route::get('/get-projects/{service}', [ProjectController::class, 'getProjects'])
 Route::get('/add', function () { return view('/testcases/add-landing');});
 Route::get('/', function () { return view('index');});
 
+//Route for edit, delete, get
+Route::put('/testcases/{id}', [TestCaseController::class, 'update'])->name('testcases.update');
+Route::delete('/delete-case/{id}', [TestCaseController::class, 'destroy'])->name('delete-case');
+Route::get('/execute/{id}', [TestCaseController::class, 'execute'])->name('execute');
 
 
 

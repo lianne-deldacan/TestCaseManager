@@ -12,8 +12,11 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return response()->json(Project::all());
+        $projects = Project::all(); // Retrieve all projects
+        $projectName = $projects->isNotEmpty() ? $projects->first()->name : 'Default Project Name'; 
+        return view('projects.index', compact('projects', 'projectName'));
     }
+
 
     /**
      * Show the form for creating a new resource.
