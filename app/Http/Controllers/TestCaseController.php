@@ -14,7 +14,6 @@ use Illuminate\Http\Response;
 
 class TestCaseController extends Controller
 {
-
     public function view(Request $request)
     {
         $project = Project::find($request->project_id);
@@ -28,8 +27,7 @@ class TestCaseController extends Controller
         return view('testcases.view', compact('testCases', 'project'));
     }
 
-
-    //show landing page
+    // Show landing page
     public function showLanding(Request $request)
     {
         return view('landing');
@@ -37,17 +35,11 @@ class TestCaseController extends Controller
 
     public function index()
     {
-<<<<<<< HEAD
         $testCases = TestCase::with('project')->get(); // Retrieve all test cases with their projects
-
         $projectName = $testCases->isNotEmpty() ? $testCases->first()->project->name : 'Default Project Name';
         $projectId = $testCases->isNotEmpty() ? $testCases->first()->project->id : null;
 
         return view('testcases.index', compact('testCases', 'projectName', 'projectId'));
-=======
-        $testCases = TestCase::with('project')->get();
-        return view('testcases.index', compact('testCases'));
->>>>>>> f191f4d76e99b599ff5718bf79048765ca12d4a8
     }
 
     public function create(Request $request)
@@ -90,7 +82,6 @@ class TestCaseController extends Controller
         return response()->json(['message' => 'Case deleted successfully.']);
     }
 
-
     public function store(Request $request)
     {
         try {
@@ -129,18 +120,17 @@ class TestCaseController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Test Case added successfully.',
-                'test_case' => $testCase
+                'test_case' => $testCase,
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
+                'message' => 'Error: ' . $e->getMessage(),
             ], 500);
         }
     }
 
-
-    //Import file (MODIFIED)
+    // Import file
     public function import(Request $request)
     {
         try {
@@ -154,14 +144,9 @@ class TestCaseController extends Controller
                 return back()->with('error', 'Invalid file uploaded.');
             }
 
-            // Debugging: Check file content before importing
-            $data = \Maatwebsite\Excel\Facades\Excel::toCollection(new TestCasesImport, $file);
+            $data = Excel::toCollection(new TestCasesImport, $file);
 
-            // Access the first collection (index 0)
-            $rows = $data->first();
-
-            // Now loop through each row correctly
-            foreach ($rows as $row) {
+            foreach ($data->first() as $row) {
                 TestCase::create([
                     'test_case_no'     => $row['test_case_no'],
                     'test_environment' => $row['test_environment'],

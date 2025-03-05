@@ -15,32 +15,6 @@
                     <input type="text" id="test_case_no" name="test_case_no" class="form-control" required>
                 </div>
                 <div class="col-md-6">
-<<<<<<< HEAD
-=======
-                    <label for="test_environment" class="form-label">Test Environment</label>
-                    <select id="test_environment" name="test_environment" class="form-control" required>
-                        <option value="development">Development (DEV)</option>
-                        <option value="testing">Testing (TEST)</option>
-                        <option value="staging">Staging (STG)</option>
-                        <option value="uat">UAT (User Acceptance Testing)</option>
-                        <option value="performance_testing">Performance Testing</option>
-                        <option value="security_testing">Security Testing</option>
-                        <option value="production">Production (PROD)</option>
-                        <option value="sandbox">Sandbox</option>
-                        <option value="integration_testing">Integration Testing</option>
-                        <option value="regression_testing">Regression Testing</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="tester" class="form-label">Tester</label>
-                    <input type="text" id="tester" name="tester" class="form-control" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="date_of_input" class="form-label">Date of Input</label>
-                    <input type="text" id="date_of_input" name="date_of_input" class="form-control" value="{{ date('Y-m-d') }}" required readonly>
-                </div>
-                <div class="col-md-6">
->>>>>>> f191f4d76e99b599ff5718bf79048765ca12d4a8
                     <label for="test_title" class="form-label">Test Title</label>
                     <input type="text" id="test_title" name="test_title" class="form-control" required>
                 </div>
@@ -70,7 +44,6 @@
             </div>
         </form>
     </div>
-<<<<<<< HEAD
 </div>
 
 <div class="mt-4 d-flex flex-wrap align-items-center gap-2">
@@ -79,61 +52,40 @@
         <div class="d-flex align-items-center border rounded px-2">
             <input type="file" name="file" class="form-control border-0">
         </div>
-        <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Import</button>
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-upload"></i> Import
+        </button>
     </form>
 
-    <a href="{{ route('testcases.export.csv') }}" class="btn btn-info"><i class="bi bi-file-earmark-spreadsheet"></i> Export CSV</a>
-    <a href="{{ route('testcases.export.excel') }}" class="btn btn-warning"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
-    <a href="{{ route('testcases.export.pdf') }}" class="btn btn-danger"><i class="bi bi-file-earmark-pdf"></i> Export PDF</a>
-    <button class="btn btn-dark" onclick="printTable()"><i class="bi bi-printer"></i> Print</button>
+    <a href="{{ route('testcases.export.csv') }}" class="btn btn-info">
+        <i class="bi bi-file-earmark-spreadsheet"></i> Export CSV
+    </a>
+    <a href="{{ route('testcases.export.excel') }}" class="btn btn-warning">
+        <i class="bi bi-file-earmark-excel"></i> Export Excel
+    </a>
+    <a href="{{ route('testcases.export.pdf') }}" class="btn btn-danger">
+        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+    </a>
+    <button class="btn btn-dark" onclick="printTable()">
+        <i class="bi bi-printer"></i> Print
+    </button>
 </div>
 
 <div class="mt-4">
- <table id="testcasesTable" class="table table-striped table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>Test Case No.</th>
-            <th>Test Title</th>
-            <th>Category</th>
-            <th>Date of Input</th>
-            <th>Test Step</th>
-            <th>Priority</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($testCases as $case)
-        <tr>
-            <td>{{ $case->test_case_no }}</td>
-            <td>{{ $case->test_title }}</td>
-            <td>{{ $case->category }}</td>
-            <td>{{ $case->date_of_input }}</td>
-            <td>{{ $case->test_step }}</td>
-            <td>{{ $case->priority }}</td>
-            <td>
-                <button class="btn btn-primary btn-sm" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#editModal"
-                        data-id="{{ $case->id }}"
-                        data-title="{{ $case->test_title }}"
-                        data-category="{{ $case->category }}"
-                        data-date="{{ $case->date_of_input }}"
-                        data-step="{{ $case->test_step }}"
-                        data-priority="{{ $case->priority }}">
-                    <i class="bi bi-pencil-square"></i>
-                </button>
-                <button class="btn btn-danger btn-sm delete-btn" data-id="{{ $case->id }}">
-                    <i class="bi bi-trash"></i>
-                </button>
-                <button class="btn btn-success btn-sm execute-btn">
-                    <i class="bi bi-play-fill"></i>
-                </button>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+    <table id="testcasesTable" class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Test Case No.</th>
+                <th>Test Title</th>
+                <th>Category</th>
+                <th>Date of Input</th>
+                <th>Test Step</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+    </table>
 </div>
+
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -227,91 +179,11 @@ function printTable() {
     printWindow.print();
     printWindow.close();
 }
-=======
 
-    <div class="mt-4 d-flex flex-wrap align-items-center gap-2">
-        <form id="importForm" action="{{ route('testcases.import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
-            @csrf
-            <div class="d-flex align-items-center border rounded px-2">
-                <input type="file" name="file" class="form-control border-0">
-            </div>
-            <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Import</button>
-        </form>
+</script>
 
-        <a href="{{ route('testcases.export.csv') }}" class="btn btn-info"><i class="bi bi-file-earmark-spreadsheet"></i> Export CSV</a>
-        <a href="{{ route('testcases.export.excel') }}" class="btn btn-warning"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
-        <a href="{{ route('testcases.export.pdf') }}" class="btn btn-danger"><i class="bi bi-file-earmark-pdf"></i> Export PDF</a>
-        <button class="btn btn-dark" onclick="printTable()"><i class="bi bi-printer"></i> Print</button>
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <div class="mt-4">
-        <table id="testcasesTable" class="table table-striped table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>Project ID</th>
-                    <th>Project Name</th>
-                    <th>Test Case No.</th>
-                    <th>Environment</th>
-                    <th>Tester</th>
-                    <th>Date</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                    <th>Severity</th>
-                    <th>Screenshot</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($testCases as $case)
-                <tr>
-                    <td>{{ $case->project->id }}</td>
-                    <td>{{ $case->project->name }}</td>
-                    <td>{{ $case->test_case_no }}</td>
-                    <td>{{ $case->test_environment }}</td>
-                    <td>{{ $case->tester }}</td>
-                    <td>{{ $case->date_of_input }}</td>
-                    <td>{{ $case->test_title }}</td>
-                    <td>{{ $case->test_description }}</td>
-                    <td>{{ $case->status }}</td>
-                    <td>{{ $case->priority }}</td>
-                    <td>{{ $case->severity }}</td>
-                    <td>{{ $case->screenshot }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <script>
-        function printTable() {
-            var printWindow = window.open('', '', 'width=800,height=1000');
-            printWindow.document.write('<html><head><title>Print Table</title>');
-            printWindow.document.write('<style>');
-            printWindow.document.write('@page { size: A4 landscape; margin: 10mm; }');
-            printWindow.document.write('body { font-family: Arial, sans-serif; margin: 10px; }');
-            printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
-            printWindow.document.write('th, td { border: 1px solid black; padding: 8px; text-align: left; font-size: 12px; }');
-            printWindow.document.write('</style>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(document.getElementById('testcasesTable').outerHTML);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.focus();
-            printWindow.print();
-            printWindow.close();
-        }
-    </script>
->>>>>>> f191f4d76e99b599ff5718bf79048765ca12d4a8
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!--Swal for Add-->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const form = document.querySelector("form[action='{{ route('testcases.store') }}']");
-
-<<<<<<< HEAD
 <script>
     // Populate Edit Modal
     document.addEventListener("DOMContentLoaded", function () {
@@ -434,40 +306,34 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form[action='{{ route('testcases.store') }}']");
-=======
-            form.addEventListener("submit", function(event) {
-                event.preventDefault();
->>>>>>> f191f4d76e99b599ff5718bf79048765ca12d4a8
 
-                let formData = new FormData(form);
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-                fetch(form.action, {
-                        method: form.method,
-                        body: formData,
-                        headers: {
-                            "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                icon: "success",
-                                title: "Test Case Added!",
-                                text: "Your test case has been successfully added.",
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
+        let formData = new FormData(form);
 
-                            form.reset();
+        fetch(form.action, {
+            method: form.method,
+            body: formData,
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
+            }
+        })
+        .then(response => response.json()) 
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Test Case Added!",
+                    text: "Your test case has been successfully added.",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
 
-                            let newRow = `
+                form.reset();
+
+                let newRow = `
                 <tr>
-<<<<<<< HEAD
-=======
-                    <td>${data.test_case.project_id}</td>
-                    <td>${data.test_case.name}</td>
->>>>>>> f191f4d76e99b599ff5718bf79048765ca12d4a8
                     <td>${data.test_case.test_case_no}</td>
                     <td>${data.test_case.test_title}</td>
                     <td>${data.test_case.category}</td>
@@ -478,76 +344,73 @@ document.addEventListener("DOMContentLoaded", function () {
         <td>${data.test_case.screenshot}</td>
     </tr>
 `;
-                            document.querySelector("#testcasesTable tbody").innerHTML += newRow;
+document.querySelector("#testcasesTable tbody").innerHTML += newRow;
 
-                        } else {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Oops...",
-                                text: data.message || "Something went wrong!",
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error!",
-                            text: "Failed to add test case. Please try again.",
-                        });
-                    });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: data.message || "Something went wrong!",
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Failed to add test case. Please try again.",
             });
         });
-    </script>
+    });
+});
 
-    <!--Swal for Import-->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const importForm = document.getElementById("importForm");
+</script>
 
-            importForm.addEventListener("submit", function(event) {
-                event.preventDefault();
+<!--Swal for Import-->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const importForm = document.getElementById("importForm");
 
-                let formData = new FormData(importForm);
+    importForm.addEventListener("submit", function (event) {
+        event.preventDefault(); 
 
-                fetch(importForm.action, {
-                        method: "POST",
-                        body: formData,
-                        headers: {
-                            "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.message) {
-                            Swal.fire({
-                                icon: "success",
-                                title: "Import Successful!",
-                                text: data.message,
-                                showConfirmButton: false,
-                                timer: 2000
-                            }).then(() => {
-                                location.reload();
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Import Error:", error);
-                        Swal.fire({
-                            icon: "error",
-                            title: "Import Failed!",
-                            text: "Something went wrong. Please try again.",
-                        });
-                    });
+        let formData = new FormData(importForm);
+
+        fetch(importForm.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Import Successful!",
+                    text: data.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                    location.reload(); 
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Import Error:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Import Failed!",
+                text: "Something went wrong. Please try again.",
             });
         });
-    </script>
+    });
+});
+</script>
 
 
 
-<<<<<<< HEAD
 @endsection
 
-=======
-    @endsection
->>>>>>> f191f4d76e99b599ff5718bf79048765ca12d4a8
