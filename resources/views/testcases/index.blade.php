@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -40,7 +39,7 @@
                     <label for="category" class="form-label">Category</label>
                     <select name="category_id" id="category_id" class="form-control">
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -122,15 +121,15 @@
                 <td>{{ $testCase->status }}</td>
                 <td>
                     <!-- Edit Button -->
-                    <button class="btn btn-sm btn-primary edit-btn" 
-                            data-id="{{ $testCase->id }}" 
-                            data-title="{{ $testCase->test_title }}" 
-                            data-category="{{ $testCase->category_id }}" 
-                            data-date="{{ $testCase->date_of_input }}" 
-                            data-step="{{ $testCase->test_step }}" 
-                            data-priority="{{ $testCase->priority }}" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#editModal">
+                    <button class="btn btn-sm btn-primary edit-btn"
+                        data-id="{{ $testCase->id }}"
+                        data-title="{{ $testCase->test_title }}"
+                        data-category="{{ $testCase->category_id }}"
+                        data-date="{{ $testCase->date_of_input }}"
+                        data-step="{{ $testCase->test_step }}"
+                        data-priority="{{ $testCase->priority }}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal">
                         <i class="bi bi-pencil-square"></i>
                     </button>
 
@@ -142,12 +141,9 @@
                             <i class="bi bi-trash"></i>
                         </button>
                         <!-- Execute Button -->
-{{-- <a href="{{ route('testcases.execute', $testCase->id) }}" class="btn btn-sm btn-warning" title="Execute">
-    <i class="bi bi-play-circle"></i> Execute
-</a> --}}
-
-
-        
+                        {{-- <a href="{{ route('testcases.execute', $testCase->id) }}" class="btn btn-sm btn-warning" title="Execute">
+                        <i class="bi bi-play-circle"></i> Execute
+                        </a> --}}
                     </form>
                 </td>
             </tr>
@@ -208,12 +204,12 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const editModal = document.getElementById("editModal");
         const editForm = document.getElementById("editForm");
 
         document.querySelectorAll(".edit-btn").forEach(button => {
-            button.addEventListener("click", function () {
+            button.addEventListener("click", function() {
                 // Populate modal fields with button data
                 const id = this.getAttribute("data-id");
                 const title = this.getAttribute("data-title");
@@ -358,21 +354,21 @@
 <!--Swal for Add-->
 <script>
     // SweetAlert for Add
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const form = document.querySelector("form[action='{{ route('testcases.store') }}']");
 
-        form.addEventListener("submit", function (event) {
+        form.addEventListener("submit", function(event) {
             event.preventDefault();
 
             let formData = new FormData(form);
 
             fetch(form.action, {
-                method: form.method,
-                body: formData,
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value,
-                },
-            })
+                    method: form.method,
+                    body: formData,
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value,
+                    },
+                })
                 .then((response) => response.json())
                 .then((data) => {
                     if (data.success) {

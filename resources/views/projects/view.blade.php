@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<h1>Current Projects</h1>
 <div class="mt-4">
-    <h1>Current Projects</h1>
-    <table id="projectTable" class="table table-striped table-bordered">
+    <table id="projectsTable" class="table table-striped table-bordered">
         <thead class="table-dark">
             <tr>
                 <th>Project ID</th>

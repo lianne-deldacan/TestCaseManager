@@ -45,6 +45,7 @@
                     <th>Service</th>
                     <th>Project Name</th>
                     <th>Project Manager</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
