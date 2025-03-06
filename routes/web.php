@@ -30,6 +30,20 @@ Route::get('/projects', [ProjectController::class, 'index'])->name('projects.ind
 Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
 Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
 
+<<<<<<< HEAD
+=======
+// Route to fetch projects for table display 
+Route::get('/projects/table', [ProjectController::class, 'getTableData'])->name('projects.table');
+
+// Route to fetch filtered projects for table 
+Route::get('/projects/filter', [ProjectController::class, 'filter'])->name('projects.filter');
+
+// Route for project pagination 
+Route::get('/projects/page/{page}', [ProjectController::class, 'paginate'])->name('projects.paginate');
+
+// Route for project sorting 
+Route::get('/projects/sort/{column}/{direction}', [ProjectController::class, 'sort'])->name('projects.sort');
+>>>>>>> 509812f9cf05e9271e20125374fc99688fa548f1
 
 //Route for getting the list of projects based on service.
 Route::get('/get-projects/{service}', [ProjectController::class, 'getProjects']);
