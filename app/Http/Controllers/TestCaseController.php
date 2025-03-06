@@ -15,34 +15,61 @@ use Illuminate\Http\Response;
 
 class TestCaseController extends Controller
 {
+    // View test cases for a specific project
     public function view(Request $request)
     {
-        $project = Project::find($request->project_id);
+        $project = Project::find($request->query('project_id'));
 
         if (!$project) {
             return redirect()->back()->with('error', 'Project not found');
         }
 
-        $testCases = TestCase::with('project')->where('project_id', $project->id)->get();
+        $testCases = TestCase::where('project_id', $project->id)->get(); // Fetch test cases for the selected project
+        $service = $project->service ?? 'Default Service'; // Fallback if `service` is not defined
 
-        return view('testcases.view', compact('testCases', 'project'));
+        return view('testcases.view', compact('testCases', 'project', 'service'));
     }
 
-    // Show landing page
+    // Show the landing page
     public function showLanding(Request $request)
     {
         return view('landing');
     }
 
-    public function index()
+    // List all test cases
+    public function index(Request $request)
     {
-        $testCases = TestCase::with('project')->get(); // Retrieve all test cases with their projects
-        $projectName = $testCases->isNotEmpty() ? $testCases->first()->project->name : 'Default Project Name';
-        $projectId = $testCases->isNotEmpty() ? $testCases->first()->project->id : null;
+        // Get the `project_id` from the query string
+        $projectId = $request->query('project_id');
 
-        return view('testcases.index', compact('testCases', 'projectName', 'projectId'));
+        // Fetch the project and its test cases
+        $project = Project::with('testCases')->find($projectId);
+
+        // Handle the case where the project does not exist
+        if (!$project) {
+            return redirect()->route('projects.index')->with('error', 'Project not found.');
+        }
+
+        // Fetch test cases for the current project
+        $testCases = $project->testCases()->with('category')->get();
+
+        // Fetch all categories (you can customize this if needed)
+        $categories = Category::all();
+
+        // Pass project-specific data to the view
+        return view('testcases.index', [
+            'testCases' => $testCases,
+            'projectId' => $project->id,
+            'projectName' => $project->name,
+            'service' => $project->service ?? 'Default Service',
+            'categories' => $categories, // Pass categories to the view
+        ]);
     }
 
+
+
+
+    // Show the create form for a new test case
     public function create(Request $request)
     {
         $project = Project::find($request->query('project_id'));
@@ -51,40 +78,18 @@ class TestCaseController extends Controller
             return redirect()->route('projects.index')->with('error', 'Project not found.');
         }
 
-        $testCases = TestCase::where('project_id', $project->id)->get(); // Fetch test cases for the project
-        $categories = Category::all();
-        return view('testcases.index', [
+        $categories = Category::all(); // Fetch all categories for dropdown
+
+        return view('testcases.create', [
             'projectId' => $project->id,
             'projectName' => $project->name,
+            'service' => $project->service ?? 'Default Service',
             'categories' => $categories,
-            'service' => $project->service,
-            'testCases' => $testCases, // Pass test cases to the view
         ]);
     }
 
-    public function update(Request $request, $id)
-    {
-        $testCase = TestCase::findOrFail($id);
 
-        $testCase->update($request->only([
-            'test_title',
-            'category',
-            'date_of_input',
-            'test_step',
-            'priority',
-        ]));
-
-        return redirect()->route('testcases.index')->with('success', 'Test case updated successfully!');
-    }
-
-    public function destroy($id)
-    {
-        $case = TestCase::findOrFail($id);
-        $case->delete();
-
-        return response()->json(['message' => 'Case deleted successfully.']);
-    }
-
+    // Store a new test case
     public function store(Request $request)
     {
         try {
@@ -100,21 +105,21 @@ class TestCaseController extends Controller
                 'priority' => 'required|string|max:255',
             ]);
 
-            // Retrieve the project
-            $project = Project::findOrFail($request->project_id);
+            // Create the test case
+            $testCase = TestCase::create($request->only([
+                'project_id',
+                'test_case_no',
+                'test_title',
+                'test_step',
+                'category_id',
+                'tester',
+                'date_of_input',
+                'status',
+                'priority',
+            ]));
 
-            // Create test case
-            $testCase = TestCase::create([
-                'project_id' => $request->project_id,
-                'test_case_no' => $request->test_case_no,
-                'test_title' => $request->test_title,
-                'test_step' => $request->test_step,
-                'category_id' => $request->category_id,
-                'tester' => $request->tester,
-                'date_of_input' => $request->date_of_input,
-                'status' => $request->status,
-                'priority' => $request->priority,
-            ]);
+            // Fetch the newly created test case with relationships
+            $testCase = TestCase::with(['project', 'category'])->find($testCase->id);
 
             return response()->json([
                 'success' => true,
@@ -127,6 +132,50 @@ class TestCaseController extends Controller
                 'message' => 'Error: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+
+    // Update an existing test case
+    public function update(Request $request, $id)
+    {
+        $testCase = TestCase::findOrFail($id);
+
+        $validated = $request->validate([
+            'test_title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'date_of_input' => 'required|date',
+            'test_step' => 'required|string|max:255',
+            'priority' => 'required|in:High,Medium,Low',
+        ]);
+
+        $testCase->update($validated);
+
+        return redirect()->route('testcases.index')->with('success', 'Test case updated successfully!');
+    }
+
+
+    public function edit($id)
+    {
+        // Fetch the test case by ID
+        $testCase = TestCase::findOrFail($id);
+
+        // Fetch related categories if needed
+        $categories = Category::all();
+
+        // Pass the test case and categories to the edit view
+        return view('testcases.edit', [
+            'testCase' => $testCase,
+            'categories' => $categories,
+        ]);
+    }
+
+    // Delete a test case
+    public function destroy($id)
+    {
+        $testCase = TestCase::findOrFail($id);
+        $testCase->delete();
+
+        return response()->json(['message' => 'Case deleted successfully.']);
     }
 
     // Import file

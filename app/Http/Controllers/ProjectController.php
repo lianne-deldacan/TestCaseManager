@@ -14,7 +14,7 @@ class ProjectController extends Controller
     {
         $projects = Project::all(); // Retrieve all projects
         $projectName = $projects->isNotEmpty() ? $projects->first()->name : 'Default Project Name'; 
-        return view('projects.index', compact('projects', 'projectName'));
+        return view('projects.create', compact('projects', 'projectName'));
     }
 
 
@@ -23,37 +23,30 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $projects = Project::all(); 
-        $nextID = Project::max('id') + 1; 
-        return view('projects.create',  compact('projects', 'nextID'));
+        $projects = Project::all(); // Retrieve all projects
+        $nextID = (Project::max('id') ?? 0) + 1; // Default to 1 if the table is empty
+        return view('projects.create', compact('projects', 'nextID'));
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'service' => 'required', 
-                'name' => 'required',
-                'manager' => 'required|string',
-            ]);
+        $request->validate([
+            'service' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'manager' => 'required|string|max:255',
+        ]);
 
-            // Store data in database
-            $project = Project::create($request->all());
+        $project = Project::create($request->only(['service', 'name', 'manager']));
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Project added successfully.',
-                'project' => $project,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Project added successfully!',
+            'project' => $project
+        ]);
     }
     
     /**

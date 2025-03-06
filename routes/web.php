@@ -5,28 +5,31 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestCaseController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ExecutionController;
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Test routes
+// Test case routes
 Route::get('/testcases', [TestCaseController::class, 'index'])->name('testcases.index');
-Route::get('/testcases/create', [TestCaseController::class, 'create'])->name('testcases.create');
-Route::post('/testcases', [TestCaseController::class, 'store'])->name('testcases.store');
-
-Route::get('/testcases/view', [TestCaseController::class, 'view'])->name('testcases.view');
+Route::get('/testcases/create', [TestCaseController::class, 'create'])->name('testcases.create'); // Show create form
+Route::post('/testcases', [TestCaseController::class, 'store'])->name('testcases.store'); // Store a new test case
+Route::get('/testcases/view', [TestCaseController::class, 'view'])->name('testcases.view'); // View specific test case
+Route::get('/testcases/{id}/edit', [TestCaseController::class, 'edit'])->name('testcases.edit'); // Edit a test case
+Route::put('/testcases/{id}', [TestCaseController::class, 'update'])->name('testcases.update'); // Update test case
+Route::delete('/testcases/{id}', [TestCaseController::class, 'destroy'])->name('testcases.destroy'); // Delete test case
+// Route::get('/execute/{id}', [ExecuteController::class, 'index'])->name('execute.index'); // Execute test case
 
 Route::post('/testcases/import', [TestCaseController::class, 'import'])->name('testcases.import');
 Route::get('/testcases/export/csv', [TestCaseController::class, 'exportCSV'])->name('testcases.export.csv');
 Route::get('/testcases/export/excel', [TestCaseController::class, 'exportExcel'])->name('testcases.export.excel');
 Route::get('/testcases/export/pdf', [TestCaseController::class, 'exportPDF'])->name('testcases.export.pdf');
 
-// Project routes
+// Project Routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-
-
 Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
 Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+
 
 //Route for getting the list of projects based on service.
 Route::get('/get-projects/{service}', [ProjectController::class, 'getProjects']);
@@ -48,5 +51,7 @@ Route::put('/categories/{category}', [CategoryController::class, 'update'])->nam
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-
+//Route for execute 
+Route::get('/projects/{id}/execute', [ExecutionController::class, 'execute'])->name('execute.project');
+Route::post('/projects/{id}/execute', [ExecutionController::class, 'updateStatus'])->name('execute.update');
 
