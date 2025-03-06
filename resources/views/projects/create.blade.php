@@ -18,6 +18,7 @@
                 <div class="col-md-4">
                     <label for="project_id" class="form-label">Project ID</label>
                     <input type="text" id="project_id" name="id" class="form-control" readonly value="{{ $nextID }}">
+
                 </div>
                 <div class="col-md-6">
                     <label for="project_name" class="form-label">Project Name</label>
@@ -44,16 +45,21 @@
                     <th>Service</th>
                     <th>Project Name</th>
                     <th>Project Manager</th>
-
                 </tr>
             </thead>
             <tbody>
                 @foreach ($projects as $project)
-                <tr>
-                    <td>{{ $project->id }}</td>
-                    <td>{{ $project->service }}</td>
-                    <td>{{ $project->name }}</td>
-                    <td>{{ $project->manager }}</td>
+                    <tr>
+                        <td>{{ $project->id }}</td>
+                        <td>{{ $project->service }}</td>
+                        <td>{{ $project->name }}</td>
+                        <td>{{ $project->manager }}</td>
+                        <td>
+                            <a href="{{ route('testcases.index', ['project_id' => $project->id]) }}" class="btn btn-primary">
+                                Go to Test Cases
+                            </a>
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
@@ -118,5 +124,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
-
 @endsection

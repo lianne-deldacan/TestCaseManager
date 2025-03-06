@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -8,16 +9,16 @@
 
         <form action="{{ route('testcases.store') }}" method="POST">
             @csrf
-            <input type="hidden" name="project_id" value="{{ $projectId }}">
+            <input type="hidden" name="project_id" value="{{ $projectId ?? '' }}">
             <input type="hidden" name="status" value="Not Run">
             <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Project Name</label>
-                    <input type="text" class="form-control" value="{{ $projectName }}" disabled>
+                <div class="mb-3">
+                    <label for="project-name" class="form-label">Project Name</label>
+                    <input type="text" id="project-name" class="form-control" value="{{ $projectName }}" disabled>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Service</label>
-                    <input type="text" class="form-control" value="{{ $service }}" disabled>
+                <div class="form-group">
+                    <label for="service">Service</label>
+                    <input type="text" id="service" class="form-control" value="{{ $service ?? 'No service available' }}" disabled>
                 </div>
                 <div class="col-md-6">
                     <label for="tester" class="form-label">Tester</label>
@@ -37,10 +38,9 @@
                 </div>
                 <div class="col-md-6">
                     <label for="category" class="form-label">Category</label>
-                    <select id="category" name="category_id" class="form-control" required>
-                        <option value="" disabled selected>Select Category</option>
+                    <select name="category_id" id="category_id" class="form-control">
                         @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -89,6 +89,7 @@
     </button>
 </div>
 
+
 <div class="mt-4">
     <table id="testcasesTable" class="table table-striped table-bordered">
         <thead class="table-dark">
@@ -103,27 +104,57 @@
                 <th>Date of Input</th>
                 <th>Priority</th>
                 <th>Status</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($testCases as $case)
+            @foreach ($testCases as $testCase)
             <tr>
-                <td>{{ $case->project->name }}</td>
-                <td>{{ $case->project->service }}</td>
-                <td>{{ $case->tester }}</td>
-                <td>{{ $case->test_case_no }}</td>
-                <td>{{ $case->test_title }}</td>
-                <td>{{ $case->test_step }}</td>
-                <td>{{ $case->category->name }}</td>
-                <td>{{ $case->date_of_input }}</td>
-                <td>{{ $case->priority }}</td>
-                <td>{{ $case->status }}</td>
+                <td>{{ $testCase->project->name }}</td>
+                <td>{{ $testCase->project->service }}</td>
+                <td>{{ $testCase->tester }}</td>
+                <td>{{ $testCase->test_case_no }}</td>
+                <td>{{ $testCase->test_title }}</td>
+                <td>{{ $testCase->test_step }}</td>
+                <td>{{ $testCase->category->name }}</td>
+                <td>{{ $testCase->date_of_input }}</td>
+                <td>{{ $testCase->priority }}</td>
+                <td>{{ $testCase->status }}</td>
+                <td>
+                    <!-- Edit Button -->
+                    <button class="btn btn-sm btn-primary edit-btn" 
+                            data-id="{{ $testCase->id }}" 
+                            data-title="{{ $testCase->test_title }}" 
+                            data-category="{{ $testCase->category_id }}" 
+                            data-date="{{ $testCase->date_of_input }}" 
+                            data-step="{{ $testCase->test_step }}" 
+                            data-priority="{{ $testCase->priority }}" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#editModal">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+
+                    <!-- Delete Button -->
+                    <form action="{{ route('testcases.destroy', $testCase->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this test case?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <!-- Execute Button -->
+{{-- <a href="{{ route('testcases.execute', $testCase->id) }}" class="btn btn-sm btn-warning" title="Execute">
+    <i class="bi bi-play-circle"></i> Execute
+</a> --}}
+
+
+        
+                    </form>
+                </td>
             </tr>
             @endforeach
         </tbody>
     </table>
 </div>
-
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -142,10 +173,9 @@
                         <label for="edit-title" class="form-label">Test Title</label>
                         <input type="text" name="test_title" id="edit-title" class="form-control" required>
                     </div>
-                    <div class="col-mb-3">
-                        <label for="category" class="form-label">Category</label>
-                        <select id="category" name="category_id" class="form-control" required>
-                            <option value="" disabled selected>Select Category</option>
+                    <div class="mb-3">
+                        <label for="category_id" class="form-label">Category</label>
+                        <select name="category_id" id="category_id" class="form-control">
                             @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach
@@ -176,6 +206,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editModal = document.getElementById("editModal");
+        const editForm = document.getElementById("editForm");
+
+        document.querySelectorAll(".edit-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                // Populate modal fields with button data
+                const id = this.getAttribute("data-id");
+                const title = this.getAttribute("data-title");
+                const category = this.getAttribute("data-category");
+                const date = this.getAttribute("data-date");
+                const step = this.getAttribute("data-step");
+                const priority = this.getAttribute("data-priority");
+
+                editForm.action = `/testcases/${id}`;
+                document.getElementById("edit-title").value = title;
+                document.getElementById("category_id").value = category;
+                document.getElementById("edit-date").value = date;
+                document.getElementById("edit-step").value = step;
+                document.getElementById("edit-priority").value = priority;
+            });
+        });
+    });
+</script>
+
 
 
 <script>
@@ -226,49 +283,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-    // Populate Edit Modal
-    document.addEventListener("DOMContentLoaded", function() {
-        const editModal = document.getElementById("editModal");
-        const editForm = document.getElementById("editForm");
-
-        editModal.addEventListener("show.bs.modal", function(event) {
-            const button = event.relatedTarget;
-            const id = button.getAttribute("data-id");
-            const title = button.getAttribute("data-title");
-            const step = button.getAttribute("data-step");
-
-            editForm.action = `/testcases/${id}`;
-            editForm.querySelector("#editTitle").value = title;
-            editForm.querySelector("#editStep").value = step;
-        });
-
-        // Handle Delete Action
-        document.querySelectorAll(".delete-btn").forEach(button => {
-            button.addEventListener("click", function() {
-                const id = this.getAttribute("data-id");
-                if (confirm("Are you sure you want to delete this test case?")) {
-                    fetch(`/testcases/${id}`, {
-                            method: "DELETE",
-                            headers: {
-                                "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert("Test case deleted successfully.");
-                                location.reload();
-                            } else {
-                                alert("Failed to delete the test case.");
-                            }
-                        })
-                        .catch(error => console.error("Error:", error));
-                }
-            });
-        });
-    });
-</script>
 
 <!--DELETE FUNCTION-->
 <script>
@@ -343,48 +357,45 @@
 
 <!--Swal for Add-->
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    // SweetAlert for Add
+    document.addEventListener("DOMContentLoaded", function () {
         const form = document.querySelector("form[action='{{ route('testcases.store') }}']");
 
-        form.addEventListener("submit", function(event) {
+        form.addEventListener("submit", function (event) {
             event.preventDefault();
 
             let formData = new FormData(form);
 
             fetch(form.action, {
-                    method: form.method,
-                    body: formData,
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
+                method: form.method,
+                body: formData,
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
                     if (data.success) {
                         Swal.fire({
                             icon: "success",
                             title: "Test Case Added!",
                             text: "Your test case has been successfully added.",
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 1500,
                         });
 
                         form.reset();
 
                         let newRow = `
-                <tr>
-                    <td>${data.test_case.test_case_no}</td>
-                    <td>${data.test_case.test_title}</td>
-                    <td>${data.test_case.category}</td>
-                    <td>${data.test_case.date_of_input}</td>
-                    <td>${data.test_case.test_step}</td>
-                    <td>${data.test_case.priority}</td>
-            <td>${data.test_case.severity}</td>
-        <td>${data.test_case.screenshot}</td>
-    </tr>
-`;
+                            <tr>
+                                <td>${data.test_case.test_case_no}</td>
+                                <td>${data.test_case.test_title}</td>
+                                <td>${data.test_case.category}</td>
+                                <td>${data.test_case.date_of_input}</td>
+                                <td>${data.test_case.test_step}</td>
+                                <td>${data.test_case.priority}</td>
+                            </tr>`;
                         document.querySelector("#testcasesTable tbody").innerHTML += newRow;
-
                     } else {
                         Swal.fire({
                             icon: "error",
@@ -393,7 +404,7 @@
                         });
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error("Error:", error);
                     Swal.fire({
                         icon: "error",
