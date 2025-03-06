@@ -80,11 +80,13 @@ class TestCaseController extends Controller
 
         $categories = Category::all(); // Fetch all categories for dropdown
 
-        return view('testcases.create', [
+        $testCases = TestCase::where('project_id', $project->id)->get();
+        return view('testcases.index', [
             'projectId' => $project->id,
             'projectName' => $project->name,
             'service' => $project->service ?? 'Default Service',
             'categories' => $categories,
+            'testCases' => $testCases
         ]);
     }
 
