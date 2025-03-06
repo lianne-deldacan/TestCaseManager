@@ -14,7 +14,7 @@ class ProjectController extends Controller
     {
         $projects = Project::all(); // Retrieve all projects
         $projectName = $projects->isNotEmpty() ? $projects->first()->name : 'Default Project Name'; 
-        return view('projects.index', compact('projects', 'projectName'));
+        return view('projects.view', compact('projects', 'projectName'));
     }
 
 
