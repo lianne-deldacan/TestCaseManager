@@ -9,21 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('test_cases', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('project_id')->index('fk_project');
             $table->string('test_case_no');
-            $table->string('test_environment');
-            $table->string('tester');
-            $table->date('date_of_input');
             $table->string('test_title');
-            $table->text('test_description');
-            $table->enum('status', ['pass', 'fail']);
-            $table->string('screenshot')->nullable(); // Screenshot as a string
-            $table->enum('priority', ['low', 'medium', 'high']);
-            $table->enum('severity', ['low', 'medium', 'high']);
+            $table->text('test_step');
+            $table->string('priority');
+            $table->string('tester');
+            $table->string('status');
+            $table->date('date_of_input');
             $table->timestamps();
+            $table->unsignedBigInteger('category_id');
         });
     }
 

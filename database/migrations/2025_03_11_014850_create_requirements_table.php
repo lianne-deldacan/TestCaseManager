@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('requirements', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('project_id')->index('requirements_project_id_foreign');
             $table->string('user');
             $table->string('requirement_title');
-            $table->string('category');
+            $table->unsignedBigInteger('category_id')->index('requirements_category_id_foreign_idx');
             $table->string('requirement_type');
-            $table->integer('requirement_number');
+            $table->string('requirement_number');
             $table->date('date');
             $table->timestamps();
         });
