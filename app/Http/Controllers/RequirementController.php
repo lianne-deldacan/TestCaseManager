@@ -6,7 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\Requirement;
 use App\Models\Project;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log; //
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\RequirementsExport;
+
 class RequirementController extends Controller
 {
     /**
@@ -17,23 +21,24 @@ class RequirementController extends Controller
 
     public function index(Request $request)
     {
-        $projectID = $request->query('project_id'); // Get project_id from query string
+        $selectedProject = $request->query('project_id');
 
-        if (!$projectID) {
+        if (!$selectedProject) {
             return redirect()->back()->with('error', 'No project selected.');
         }
 
-        $project = Project::find($projectID);
+        $project = Project::find($selectedProject);
 
         if (!$project) {
             return redirect()->back()->with('error', 'Project not found.');
         }
 
-        // Get only requirements for the selected project
-        $requirements = Requirement::where('project_id', $projectID)->with('project')->get();
+        $requirements = Requirement::where('project_id', $selectedProject)->with('project')->get();
+        $projects = Project::all();
 
-        return view('requirements.index', compact('requirements', 'project'));
+        return view('requirements.index', compact('requirements', 'project', 'projects', 'selectedProject'));
     }
+
 
 
     /**
@@ -109,7 +114,8 @@ class RequirementController extends Controller
      */
     public function edit(Requirement $requirement)
     {
-        return view('requirement.edit', compact('requirement'));
+        $service = $project->service ?? 'Default Service';
+        return view('requirements.edit', compact('requirement' ,'service'));
     }
 
     /**
@@ -146,5 +152,27 @@ class RequirementController extends Controller
             'success' => true,
             'message' => 'Requirement deleted successfully!',
         ]);
+    }
+
+    public function exportCSV(Request $request)
+    {
+        return Excel::download(new RequirementsExport($request->query('project_id')), 'requirements.csv');
+    }
+
+
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(new RequirementsExport($request->query('project_id')), 'requirements.xlsx');
+    }
+
+
+    public function exportPDF(Request $request)
+    {
+        $requirements = Requirement::where('project_id', $request->query('project_id'))
+            ->with('project', 'category')
+            ->get();
+
+        $pdf = Pdf::loadView('exports.requirements_pdf', compact('requirements'));
+        return $pdf->download('requirements.pdf');
     }
 }

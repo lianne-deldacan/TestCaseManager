@@ -62,6 +62,9 @@ Route::post('/projects/{id}/execute', [ExecutionController::class, 'updateStatus
 Route::get('/requirements', [RequirementController::class, 'index'])->name('requirements.index');
 Route::get('/requirements/create', [RequirementController::class, 'create'])->name('requirements.create'); 
 Route::post('/requirements', [RequirementController::class, 'store'])->name('requirements.store'); 
-Route::get('/requirements/{id}/edit', [RequirementController::class, 'edit'])->name('requirements.edit'); 
-Route::put('/requirements/{id}', [RequirementController::class, 'update'])->name('requirements.update'); 
 Route::delete('/requirements/{id}', [RequirementController::class, 'destroy'])->name('requirements.destroy'); 
+Route::get('/requirements/export/csv', [RequirementController::class, 'exportCSV'])->name('requirements.export.csv');
+Route::get('/requirements/export/excel', [RequirementController::class, 'exportExcel'])->name('requirements.export.excel');
+Route::get('/requirements/export/pdf', [RequirementController::class, 'exportPDF'])->name('requirements.export.pdf');
+Route::get('/requirements/{requirement}/edit', [RequirementController::class, 'edit'])->name('requirements.edit');
+Route::put('/requirements/{requirement}', [RequirementController::class, 'update'])->name('requirements.update');

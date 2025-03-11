@@ -255,7 +255,7 @@
     });
 </script>
 
-</script>
+
 
 <script>
     function printTable() {
