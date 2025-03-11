@@ -18,6 +18,7 @@
                     <th>#</th>
                     <th>Name</th>
                     <th>Description</th>
+                    <th>Service</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -27,6 +28,7 @@
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $category->name }}</td>
                     <td>{{ $category->description ?? 'N/A' }}</td>
+                    <td>{{ $category->service}}</td>
                     <td>
                         <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-warning btn-sm">
                             <i class="bi bi-pencil"></i> Edit
@@ -59,24 +61,24 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         fetch(`/categories/${categoryId}`, {
-                            method: "DELETE",
-                            headers: {
-                                "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']").getAttribute("content"),
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                Swal.fire("Deleted!", "Category has been removed.", "success");
-                                setTimeout(() => location.reload(), 1500);
-                            } else {
-                                Swal.fire("Error!", "Failed to delete category.", "error");
-                            }
-                        })
-                        .catch(error => {
-                            console.error("Error:", error);
-                            Swal.fire("Error!", "Something went wrong.", "error");
-                        });
+                                method: "DELETE",
+                                headers: {
+                                    "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']").getAttribute("content"),
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire("Deleted!", "Category has been removed.", "success");
+                                    setTimeout(() => location.reload(), 1500);
+                                } else {
+                                    Swal.fire("Error!", "Failed to delete category.", "error");
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error:", error);
+                                Swal.fire("Error!", "Something went wrong.", "error");
+                            });
                     }
                 });
             });

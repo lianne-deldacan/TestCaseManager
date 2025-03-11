@@ -49,6 +49,18 @@
                 </li>
                 <li class="mb-1 border-bottom">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
+                        data-bs-toggle="collapse" data-bs-target="#reqs-collapse" aria-expanded="true">
+                        Requirements
+                    </button>
+                    <div class="collapse show" id="reqs-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
+                            <li><a href="{{ route('landing', ['page' => 'add_requirements']) }}" class="text-white d-inline-flex text-decoration-none rounded">Add Requirements</a></li>
+                            <li><a href="{{ route('landing', ['page' => 'view_requirements']) }}" class="text-white d-inline-flex text-decoration-none rounded">View Requirements</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="mb-1 border-bottom">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
                         data-bs-toggle="collapse" data-bs-target="#testcases-collapse" aria-expanded="true">
                         Test Cases
                     </button>

@@ -17,6 +17,14 @@
                     <label for="description" class="form-label">Description (Optional)</label>
                     <textarea id="description" name="description" class="form-control" rows="3"></textarea>
                 </div>
+                <div class="col-md-12">
+                    <label for="service" class="form-label">Service</label>
+                    <select id="service" name="service" class="form-control" required>
+                        <option value="" disabled selected>Select a service</option>
+                        <option value="IT">IT</option>
+                        <option value="Marketing">Marketing</option>
+                    </select>
+                </div>
             </div>
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-plus-circle"></i> Add Category</button>

@@ -6,6 +6,7 @@ use App\Http\Controllers\TestCaseController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExecutionController;
+use App\Http\Controllers\RequirementController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -50,8 +51,17 @@ Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->
 Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+Route::get('/get-services-from-categories', [CategoryController::class, 'getUniqueServices']);
+Route::get('/get-categories-by-service/{service}', [CategoryController::class, 'getCategoriesByService']);
 
 //Route for execute 
 Route::get('/projects/{id}/execute', [ExecutionController::class, 'execute'])->name('execute.project');
 Route::post('/projects/{id}/execute', [ExecutionController::class, 'updateStatus'])->name('execute.update');
 
+//Route for Requirements
+Route::get('/requirements', [RequirementController::class, 'index'])->name('requirements.index');
+Route::get('/requirements/create', [RequirementController::class, 'create'])->name('requirements.create'); 
+Route::post('/requirements', [RequirementController::class, 'store'])->name('requirements.store'); 
+Route::get('/requirements/{id}/edit', [RequirementController::class, 'edit'])->name('requirements.edit'); 
+Route::put('/requirements/{id}', [RequirementController::class, 'update'])->name('requirements.update'); 
+Route::delete('/requirements/{id}', [RequirementController::class, 'destroy'])->name('requirements.destroy'); 

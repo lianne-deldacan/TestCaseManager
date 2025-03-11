@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id(); // Auto-increment primary key
             $table->string('name')->unique(); // Category name (must be unique)
             $table->text('description')->nullable(); // Optional category description
+            $table->string('service'); // Service
             $table->timestamps(); // Created_at and updated_at timestamps
         });
     }

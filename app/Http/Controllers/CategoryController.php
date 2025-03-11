@@ -31,6 +31,7 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'service' => 'required|string|max:255'
         ]);
 
         $category = Category::create($request->all());
@@ -64,6 +65,7 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'service' => 'required|string|max:255'
         ]);
 
         $category->update($request->all());
@@ -88,4 +90,21 @@ class CategoryController extends Controller
             'message' => 'Category deleted successfully!',
         ]);
     }
+
+    public function getUniqueServices()
+    {
+        // Get unique services from the categories table
+        $services = Category::distinct()->pluck('service');
+        return response()->json($services);
+    }
+
+    public function getCategoriesByService($service)
+    {
+        // Get categories where service matches
+        $categories = Category::where('service', $service)->pluck('name', 'id');
+        return response()->json($categories);
+    }
+    
 }
+
+

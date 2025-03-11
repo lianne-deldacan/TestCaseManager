@@ -74,6 +74,10 @@
                     window.location.href = "{{ route('testcases.create', ['project_id' => '']) }}" + projectId;
                 } else if (actionType === "view") {
                     window.location.href = "{{ route('testcases.view', ['project_id' => '']) }}" + projectId;
+                } else if (actionType === "add_requirements") {
+                    window.location.href = "{{ route('requirements.create', ['project_id' => '']) }}" + projectId;
+                } else if (actionType === "view_requirements") {
+                    window.location.href = "{{ route('requirements.index', ['project_id' => '']) }}" + projectId;
                 } else {
                     alert("Invalid action type.");
                 }

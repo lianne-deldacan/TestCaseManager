@@ -18,10 +18,19 @@
                     <label for="description" class="form-label">Description (Optional)</label>
                     <textarea id="description" name="description" class="form-control" rows="3">{{ $category->description }}</textarea>
                 </div>
+                <div class="col-md-12">
+                    <label for="service" class="form-label">Service</label>
+                    <select id="service" name="service" class="form-control" required>
+                        <option value="" disabled selected>Select a service</option>
+                        <option value="IT">IT</option>
+                        <option value="Marketing">Marketing</option>
+                    </select>
+                </div>
             </div>
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save"></i> Update Category</button>
             </div>
+
         </form>
     </div>
 </div>
@@ -36,44 +45,44 @@
             let formData = new FormData(form);
 
             fetch(form.action, {
-                method: form.method,
-                body: formData,
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Category Updated!",
-                        text: "The category has been successfully updated.",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    method: form.method,
+                    body: formData,
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Category Updated!",
+                            text: "The category has been successfully updated.",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
 
-                    setTimeout(() => {
-                        window.location.href = "{{ route('categories.index') }}"; // Redirect to category list
-                    }, 1500);
+                        setTimeout(() => {
+                            window.location.href = "{{ route('categories.index') }}"; // Redirect to category list
+                        }, 1500);
 
-                } else {
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: data.message || "Something went wrong!",
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
                     Swal.fire({
                         icon: "error",
-                        title: "Oops...",
-                        text: data.message || "Something went wrong!",
+                        title: "Error!",
+                        text: "Failed to update category. Please try again.",
                     });
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Error!",
-                    text: "Failed to update category. Please try again.",
                 });
-            });
         });
     });
 </script>

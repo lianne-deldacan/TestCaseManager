@@ -11,11 +11,14 @@ class Category extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'service'
     ];
 
     public function testCases()
     {
         return $this->hasMany(TestCase::class);
     }
+
+
 }
