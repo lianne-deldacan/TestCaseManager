@@ -56,6 +56,12 @@
                         <option value="Nice to Have">Nice to Have</option>
                     </select>
                 </div>
+
+                <!-- Change Request -->
+                <div class="col-md-12" id="change_request_container" style="display: none;">
+                    <label for="change_request" class="form-label">Specify Change Request</label>
+                    <textarea id="change_request" name="change_request_input" class="form-control" rows="3" style="resize: vertical;"></textarea>
+                </div>
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-check-circle"></i> Update</button>
                 </div>
@@ -69,17 +75,31 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const requirementTypeDropdown = document.getElementById("requirement_type");
+        const changeRequestContainer = document.getElementById("change_request_container");
+        const changeRequestInput = document.getElementById("change_request");
 
         requirementTypeDropdown.addEventListener("change", function() {
             if (this.value === "Non-Functional") {
                 this.innerHTML = `
-                <option value="" disabled selected>Select Non-Functional Type</option>
-                <option value="Performance">Performance</option>
-                <option value="Security">Security</option>
-                <option value="Usability">Usability</option>
-                <option value="Design">Design</option>
-                <option value="Change Request">Change Request</option>
-            `;
+                    <option value="" disabled selected>Select Non-Functional Type</option>
+                    <option value="Performance">Performance</option>
+                    <option value="Security">Security</option>
+                    <option value="Usability">Usability</option>
+                    <option value="Design">Design</option>
+                    <option value="Change Request">Change Request</option>
+                `;
+            }
+        });
+
+        requirementTypeDropdown.addEventListener("change", function() {
+            if (this.value === "Change Request") {
+                changeRequestContainer.style.display = "block";
+                this.removeAttribute("name"); // Prevents "Change Request" from being stored
+                changeRequestInput.setAttribute("name", "requirement_type"); // Stores input value instead
+            } else {
+                changeRequestContainer.style.display = "none";
+                changeRequestInput.removeAttribute("name"); // Prevents storing empty input if not needed
+                this.setAttribute("name", "requirement_type"); // Ensures dropdown value is stored
             }
         });
     });
