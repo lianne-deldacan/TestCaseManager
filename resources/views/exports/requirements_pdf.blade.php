@@ -32,7 +32,7 @@
                     <td>{{ $requirement->user }}</td>
                     <td>{{ $requirement->requirement_number }}</td>
                     <td>{{ $requirement->requirement_title }}</td>
-                    <td>{{ $requirement->category->name ?? 'N/A' }}</td>
+                    <td>{{ $requirement->category}}</td>
                     <td>{{ $requirement->requirement_type }}</td>
                 </tr>
             @endforeach

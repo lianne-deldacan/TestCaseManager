@@ -59,7 +59,7 @@ class RequirementController extends Controller
         $requirementCount = Requirement::where('project_id', $projectID)->count() + 1;
         $requirements = Requirement::where('project_id', $projectID)->get();
         // Generate formatted requirement number
-        $requirementNumber = "Requirement - {$projectID} - " . str_pad($requirementCount, 3, '0', STR_PAD_LEFT);
+        $requirementNumber = "Req - {$projectID} - " . str_pad($requirementCount, 3, '0', STR_PAD_LEFT);
 
         return view('requirements.create', compact('project', 'projectName', 'service', 'requirementNumber', 'requirements'));
     }
@@ -74,10 +74,11 @@ class RequirementController extends Controller
         $validator = Validator::make($request->all(), [
             'project_id' => 'required|exists:projects,id',
             'user' => 'required|string|max:255',
-            'requirement_title' => 'required|string|max:255',
-            'category_id' => 'required|integer|exists:categories,id',
-            'requirement_type' => 'required|string|max:255',
-            'requirement_number' => 'required',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'number' => 'required',
             'date' => 'required|date',
         ]);
 
@@ -126,10 +127,11 @@ class RequirementController extends Controller
         $request->validate([
             'project_id' => 'required|exists:projects,id',
             'user' => 'required|string|max:255',
-            'requirement_title' => 'required|string|max:255',
-            'category_id' => 'required|int',
-            'requirement_type' => 'required|string|max:255',
-            'requirement_number' => 'required',
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'number' => 'required',
             'date' => 'required|date',
         ]);
 
