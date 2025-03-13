@@ -8,34 +8,32 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class TestCasesExport implements FromCollection, WithHeadings
 {
-  /**
-   * @return \Illuminate\Support\Collection
-   */
-  public function collection()
-  {
-    return TestCase::with(['project', 'category']) // Eager load relationships
-      ->get()
-      ->map(function ($case) {
-        return [
-          'Project Name' => $case->project->name ?? 'N/A',
-          'Service' => $case->project->service ?? 'N/A',
-          'Tester' => $case->tester,
-          'Test Case No.' => $case->test_case_no,
-          'Test Title' => $case->test_title,
-          'Test Step' => $case->test_step,
-          'Category' => $case->category->name ?? 'N/A',
-          'Date' => $case->date_of_input,
-          'Priority' => $case->priority,
-          'Status' => $case->status,
-        ];
-      });
-  }
+    protected $project_id;
 
-  /**
-   * @return array
-   */
-  public function headings(): array
-  {
-    return ['Project Name', 'Service', 'Tester', 'Test Case No.', 'Test Title', 'Test Step', 'Category', 'Date', 'Priority', 'Status'];
-  }
+    public function __construct($project_id)
+    {
+        $this->project_id = $project_id;
+    }
+
+    public function collection()
+    {
+        return TestCase::where('project_id', $this->project_id)->with(['project', 'category'])->get()->map(function ($case) {
+            return [
+                'Project Name' => $case->project->name ?? 'N/A',
+                'Tester' => $case->tester,
+                'Test Case No.' => $case->test_case_no,
+                'Test Title' => $case->test_title,
+                'Test Step' => $case->test_step,
+                'Category' => $case->category->name ?? 'N/A',
+                'Date' => $case->date_of_input,
+                'Priority' => $case->priority,
+                'Status' => $case->status,
+            ];
+        });
+    }
+
+    public function headings(): array
+    {
+        return ['Project', 'Tester', 'Test Case No.', 'Test Title', 'Test Step', 'Category', 'Date', 'Priority', 'Status'];
+    }
 }

@@ -74,13 +74,13 @@
         </button>
     </form>
 
-    <a href="{{ route('testcases.export.csv') }}" class="btn btn-info">
+    <a href="{{ route('testcases.export.csv', ['project_id' => $project->id]) }}" class="btn btn-info">
         <i class="bi bi-file-earmark-spreadsheet"></i> Export CSV
     </a>
-    <a href="{{ route('testcases.export.excel') }}" class="btn btn-warning">
+    <a href="{{ route('testcases.export.excel', ['project_id' => $project->id]) }}" class="btn btn-warning">
         <i class="bi bi-file-earmark-excel"></i> Export Excel
     </a>
-    <a href="{{ route('testcases.export.pdf') }}" class="btn btn-danger">
+    <a href="{{ route('testcases.export.pdf', ['project_id' => $project->id]) }}" class="btn btn-danger">
         <i class="bi bi-file-earmark-pdf"></i> Export PDF
     </a>
     <button class="btn btn-dark" onclick="printTable()">
