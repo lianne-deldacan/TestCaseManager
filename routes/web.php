@@ -1,12 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Exports\IssuesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Http\Controllers\TestCaseController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ExecutionController;
+use App\Http\Controllers\ExecuteController;
 use App\Http\Controllers\RequirementController;
+use App\Http\Controllers\IssueController;
+use App\Http\Controllers\DashboardController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -42,7 +47,6 @@ Route::get('/', function () { return view('index');});
 //Route for edit, delete, get
 Route::put('/testcases/{id}', [TestCaseController::class, 'update'])->name('testcases.update');
 Route::delete('/delete-case/{id}', [TestCaseController::class, 'destroy'])->name('delete-case');
-Route::get('/execute/{id}', [TestCaseController::class, 'execute'])->name('execute');
 
 //Route for Categories
 Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -54,10 +58,6 @@ Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])-
 Route::get('/get-services-from-categories', [CategoryController::class, 'getUniqueServices']);
 Route::get('/get-categories-by-service/{service}', [CategoryController::class, 'getCategoriesByService']);
 
-//Route for execute 
-Route::get('/projects/{id}/execute', [ExecutionController::class, 'execute'])->name('execute.project');
-Route::post('/projects/{id}/execute', [ExecutionController::class, 'updateStatus'])->name('execute.update');
-
 //Route for Requirements
 Route::get('/requirements', [RequirementController::class, 'index'])->name('requirements.index');
 Route::get('/requirements/create', [RequirementController::class, 'create'])->name('requirements.create'); 
@@ -68,3 +68,27 @@ Route::get('/requirements/export/excel', [RequirementController::class, 'exportE
 Route::get('/requirements/export/pdf', [RequirementController::class, 'exportPDF'])->name('requirements.export.pdf');
 Route::get('/requirements/{requirement}/edit', [RequirementController::class, 'edit'])->name('requirements.edit');
 Route::put('/requirements/{requirement}', [RequirementController::class, 'update'])->name('requirements.update');
+
+//Execute routes
+Route::get('/execute/{id}', [TestCaseController::class, 'execute'])->name('execute');
+Route::get('/executeTest/{id}', [TestCaseController::class, 'executeTest'])->name('executeTest'); // Changed from execute-test to executeTest
+
+// Issue routes
+Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
+Route::get('/index-issue', [IssueController::class, 'index'])->name('issue.index'); // For displaying the list of issues
+Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
+Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
+
+
+
+Route::get('/issues/export/excel', function () {
+    return Excel::download(new IssuesExport, 'issues.xlsx');
+})->name('issues.export.excel');
+
+Route::get('/issues/export/csv', function () {
+    return Excel::download(new IssuesExport, 'issues.csv');
+})->name('issues.export.csv');
+
+//dashboard
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');

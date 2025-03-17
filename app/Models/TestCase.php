@@ -11,7 +11,7 @@ class TestCase extends Model
 
     protected $fillable = [
         'project_id',
-        'project_name',       // Optional, but if stored, should be fillable
+        'project_name',       
         'test_case_no',
         'test_title',
         'test_step',

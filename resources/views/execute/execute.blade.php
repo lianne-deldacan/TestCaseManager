@@ -1,59 +1,63 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-5">
-    <button class="btn btn-sm btn-danger close-btn" onclick="window.history.back()">X</button>
-    <div class="header text-center mb-4">
-        <h2>Execute Test Case</h2>
-    </div>
+<div class="container mt-4">
+    <h2>Execute Test Cases - Project: {{ $project->name }}</h2>
 
     <div class="card shadow p-4">
         <div class="row mb-3">
+            <!-- Project Name -->
             <div class="col-md-6">
                 <label>Project Name</label>
-                <input type="text" class="form-control" value="{{ $testCase->project->name }}" disabled>
+                <input type="text" class="form-control" value="{{ $project->name }}" disabled>
             </div>
+
+            <!-- Project ID -->
             <div class="col-md-6">
                 <label>Project ID</label>
-                <input type="text" class="form-control" value="{{ $testCase->project->id }}" disabled>
+                <input type="text" class="form-control" value="{{ $project->id }}" disabled>
             </div>
         </div>
 
         <div class="row mb-3">
+            <!-- Test Environment Dropdown -->
             <div class="col-md-6">
                 <label>Test Environment</label>
-                <select class="form-control">
-                    <option>SIT</option>
-                    <option>UAT</option>
+                <select id="testEnvironment" class="form-control">
+                    <option value="SIT">SIT</option>
+                    <option value="UAT">UAT</option>
                 </select>
             </div>
+
+            <!-- Dummy Tester Name -->
             <div class="col-md-6">
                 <label>Tester Name</label>
-                <input type="text" class="form-control" value="{{ $testCase->tester }}" readonly>
+                <input type="text" class="form-control" value="Dummy Tester" readonly>
             </div>
         </div>
 
-        <div class="text-center">
-            <button class="btn btn-success btn-lg pass">Pass</button>
-            <button class="btn btn-danger btn-lg fail">Fail</button>
-            <button class="btn btn-secondary btn-lg not-run">Not Run</button>
+        <!-- Run Test Button -->
+        <div class="text-center mt-3">
+            <a id="executeTestBtn" class="btn btn-success">Run Test</a>
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector('.pass').addEventListener('click', function () {
-        alert('Test case marked as Passed.');
-    });
+document.getElementById('executeTestBtn').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent default action
 
-    document.querySelector('.fail').addEventListener('click', function () {
-        alert('Test case marked as Failed.');
-    });
+    let environment = document.getElementById('testEnvironment').value;
+    let projectId = {{ $project->id }};
+    let executeId = {{ $executions->first()->id ?? 'null' }}; // Get the first execution ID (modify if needed)
 
-    document.querySelector('.not-run').addEventListener('click', function () {
-        alert('Test case marked as Not Run.');
-    });
+    if (executeId === 'null') {
+        alert('No execution ID found. Please ensure an execution record exists.');
+        return;
+    }
+
+    // Redirect to executeTest page with execute_id and environment as query parameters
+    window.location.href = `/executeTest/${projectId}?execute_id=${executeId}&environment=${environment}`;
 });
 </script>
 @endsection

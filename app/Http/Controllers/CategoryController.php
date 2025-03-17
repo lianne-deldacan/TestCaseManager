@@ -7,25 +7,17 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $categories = Category::all();
         return view('category.index', compact('categories'));
     }
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         return view('category.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -43,23 +35,13 @@ class CategoryController extends Controller
         ]);
     }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id) {}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Category $category)
     {
         return view('category.edit', compact('category'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Category $category)
     {
         $request->validate([
@@ -76,11 +58,6 @@ class CategoryController extends Controller
         ]);
     }
 
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Category $category)
     {
         $category->delete();
@@ -93,18 +70,13 @@ class CategoryController extends Controller
 
     public function getUniqueServices()
     {
-        // Get unique services from the categories table
         $services = Category::distinct()->pluck('service');
         return response()->json($services);
     }
 
     public function getCategoriesByService($service)
     {
-        // Get categories where service matches
         $categories = Category::where('service', $service)->pluck('name', 'id');
         return response()->json($categories);
     }
-    
 }
-
-

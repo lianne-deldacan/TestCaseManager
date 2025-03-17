@@ -24,7 +24,6 @@
     <!--Bootstrap icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-
 </head>
 
 <body>
@@ -35,6 +34,18 @@
                 <img src="{{ asset('logo.png') }}" alt="Logo" width="150">
             </a>
             <ul class="list-unstyled ps-0">
+               <li class="mb-1 border-bottom">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
+                        data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                        Dashboard
+                    </button>
+                    <div class="collapse show" id="dashboard-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
+                            <li><a href="{{ route('dashboard.index') }}" class="text-white d-inline-flex text-decoration-none rounded">Analytics</a></li>
+                        </ul>
+                    </div>
+                </li>
+
                 <li class="mb-1 border-bottom">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
                         data-bs-toggle="collapse" data-bs-target="#project-collapse" aria-expanded="true">
@@ -76,11 +87,12 @@
                         data-bs-toggle="collapse" data-bs-target="#issues-collapse" aria-expanded="true">
                         Issues
                     </button>
-                    <div class="collapse show" id="issues-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
-                            <li><a href="#" class="text-white d-inline-flex text-decoration-none rounded">View Issues</a></li>
-                        </ul>
-                    </div>
+                <div class="collapse show" id="issues-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
+                        <li><a href="{{ route('issue.index') }}" class="text-white d-inline-flex text-decoration-none rounded">View Issues</a></li>
+                    </ul>
+                </div>
+                
                 </li>
                 <li class="mb-1 border-bottom">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
@@ -113,6 +125,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- DataTables JS (Updated Version) -->
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+<!--chart.js-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Initialize DataTable -->
     <script>
@@ -125,6 +139,7 @@
             });
         });
     </script>
+     @stack('scripts')
 </body>
 
 </html>

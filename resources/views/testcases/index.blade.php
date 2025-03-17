@@ -140,16 +140,18 @@
                         <button type="submit" class="btn btn-sm btn-danger" title="Delete">
                             <i class="bi bi-trash"></i>
                         </button>
-                        <!-- Execute Button -->
-                        {{-- <a href="{{ route('testcases.execute', $testCase->id) }}" class="btn btn-sm btn-warning" title="Execute">
-                        <i class="bi bi-play-circle"></i> Execute
-                        </a> --}}
                     </form>
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
+<a href="{{ route('execute', ['id' => $testCase->id]) }}" class="btn btn-success btn-lg">
+    Execute
+</a>
+
+</a>
+
 </div>
 
 <!-- Edit Modal -->
@@ -255,6 +257,33 @@
     });
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let selectedTestCaseId = null;
+
+        document.querySelectorAll(".clickable-row").forEach(row => {
+            row.addEventListener("click", function () {
+                // Remove highlighting from all rows
+                document.querySelectorAll(".clickable-row").forEach(r => r.classList.remove("table-active"));
+                
+                // Highlight selected row
+                this.classList.add("table-active");
+
+                // Store selected test case ID
+                selectedTestCaseId = this.getAttribute("data-id");
+
+                // Enable Execute button
+                document.getElementById("executeBtn").disabled = false;
+            });
+        });
+
+        document.getElementById("executeBtn").addEventListener("click", function () {
+            if (selectedTestCaseId) {
+                window.location.href = `/testcases/${selectedTestCaseId}/execute`;
+            }
+        });
+    });
+</script>
 
 
 <script>
