@@ -26,7 +26,7 @@ class RequirementsExport implements FromCollection, WithHeadings
                     'User' => $requirement->user,
                     'Requirement No.' => $requirement->requirement_number,
                     'Requirement Title' => $requirement->requirement_title,
-                    'Category' => $requirement->category->name ?? 'N/A',
+                    'Category' => $requirement->category,
                     'Requirement Type' => $requirement->requirement_type,
                 ];
             });

@@ -107,7 +107,6 @@ class TestCaseController extends Controller
     public function create(Request $request)
     {
         $project = Project::find($request->query('project_id'));
-
         if (!$project) {
             return redirect()->route('projects.index')->with('error', 'Project not found.');
         }
@@ -116,6 +115,7 @@ class TestCaseController extends Controller
 
         $testCases = TestCase::where('project_id', $project->id)->get();
         return view('testcases.index', [
+            'project' => $project,
             'projectId' => $project->id,
             'projectName' => $project->name,
             'service' => $project->service ?? 'Default Service',
@@ -229,34 +229,42 @@ class TestCaseController extends Controller
     }
 
     // Export CSV
-    public function exportCSV()
+    public function exportCSV(Request $request)
     {
         try {
-            return Excel::download(new TestCasesExport, 'testcases.csv');
+            return Excel::download(new TestCasesExport($request->query('project_id')), 'testcases.csv');
         } catch (\Exception $e) {
             return back()->with('error', 'Export Failed: ' . $e->getMessage());
         }
     }
 
     // Export Excel
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
         try {
-            return Excel::download(new TestCasesExport, 'testcases.xlsx');
+            return Excel::download(new TestCasesExport($request->query('project_id')), 'testcases.xlsx');
         } catch (\Exception $e) {
             return back()->with('error', 'Export Failed: ' . $e->getMessage());
         }
     }
 
     // Export PDF
-    public function exportPDF()
+    public function exportPDF(Request $request)
     {
-        try {
-            $testCases = TestCase::all();
-            $pdf = Pdf::loadView('exports.testcases_pdf', compact('testCases'))->setPaper('A4', 'portrait');
-            return $pdf->download('testcases.pdf');
-        } catch (\Exception $e) {
-            return back()->with('error', 'PDF Export Failed: ' . $e->getMessage());
+        $projectId = $request->query('project_id'); 
+
+        if (!$projectId) {
+            return redirect()->back()->with('error', 'Project ID is required.');
         }
+
+        $testCases = TestCase::where('project_id', $projectId)->get();
+
+        if ($testCases->isEmpty()) {
+            return redirect()->back()->with('error', 'No test cases found for the selected project.');
+        }
+
+        $pdf = Pdf::loadView('exports.testcases_pdf', compact('testCases', 'projectId'))->setPaper('a4', 'portrait');
+
+        return $pdf->download("testcases_project_{$projectId}.pdf");
     }
 }

@@ -12,10 +12,11 @@ class Requirement extends Model
     protected $fillable = [
         'project_id',
         'user',
-        'requirement_title',
-        'category_id',
-        'requirement_type',
-        'requirement_number',
+        'title',
+        'category',
+        'type',
+        'description',
+        'number',
         'date',
     ];
 
@@ -23,16 +24,12 @@ class Requirement extends Model
         'date' => 'date',
     ];
 
-    protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
     }
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');
     }
-
-    public function category()
-{
-    return $this->belongsTo(Category::class, 'category_id');
-}
 }

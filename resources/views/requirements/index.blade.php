@@ -24,6 +24,7 @@
                 <th>User</th>
                 <th>Requirement No.</th>
                 <th>Requirement Title</th>
+                <th>Description</th>
                 <th>Category</th>
                 <th>Requirement Type</th>
                 <th>Actions</th>
@@ -34,10 +35,11 @@
             <tr>
                 <td>{{ $requirement->project->name }}</td>
                 <td>{{ $requirement->user }}</td>
-                <td>{{ $requirement->requirement_number }}</td>
-                <td>{{ $requirement->requirement_title }}</td>
-                <td>{{ $requirement->category->name }}</td>
-                <td>{{ $requirement->requirement_type }}</td>
+                <td>{{ $requirement->number }}</td>
+                <td>{{ $requirement->title }}</td>
+                <td>{{ $requirement->description }}</td>
+                <td>{{ $requirement->category }}</td>
+                <td>{{ $requirement->type }}</td>
                 <td>
                     <!-- Add action buttons here -->
                 </td>
