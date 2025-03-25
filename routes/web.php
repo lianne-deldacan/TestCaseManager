@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\TestCaseController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ExecuteController;
+use App\Http\Controllers\ExecutionController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\DashboardController;
@@ -92,6 +92,22 @@ Route::get('/testcases/project-details/{id}', [TestCaseController::class, 'getPr
 
 // Execute test cases
 Route::get('/execute-testcases', [TestCaseController::class, 'executeTest'])->name('executeTestcases');
+
+
+
+
+//execute
+Route::post('/execute/update-status', [ExecutionController::class, 'updateStatus'])->name('execute.updateStatus');
+Route::get('/execute/create-issue', [ExecutionController::class, 'createIssue'])->name('execute.createIssue');
+Route::post('/execute/test-case', [ExecutionController::class, 'executeTestCase'])->name('execute.testCase');
+Route::get('/testcases/{projectId}', [TestCaseController::class, 'showTestCases'])->name('testcases.show');
+Route::get('/execute/test/{projectId}', [ExecutionController::class, 'showExecutionPage'])->name('executeTest');
+
+//auto issue
+Route::get('/execute/generate-issue-number', [ExecutionController::class, 'generateIssueNumber'])->name('execute.generateIssueNumber');
+
+Route::post('/create-issue', [ExecutionController::class, 'createIssue'])->name('create.issue');
+
 
 
 // Issue routes

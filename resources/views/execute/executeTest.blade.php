@@ -14,10 +14,10 @@
                 <label>Test Environment</label>
                 <input type="text" class="form-control" value="{{ request('environment') }}" disabled>
             </div>
-            <div class="col-md-4">
+            {{-- <div class="col-md-4">
                 <label>Execute Id</label>
                 <input type="text" class="form-control" value="{{ $execution->id }}" disabled>
-            </div>
+            </div> --}}
         </div>
 
         <div class="mt-4">
@@ -37,26 +37,24 @@
                 </thead>
                 <tbody>
                     @foreach ($testCases as $testCase)
-                    <tr id="testcase-row-{{ $testCase->id }}">
-                        <td>{{ $testCase->test_case_no }}</td>
-                        <td>{{ $testCase->test_title }}</td>
-                        <td><input type="text" class="form-control" value="{{ $testCase->test_step }}" disabled></td>
-                        <td>{{ $testCase->category->name }}</td>
-                        <td>{{ $testCase->priority }}</td>
-                        <td id="issue-number-{{ $testCase->id }}" onclick="openIssueModal({{ $testCase->id }})" style="cursor: pointer; color: blue;"></td>
-                        <td id="execution-date-{{ $testCase->id }}">{{ now()->format('Y-m-d') }}</td>
-                        <td id="status-{{ $testCase->id }}">Not Run</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" onclick="openTestModal({{ $testCase->id }})">Run</button>
-                        </td>
-                    </tr>
+                        <tr id="testcase-row-{{ $testCase->id }}">
+                            <td>{{ $testCase->test_case_no }}</td>
+                            <td>{{ $testCase->test_title }}</td>
+                            <td><input type="text" class="form-control" value="{{ $testCase->test_step }}" disabled></td>
+                            <td>{{ $testCase->category->name }}</td>
+                            <td>{{ $testCase->priority }}</td>
+                            <td id="issue-number-{{ $testCase->id }}" onclick="openIssueModal({{ $testCase->id }})" style="cursor: pointer; color: blue;"></td>
+                            <td id="execution-date-{{ $testCase->id }}">{{ now()->format('Y-m-d') }}</td>
+                            <td id="status-{{ $testCase->id }}">Not Run</td>
+                            <td>
+                                <button class="btn btn-success btn-sm" onclick="executeTestCase({{ $testCase->id }})">Execute</button>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
+
             </table>
         </div>
-    </div>
-    <div class="text-center mt-3">
-        <button class="btn btn-lg btn-success" onclick="submitTestCases()">Submit</button>
     </div>
 </div>
 
@@ -91,22 +89,116 @@
 </div>
 
 <!-- Issue Modal -->
-<div class="modal fade" id="issueModal" tabindex="-1" aria-labelledby="issueModalLabel" aria-hidden="true">
+<!-- Create Issue Modal -->
+<div id="createIssueModal" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Issue Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">Create Issue</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p><strong>Test Case No.:</strong> <span id="issueTestCaseNo"></span></p>
-                <p><strong>Test Title:</strong> <span id="issueTestTitle"></span></p>
-                <p><strong>Test Step:</strong> <span id="issueTestStep"></span></p>
-                <button class="btn btn-primary" id="issueModalButton" onclick="handleIssueAction()">Create Issue</button>
+                <p>Issue Number: <span id="issueNumber"></span></p>
+                <button type="button" class="btn btn-primary" id="createIssueBtn">Create Issue</button>
             </div>
         </div>
     </div>
 </div>
+
+
+<!-- Button to Open Modal -->
+<button onclick="openIssueModal()" class="bg-green-500 text-white px-4 py-2 rounded">Show Create Issue</button>
+
+<script>
+$(document).on('click', '.status-btn', function () {
+    let row = $(this).closest('tr'); // Get the specific row
+    let status = row.find('.status-text').text().trim(); // Get the status text
+
+    if (status === 'Fail') {
+        $('#createIssueModal').modal('show'); // Show the modal
+        $('#createIssueModal').data('row', row); // Store row reference
+    }
+});
+
+</script>
+
+
+<script>
+$('#createIssueBtn').on('click', function () {
+    let issueNumber = 'ISSUE-' + Math.floor(Math.random() * 100000); // Generate issue number
+    $('#issueNumber').text(issueNumber); // Set in modal
+
+    let row = $('#createIssueModal').data('row'); // Get the affected row
+    row.find('.issue-number-column').text(issueNumber); // Update row in the table
+
+    $('#createIssueModal').modal('hide'); // Hide modal after creating the issue
+});
+
+
+</script>
+
+
+
+<script>
+    function executeTestCase(testCaseId) {
+    selectedTestCaseId = testCaseId;
+
+    Swal.fire({
+        title: 'Execute Test Case',
+        text: 'Choose the status for the test case.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Pass',
+        cancelButtonText: 'Fail',
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#dc3545',
+        showDenyButton: true,
+        denyButtonText: 'N/A',
+        denyButtonColor: '#6c757d',
+    }).then((result) => {
+        let status = 'Not Run';
+
+        if (result.isConfirmed) status = 'Pass';
+        else if (result.isDenied) status = 'N/A';
+        else if (result.dismiss === Swal.DismissReason.cancel) status = 'Fail';
+
+        if (status !== 'Not Run') {
+            $.ajax({
+                url: "{{ route('execute.updateStatus') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    test_case_id: testCaseId,
+                    status: status,
+                },
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Test case updated successfully!',
+                        text: `Status: ${status}`,
+                    });
+
+                    // Update status cell in the table
+                    $(`#status-${testCaseId}`).text(status);
+                    $(`#status-${testCaseId}`).css(
+                        "background-color",
+                        status === "Pass" ? "#28a745" :
+                        status === "Fail" ? "#dc3545" : "#6c757d"
+                    );
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed to update status',
+                        text: xhr.responseJSON?.message || 'Unknown error occurred.',
+                    });
+                },
+            });
+        }
+    });
+}
+
+</script>
 
 <script>
     let selectedTestCaseId = null;
@@ -152,51 +244,24 @@ function changeStatus(status) {
 }
 
 
-function openIssueModal(testCaseId, isViewing = true) {
-    let issueNumberCell = document.getElementById("issue-number-" + testCaseId);
-
-    if (issueNumberCell.innerText.trim() !== "") {
-        let row = document.getElementById("testcase-row-" + testCaseId);
-        
-        if (row) {  // Ensure the row is found
-            document.getElementById("issueTestCaseNo").innerText = row.cells[0].innerText || "N/A";
-            document.getElementById("issueTestTitle").innerText = row.cells[1].innerText || "N/A";
-            
-            let testStepInput = row.cells[2].querySelector('input');
-            document.getElementById("issueTestStep").innerText = testStepInput ? testStepInput.value : "N/A";
-
-            // Set button text based on action
-            let issueModalButton = document.getElementById("issueModalButton");
-            if (isViewing) {
-                issueModalButton.innerText = "View Issue";
-            } else {
-                issueModalButton.innerText = "Create Issue";
-            }
-
-            $('#issueModal').modal('show');
-        } else {
-            console.error("Row not found for testCaseId: " + testCaseId);
-        }
-    }
+function openIssueModal(testCaseId) {
+    fetch("{{ route('execute.generateIssueNumber') }}")
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("issueNumber").innerText = "Issue Number: " + data.issue_number;
+            document.getElementById("issueModal").classList.remove("hidden");
+        });
 }
+
 
 function handleIssueAction() {
-    let testCaseNo = document.getElementById("issueTestCaseNo").innerText;
-    let testTitle = document.getElementById("issueTestTitle").innerText;
-    let testStep = document.getElementById("issueTestStep").innerText;
+    let queryParams = new URLSearchParams({
+        test_case_id: selectedTestCaseId,
+    }).toString();
 
-    if (testCaseNo.trim()) {
-        let queryParams = new URLSearchParams({
-            test_case_no: testCaseNo,
-            test_title: testTitle,
-            test_step: testStep
-        }).toString();
-
-        window.location.href = "{{ route('issue.create') }}?" + queryParams;
-    } else {
-        alert("Failed test case number not found!");
-    }
+    window.location.href = "{{ route('execute.createIssue') }}?" + queryParams;
 }
+
 
 </script>
 @endsection

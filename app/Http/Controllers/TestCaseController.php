@@ -17,6 +17,21 @@ use Illuminate\Http\Response;
 class TestCaseController extends Controller
 {
 
+    public function showTestCases($projectId)
+    {
+        $project = Project::find($projectId);
+
+        if (!$project) {
+            abort(404, "Project not found");
+        }
+
+        $testCases = TestCase::where('project_id', $projectId)->get();
+
+        return view('testcases.executeTestCase', compact('project', 'testCases'));
+    }
+
+
+
     // Method to fetch project details
     public function getProjectDetails($id)
     {

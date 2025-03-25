@@ -24,6 +24,20 @@
     <!--Bootstrap icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
+    <style>
+        .btn-toggle-nav a {
+            text-decoration: none !important;
+            color: inherit !important; 
+        }
+
+        .btn-toggle-nav a:hover {
+            text-decoration: underline !important;
+            text-decoration-thickness: 3px !important;
+            color: rgba(191, 200, 238, 0.8)!important;
+        }
+        
+    </style>
+
 </head>
 
 <body>

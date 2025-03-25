@@ -184,13 +184,42 @@
     </tbody>
 </table>
 
+
 </div>
 
 
 
+<!-- Buttons Section -->
+<!-- Execute All Test Cases Button -->
+<form method="GET" id="executeForm" style="display:inline;">
+    <button type="submit" class="btn btn-success btn-sm" id="executeBtn" disabled>Execute</button>
+</form>
 
-// <!-- Edit Modal -->
-// {{-- <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+
+<script>
+    $(document).ready(function() {
+        $('#project_id').change(function() {
+            let projectId = $(this).val();
+            let executeBtn = $('#executeBtn');
+            let executeForm = $('#executeForm');
+
+            if (projectId) {
+                executeBtn.prop('disabled', false);
+                let newAction = "{{ route('executeTest', ':projectId') }}".replace(':projectId', projectId);
+                executeForm.attr('action', newAction);
+            } else {
+                executeBtn.prop('disabled', true);
+                executeForm.removeAttr('action'); // Prevents submitting without a valid project
+            }
+        });
+    });
+</script>
+
+
+
+
+<!-- Edit Modal -->
+ {{-- <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
 //     <div class="modal-dialog">
 //         <div class="modal-content">
 //             <form id="editForm" method="POST">
