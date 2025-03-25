@@ -43,11 +43,11 @@
                             <td><input type="text" class="form-control" value="{{ $testCase->test_step }}" disabled></td>
                             <td>{{ $testCase->category->name }}</td>
                             <td>{{ $testCase->priority }}</td>
-                            <td id="issue-number-{{ $testCase->id }}" onclick="openIssueModal({{ $testCase->id }})" style="cursor: pointer; color: blue;"></td>
+                            <td id="issue-number-{{ $testCase->id }}" onclick="openIssueModal('{{ $testCase->id }}')" style="cursor: pointer; color: blue;"></td>
                             <td id="execution-date-{{ $testCase->id }}">{{ now()->format('Y-m-d') }}</td>
-                            <td id="status-{{ $testCase->id }}">Not Run</td>
+                            <td id="status-{{ $testCase->id }}">{{ $testCase->status ?? 'Not Run' }}</td>
                             <td>
-                                <button class="btn btn-success btn-sm" onclick="executeTestCase({{ $testCase->id }})">Execute</button>
+                                <button class="btn btn-success btn-sm"  onclick="executeTestCase('{{ $testCase->id }}')">Execute</button>
                             </td>
                         </tr>
                     @endforeach

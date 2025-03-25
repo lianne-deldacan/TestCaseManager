@@ -57,6 +57,38 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
+                <tbody>
+                    @foreach ($issues as $issue)
+                    <tr>
+                        <td>{{ $issue->issue_number }}</td>
+                        <td>{{ $issue->project->name }}</td>
+                        <td></td>
+                        <td>{{ $issue->environment }}</td>
+                        <td>{{ $issue->tester }}</td>
+                        <td>{{ $issue->created_at->format('Y-m-d') }}</td>
+                        <td>{{ $issue->status }}</td>
+                        <td>{{ $issue->title }}</td>
+                        <td>{{ $issue->description }}</td>
+                        <td>
+                            @if ($issue->screenshot)
+                                <a href="{{ asset('storage/screenshots/'.$issue->screenshot) }}" target="_blank">View Screenshot</a>
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        <td>{{ $issue->developer }}</td>
+                        <td>{{ $issue->notes }}</td>
+                        <td>
+                            <a href="" class="btn btn-warning btn-sm">Edit</a>
+                            <form action="" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
             </table>
         </div>
     </div>
