@@ -20,9 +20,7 @@
     <table id="testcasesTable" class="table table-striped table-bordered">
         <thead class="table-dark">
             <tr>
-                <th>Project Name</th>
-                <th>Service</th>
-                <th>Tester</th>
+                <th>Input by</th>
                 <th>Test Case No.</th>
                 <th>Test Title</th>
                 <th>Test Step</th>
@@ -34,9 +32,7 @@
         <tbody>
             @foreach ($testCases as $case)
             <tr>
-                <td>{{ $case->project->name }}</td>
-                <td>{{ $case->project->service }}</td>
-                <td>{{ $case->tester }}</td>
+                <td>{{ $case->input_by }}</td>
                 <td>{{ $case->test_case_no }}</td>
                 <td>{{ $case->test_title }}</td>
                 <td>{{ $case->test_step }}</td>

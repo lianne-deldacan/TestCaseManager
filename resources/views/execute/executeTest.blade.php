@@ -29,6 +29,8 @@
                         <th>Test Step</th>
                         <th>Category</th>
                         <th>Priority</th>
+                        <th>Issue Number</th>
+                        <th>Execution Date</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -38,9 +40,11 @@
                     <tr id="testcase-row-{{ $testCase->id }}">
                         <td>{{ $testCase->test_case_no }}</td>
                         <td>{{ $testCase->test_title }}</td>
-                        <td>{{ $testCase->test_step }}</td>
+                        <td><input type="text" class="form-control" value="{{ $testCase->test_step }}" disabled></td>
                         <td>{{ $testCase->category->name }}</td>
                         <td>{{ $testCase->priority }}</td>
+                        <td id="issue-number-{{ $testCase->id }}" onclick="openIssueModal({{ $testCase->id }})" style="cursor: pointer; color: blue;"></td>
+                        <td id="execution-date-{{ $testCase->id }}">{{ now()->format('Y-m-d') }}</td>
                         <td id="status-{{ $testCase->id }}">Not Run</td>
                         <td>
                             <button class="btn btn-warning btn-sm" onclick="openTestModal({{ $testCase->id }})">Run</button>
@@ -51,13 +55,12 @@
             </table>
         </div>
     </div>
-            <!-- Submit Button -->
-        <div class="text-center mt-3">
-            <button class="btn btn-lg btn-success" onclick="submitTestCases()">Submit</button>
-        </div>
+    <div class="text-center mt-3">
+        <button class="btn btn-lg btn-success" onclick="submitTestCases()">Submit</button>
+    </div>
 </div>
 
-<!-- Modal -->
+<!-- Test Execution Modal -->
 <div class="modal fade" id="testModal" tabindex="-1" aria-labelledby="testModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -81,21 +84,27 @@
                 <button class="btn btn-success" onclick="changeStatus('Pass')">Pass</button>
                 <button class="btn btn-danger" onclick="changeStatus('Fail')">Fail</button>
                 <button class="btn btn-secondary" onclick="changeStatus('N/A')">N/A</button>
-                <button class="btn btn-info" onclick="changeStatus('N/R')">N/R</button>
                 <button class="btn btn-primary" onclick="saveTestStatus()">Save</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Toast Notification -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="statusToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <strong class="me-auto">Test Status</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+<!-- Issue Modal -->
+<div class="modal fade" id="issueModal" tabindex="-1" aria-labelledby="issueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Issue Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Test Case No.:</strong> <span id="issueTestCaseNo"></span></p>
+                <p><strong>Test Title:</strong> <span id="issueTestTitle"></span></p>
+                <p><strong>Test Step:</strong> <span id="issueTestStep"></span></p>
+                <button class="btn btn-primary" id="issueModalButton" onclick="handleIssueAction()">Create Issue</button>
+            </div>
         </div>
-        <div class="toast-body" id="toastMessage"></div>
     </div>
 </div>
 
@@ -107,76 +116,87 @@
         let row = document.getElementById("testcase-row-" + testCaseId);
         document.getElementById("modalTestCaseNo").value = row.cells[0].innerText;
         document.getElementById("modalTestTitle").value = row.cells[1].innerText;
-        document.getElementById("modalTestStep").value = row.cells[2].innerText;
+        document.getElementById("modalTestStep").value = row.cells[2].querySelector('input').value;
         document.getElementById("modalCategory").value = row.cells[3].innerText;
         document.getElementById("modalPriority").value = row.cells[4].innerText;
-        
         new bootstrap.Modal(document.getElementById("testModal")).show();
     }
 
-    function changeStatus(status) {
-        document.getElementById("toastMessage").innerText = "You changed status to " + status;
-        new bootstrap.Toast(document.getElementById("statusToast")).show();
-    }
+let issueCounter = 1; // Initialize issue counter
 
-    function saveTestStatus() {
-        let status = document.getElementById("toastMessage").innerText.replace("You changed status to ", "");
-        if (selectedTestCaseId) {
-            document.getElementById("status-" + selectedTestCaseId).innerText = status;
+function changeStatus(status) {
+    let statusCell = document.getElementById("status-" + selectedTestCaseId);
+    let issueNumberCell = document.getElementById("issue-number-" + selectedTestCaseId);
+
+    statusCell.innerText = status; // Update status text
+
+    if (status === "Pass") {
+        statusCell.style.backgroundColor = "#28a745";
+        Swal.fire({ icon: 'success', title: 'Test Passed Successfully' });
+    } else if (status === "Fail") {
+        statusCell.style.backgroundColor = "#dc3545";
+
+        // If no issue number exists, create a new one
+        if (!issueNumberCell.innerText.trim()) {
+            let issueNumber = `BELL-${String(issueCounter).padStart(4, '0')}`;
+            issueNumberCell.innerText = issueNumber;
+            issueNumberCell.style.cursor = "pointer";
+            issueNumberCell.style.color = "blue";
+            issueNumberCell.onclick = () => openIssueModal(selectedTestCaseId, false);
+            issueCounter++;
         }
-        Swal.fire({
-            icon: 'success',
-            title: 'Test Information Saved Successfully'
-        });
-    }
 
-     function submitTestCases() {
-    let failedTestCases = [];
-    let failMessage = "The following test cases failed:\n";
-    let issueUrl = "/create-issue?"; // Base URL for issue creation
-
-    // Loop through all test case rows and check the status
-    document.querySelectorAll("#testcasesTable tbody tr").forEach(row => {
-        let testCaseId = row.id.replace("testcase-row-", ""); // Extract Test Case ID
-        let status = row.querySelector("td:nth-child(6)").innerText.trim(); // Get Status Text
-
-        if (status.toLowerCase() === "fail") {
-            failedTestCases.push(testCaseId);
-
-            let testCaseTitle = row.querySelector("td:nth-child(2)").innerText.trim();
-            failMessage += `- ${testCaseTitle}\n`;
-        }
-    });
-
-    if (failedTestCases.length > 0) {
-        issueUrl += failedTestCases.map(id => `failed_cases[]=${id}`).join("&"); // Proper array format
-
-        // Show SweetAlert with failed test cases
-        Swal.fire({
-            icon: 'error',
-            title: 'Test Execution Completed',
-            text: failMessage,
-            showCancelButton: true,
-            confirmButtonText: 'Create Issue',
-            cancelButtonText: 'Close',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = issueUrl; // Redirect to issue creation page with failed test cases
-            }
-        });
-    } else {
-        // Success message if all passed
-        Swal.fire({
-            icon: 'success',
-            title: 'Test Execution Completed',
-            text: 'All test cases passed successfully! No issues to create.',
-        });
+        // Open issue modal in "Create Issue" mode
+        openIssueModal(selectedTestCaseId, false);
     }
 }
 
 
-    $(document).ready(function () {
-        $('#testcasesTable').DataTable();
-    });
+function openIssueModal(testCaseId, isViewing = true) {
+    let issueNumberCell = document.getElementById("issue-number-" + testCaseId);
+
+    if (issueNumberCell.innerText.trim() !== "") {
+        let row = document.getElementById("testcase-row-" + testCaseId);
+        
+        if (row) {  // Ensure the row is found
+            document.getElementById("issueTestCaseNo").innerText = row.cells[0].innerText || "N/A";
+            document.getElementById("issueTestTitle").innerText = row.cells[1].innerText || "N/A";
+            
+            let testStepInput = row.cells[2].querySelector('input');
+            document.getElementById("issueTestStep").innerText = testStepInput ? testStepInput.value : "N/A";
+
+            // Set button text based on action
+            let issueModalButton = document.getElementById("issueModalButton");
+            if (isViewing) {
+                issueModalButton.innerText = "View Issue";
+            } else {
+                issueModalButton.innerText = "Create Issue";
+            }
+
+            $('#issueModal').modal('show');
+        } else {
+            console.error("Row not found for testCaseId: " + testCaseId);
+        }
+    }
+}
+
+function handleIssueAction() {
+    let testCaseNo = document.getElementById("issueTestCaseNo").innerText;
+    let testTitle = document.getElementById("issueTestTitle").innerText;
+    let testStep = document.getElementById("issueTestStep").innerText;
+
+    if (testCaseNo.trim()) {
+        let queryParams = new URLSearchParams({
+            test_case_no: testCaseNo,
+            test_title: testTitle,
+            test_step: testStep
+        }).toString();
+
+        window.location.href = "{{ route('issue.create') }}?" + queryParams;
+    } else {
+        alert("Failed test case number not found!");
+    }
+}
+
 </script>
 @endsection

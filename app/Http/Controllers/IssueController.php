@@ -12,12 +12,13 @@ class IssueController extends Controller
 {
     public function index()
     {
-        $issues = Issue::all();
-        $projects = Project::all(); 
-        $testers = TestCase::distinct()->pluck('tester'); 
+        $issues = Issue::with(['project', 'execution'])->latest()->get();
+        $projects = Project::all();
+        $testers = Issue::select('tester')->distinct()->pluck('tester');
 
-        return view('issue.index', compact('issues', 'projects', 'testers')); 
+        return view('issue.index', compact('issues', 'projects', 'testers'));
     }
+
 
     public function create()
     {
@@ -43,10 +44,10 @@ class IssueController extends Controller
             'tester' => 'required',
             'environment' => 'required',
             'status' => 'required',
-            'project_name' => 'required|string', 
+            'project_name' => 'required|string',
+            'assigned_developer' => 'nullable|string', // Allow nullable value
         ]);
 
-        
         $validated['issue_number'] = uniqid('ISSUE_');
         $validated['project_name'] = $validated['project_name'] ?? $request->input('project_name');
 
@@ -54,6 +55,7 @@ class IssueController extends Controller
 
         return redirect()->route('issue.index')->with('success', 'Issue added successfully!');
     }
+
 
     public function updateIssue(Request $request)
     {

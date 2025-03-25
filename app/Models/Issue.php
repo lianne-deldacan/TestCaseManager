@@ -21,7 +21,8 @@ class Issue extends Model
         'tester',
         'issue_description',
         'screenshot_url',
-        'assigned_developer'
+        'assigned_developer',
+        'developer_notes' // Added developer notes field (if needed)
     ];
 
     // Relationship with Project
@@ -34,5 +35,11 @@ class Issue extends Model
     public function execution()
     {
         return $this->belongsTo(Execution::class, 'execution_id');
+    }
+
+    // Get human-readable date format
+    public function getFormattedDateAttribute()
+    {
+        return $this->created_at ? $this->created_at->format('Y-m-d H:i:s') : 'N/A';
     }
 }

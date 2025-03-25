@@ -24,12 +24,20 @@ Route::get('/testcases/view', [TestCaseController::class, 'view'])->name('testca
 Route::get('/testcases/{id}/edit', [TestCaseController::class, 'edit'])->name('testcases.edit'); // Edit a test case
 Route::put('/testcases/{id}', [TestCaseController::class, 'update'])->name('testcases.update'); // Update test case
 Route::delete('/testcases/{id}', [TestCaseController::class, 'destroy'])->name('testcases.destroy'); // Delete test case
+
+//Test case to get project details
+Route::get('/get-project-details/{id}', [TestCaseController::class, 'getProjectDetails']);
+//Execute a test case
+Route::get('/execute-testcases', [TestCaseController::class, 'executeTestcase'])->name('executeTestcases');
+
 // Route::get('/execute/{id}', [ExecuteController::class, 'index'])->name('execute.index'); // Execute test case
 
 Route::post('/testcases/import', [TestCaseController::class, 'import'])->name('testcases.import');
 Route::get('/testcases/export/csv', [TestCaseController::class, 'exportCSV'])->name('testcases.export.csv');
 Route::get('/testcases/export/excel', [TestCaseController::class, 'exportExcel'])->name('testcases.export.excel');
 Route::get('/testcases/export/pdf', [TestCaseController::class, 'exportPDF'])->name('testcases.export.pdf');
+
+
 
 // Project Routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
@@ -69,17 +77,29 @@ Route::get('/requirements/export/pdf', [RequirementController::class, 'exportPDF
 Route::get('/requirements/{requirement}/edit', [RequirementController::class, 'edit'])->name('requirements.edit');
 Route::put('/requirements/{requirement}', [RequirementController::class, 'update'])->name('requirements.update');
 
-//Execute routes
-Route::get('/execute/{id}', [TestCaseController::class, 'execute'])->name('execute');
-Route::get('/executeTest/{id}', [TestCaseController::class, 'executeTest'])->name('executeTest'); // Changed from execute-test to executeTest
+// Routes for Test Cases
+Route::get('/testcases/create', [TestCaseController::class, 'create'])->name('testcases.create');
+Route::get('/testcases', [TestCaseController::class, 'index'])->name('testcases.index');
+
+// Fetch projects by service
+Route::post('/projects/getByService', [TestCaseController::class, 'getProjectsByService'])->name('projects.getByService');
+
+// Fetch test case data for a specific project
+Route::post('/testcases/getTestCaseData', [TestCaseController::class, 'getTestCaseData'])->name('testcases.getTestCaseData');
+
+// Fetch project details
+Route::get('/testcases/project-details/{id}', [TestCaseController::class, 'getProjectDetails'])->name('testcases.getDetails');
+
+// Execute test cases
+Route::get('/execute-testcases', [TestCaseController::class, 'executeTest'])->name('executeTestcases');
+
 
 // Issue routes
 Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
 Route::get('/index-issue', [IssueController::class, 'index'])->name('issue.index'); // For displaying the list of issues
 Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
 Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
-
-
+Route::get('/issues/list', [IssueController::class, 'getIssues'])->name('issue.list');
 
 Route::get('/issues/export/excel', function () {
     return Excel::download(new IssuesExport, 'issues.xlsx');

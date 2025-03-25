@@ -11,7 +11,6 @@ class TestCase extends Model
 
     protected $fillable = [
         'project_id',
-        'project_name',       
         'test_case_no',
         'test_title',
         'test_step',
@@ -20,6 +19,7 @@ class TestCase extends Model
         'tester',
         'status',
         'date_of_input',
+        'test_environment',
     ];
 
     /**
@@ -27,10 +27,14 @@ class TestCase extends Model
      */
     public function project()
     {
-        return $this->belongsTo(Project::class, 'project_id');
+        return $this->belongsTo(Project::class, 'project_id'); // Define relationship to Project
     }
+
+    /**
+     * Define relationship with Category model.
+     */
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class); // Define relationship to Category
     }
 }

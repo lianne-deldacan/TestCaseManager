@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('test_cases', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('project_id')->index('fk_project');
+            $table->enum('test_environment', ['SIT', 'UAT']);
             $table->string('test_case_no');
             $table->string('test_title');
             $table->text('test_step');

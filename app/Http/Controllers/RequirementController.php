@@ -13,12 +13,6 @@ use App\Exports\RequirementsExport;
 
 class RequirementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-
-
     public function index(Request $request)
     {
         $selectedProject = $request->query('project_id');
@@ -39,11 +33,6 @@ class RequirementController extends Controller
         return view('requirements.index', compact('requirements', 'project', 'projects', 'selectedProject'));
     }
 
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Request $request)
     {
         $project = Project::find($request->query('project_id'));
@@ -55,22 +44,15 @@ class RequirementController extends Controller
         $projectID = $project->id;
         $projectName = $project->name;
         $service = $project->service ?? 'Default Service';
-        // Get the next requirement count for this project
         $requirementCount = Requirement::where('project_id', $projectID)->count() + 1;
         $requirements = Requirement::where('project_id', $projectID)->get();
-        // Generate formatted requirement number
         $requirementNumber = "Req - {$projectID} - " . str_pad($requirementCount, 3, '0', STR_PAD_LEFT);
 
         return view('requirements.create', compact('project', 'projectName', 'service', 'requirementNumber', 'requirements'));
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'project_id' => 'required|exists:projects,id',
             'user' => 'required|string|max:255',
@@ -83,7 +65,7 @@ class RequirementController extends Controller
         ]);
 
         if ($validator->fails()) {
-            Log::error('Validation failed', $validator->errors()->toArray()); // ✅ Logs errors
+            Log::error('Validation failed', $validator->errors()->toArray());
 
             return response()->json([
                 'success' => false,
@@ -101,27 +83,17 @@ class RequirementController extends Controller
         ], 201);
     }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Requirement $requirement)
     {
-        $service = $project->service ?? 'Default Service';
-        return view('requirements.edit', compact('requirement' ,'service'));
+        $service = $requirement->project->service ?? 'Default Service';
+        return view('requirements.edit', compact('requirement', 'service'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Requirement $requirement)
     {
         $request->validate([
@@ -143,9 +115,6 @@ class RequirementController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Requirement $requirement)
     {
         $requirement->delete();
@@ -161,12 +130,10 @@ class RequirementController extends Controller
         return Excel::download(new RequirementsExport($request->query('project_id')), 'requirements.csv');
     }
 
-
     public function exportExcel(Request $request)
     {
         return Excel::download(new RequirementsExport($request->query('project_id')), 'requirements.xlsx');
     }
-
 
     public function exportPDF(Request $request)
     {
