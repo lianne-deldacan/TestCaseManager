@@ -10,14 +10,11 @@ use App\Models\Issue;
 class ExecutionController extends Controller
 {
 
-    
+
     public function generateIssueNumber()
     {
-        // Auto-generate issue number (Example: ISSUE-20240325-001)
-        $latestIssue = Issue::latest()->first();
-        $issueNumber = 'ISSUE-' . date('Ymd') . '-';
-        $issueNumber .= $latestIssue ? str_pad($latestIssue->id + 1, 3, '0', STR_PAD_LEFT) : '001';
-
+        $randomNumber = rand(1000, 9999);
+        $issueNumber = "BELL-" . str_pad($randomNumber, 4, '0', STR_PAD_LEFT);
         return response()->json(['issue_number' => $issueNumber]);
     }
 

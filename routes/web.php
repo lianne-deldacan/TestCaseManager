@@ -111,11 +111,22 @@ Route::post('/create-issue', [ExecutionController::class, 'createIssue'])->name(
 
 
 // Issue routes
-Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
+// Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
 Route::get('/index-issue', [IssueController::class, 'index'])->name('issue.index'); // For displaying the list of issues
 Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
 Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
 Route::get('/issues/list', [IssueController::class, 'getIssues'])->name('issue.list');
+
+
+// routes/web.php
+Route::post('/update-status', [TestCaseController::class, 'updateStatus'])->name('update.status');
+Route::post('/create-issue', [IssueController::class, 'createIssue'])->name('create.issue');
+Route::get('/issue-audit-trail/{issue_number}', [IssueController::class, 'getAuditTrail'])->name('issue.audittrail');
+
+
+
+
+
 
 Route::get('/issues/export/excel', function () {
     return Excel::download(new IssuesExport, 'issues.xlsx');
