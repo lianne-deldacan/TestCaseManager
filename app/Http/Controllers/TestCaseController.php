@@ -16,6 +16,7 @@ use Illuminate\Http\Response;
 
 class TestCaseController extends Controller
 {
+
     // Method to fetch project details
     public function getProjectDetails($id)
     {
@@ -43,11 +44,8 @@ class TestCaseController extends Controller
 
     public function getTestCaseData(Request $request)
     {
-        $request->validate(['project_id' => 'required|integer']);
-
         $testCases = TestCase::where('project_id', $request->project_id)->get();
-
-        return response()->json(['testCases' => $testCases]);
+        return response()->json($testCases);
     }
 
     public function getProjectsByService(Request $request)
@@ -66,13 +64,6 @@ class TestCaseController extends Controller
 
         return response()->json($projects); // Return projects as JSON
     }
-
-
-
-
-
-
-
 
     public function executeTest(Request $request)
     {
@@ -154,10 +145,15 @@ class TestCaseController extends Controller
         }
 
         $testCases = $project->testCases()->get(); // Fetch test cases associated with the project
+        // Fetch test cases for the current project
+        $testCases = $project->testCases()->with('category')->get();
 
+        // Fetch all categories (you can customize this if needed)
+        $categories = Category::all();
         return view('testcases.index', [
             'project' => $project,  // Pass the project to the view
             'testCases' => $testCases,
+            'categories' => $categories,
         ]);
     }
 
@@ -181,54 +177,61 @@ class TestCaseController extends Controller
         if (!$project) {
             return redirect()->route('projects.index')->with('error', 'Project not found.');
         }
+        $categories = Category::all(); // Fetch all categories for dropdown
 
-        // Fetch all categories
-        $categories = Category::all();
-
-        // Fetch test cases associated with the project
         $testCases = TestCase::where('project_id', $project->id)->get();
-
-        // Fetch distinct services for the dropdown
-        $services = Project::select('service')->distinct()->pluck('service');
-
-        // Return view with required variables
-        return view('testcases.create', [
-            'project' => $project,           // Pass the project details
-            'projectId' => $project->id,     // Pass project ID
-            'projectName' => $project->name, // Pass project name
-            'service' => $project->service ?? 'Default Service', // Pass selected service
-            'services' => $services,         // Pass list of services
-            'categories' => $categories,     // Pass categories
-            'testCases' => $testCases,       // Pass test cases
+        return view('testcases.index', [
+            'project' => $project,
+            'projectId' => $project->id,
+            'projectName' => $project->name,
+            'service' => $project->service ?? 'Default Service',
+            'categories' => $categories,
+            'testCases' => $testCases
         ]);
     }
 
-
-
-
-
-
-
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'service' => 'required|string',
-            'project_id' => 'required|exists:projects,id',
-            'test_case_no' => 'required|string|max:255',
-            'test_title' => 'required|string|max:255',
-            'test_step' => 'required|string|max:255',
-            'category_id' => 'required|integer|exists:categories,id',
-            'tester' => 'required|string|max:255',
-            'date_of_input' => 'required|date',
-            'status' => 'required|string|max:255',
-            'priority' => 'required|string|max:255',
-            'test_environment' => 'required|string|in:SIT,UAT',
-        ]);
+        try {
+            $request->validate([
+                'project_id' => 'required|exists:projects,id',
+                'test_case_no' => 'required|string|max:255',
+                'test_title' => 'required|string|max:255',
+                'test_step' => 'required|string|max:255',
+                'category_id' => 'required|integer|exists:categories,id',
+                'tester' => 'required|string|max:255',
+                'date_of_input' => 'required|date',
+                'status' => 'required|string|max:255',
+                'priority' => 'required|string|max:255',
+            ]);
 
-        $testCase = TestCase::create($validated);
+            // Create the test case
+            $testCase = TestCase::create($request->only([
+                'project_id',
+                'test_case_no',
+                'test_title',
+                'test_step',
+                'category_id',
+                'tester',
+                'date_of_input',
+                'status',
+                'priority',
+            ]));
 
-        return redirect()->route('testcases.index', ['project_id' => $request->project_id])
-            ->with('success', 'Test case created successfully.');
+            // Fetch the newly created test case with relationships
+            $testCase = TestCase::with(['project', 'category'])->find($testCase->id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Test Case added successfully.',
+                'test_case' => $testCase,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
 
@@ -365,5 +368,3 @@ class TestCaseController extends Controller
         }
     }
 }
-
-

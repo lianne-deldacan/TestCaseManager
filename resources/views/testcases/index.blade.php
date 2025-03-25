@@ -6,18 +6,19 @@
     <div class="card shadow-lg p-4">
         <h2 class="text-center mb-4">Test Case Form</h2>
 
-        <form action="{{ route('testcases.store') }}" method="POST">
+        <form id="testcaseForm" action="{{ route('testcases.store') }}" method="POST">
             @csrf
             <input type="hidden" name="project_id" value="{{ $projectId ?? '' }}">
             <input type="hidden" name="status" value="Not Run">
             <div class="row g-3">
                 <div class="mb-3">
                     <label for="project-name" class="form-label">Project Name</label>
-                    <input type="text" id="project-name" class="form-control" value="{{ $projectName }}" disabled>
+                    <input type="text" id="project-name" class="form-control" value="{{ $project->name }}" disabled>
                 </div>
                 <div class="form-group">
                     <label for="service">Service</label>
                     <input type="text" id="service" class="form-control" value="{{ $service ?? 'No service available' }}" disabled>
+                    <input type="hidden" name="service" value="{{ $service ?? 'No service available' }}">
                 </div>
                 <div class="col-md-6">
                     <label for="test_environment" class="form-label">Test Environment</label>
@@ -47,7 +48,7 @@
                     <label for="category" class="form-label">Category</label>
                     <select name="category_id" id="category_id" class="form-control">
                         @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -150,11 +151,11 @@
             @endforeach
         </tbody>
     </table>
-<a href="{{ route('executeTest', ['id' => $testCase->id]) }}" class="btn btn-success btn-lg">
-    Execute
-</a>
+    <a href="{{ route('executeTestcases') }}" class="btn btn-success btn-lg">
+        Execute
+    </a>
 
-</a>
+
 
 </div>
 
@@ -235,8 +236,6 @@
     });
 </script>
 
-
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const editModal = document.getElementById("editModal");
@@ -262,14 +261,14 @@
 </script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         let selectedTestCaseId = null;
 
         document.querySelectorAll(".clickable-row").forEach(row => {
-            row.addEventListener("click", function () {
+            row.addEventListener("click", function() {
                 // Remove highlighting from all rows
                 document.querySelectorAll(".clickable-row").forEach(r => r.classList.remove("table-active"));
-                
+
                 // Highlight selected row
                 this.classList.add("table-active");
 
@@ -281,7 +280,7 @@
             });
         });
 
-        document.getElementById("executeBtn").addEventListener("click", function () {
+        document.getElementById("executeBtn").addEventListener("click", function() {
             if (selectedTestCaseId) {
                 window.location.href = `/testcases/${selectedTestCaseId}/execute`;
             }
@@ -390,6 +389,8 @@
     document.addEventListener("DOMContentLoaded", function() {
         const form = document.querySelector("form[action='{{ route('testcases.store') }}']");
 
+        if (!form) return; // Prevent errors if form is not found
+
         form.addEventListener("submit", function(event) {
             event.preventDefault();
 
@@ -400,10 +401,11 @@
                     body: formData,
                     headers: {
                         "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value,
+                        "Accept": "application/json"
                     },
                 })
-                .then((response) => response.json())
-                .then((data) => {
+                .then(response => response.json())
+                .then(data => {
                     if (data.success) {
                         Swal.fire({
                             icon: "success",
@@ -411,19 +413,21 @@
                             text: "Your test case has been successfully added.",
                             showConfirmButton: false,
                             timer: 1500,
+                        }).then(() => {
+                            location.reload(); // Reload AFTER Swal message disappears
                         });
 
                         form.reset();
 
                         let newRow = `
-                            <tr>
-                                <td>${data.test_case.test_case_no}</td>
-                                <td>${data.test_case.test_title}</td>
-                                <td>${data.test_case.category}</td>
-                                <td>${data.test_case.date_of_input}</td>
-                                <td>${data.test_case.test_step}</td>
-                                <td>${data.test_case.priority}</td>
-                            </tr>`;
+                    <tr>
+                        <td>${data.test_case.test_case_no}</td>
+                        <td>${data.test_case.test_title}</td>
+                        <td>${data.test_case.category}</td>
+                        <td>${data.test_case.date_of_input}</td>
+                        <td>${data.test_case.test_step}</td>
+                        <td>${data.test_case.priority}</td>
+                    </tr>`;
                         document.querySelector("#testcasesTable tbody").innerHTML += newRow;
                     } else {
                         Swal.fire({
@@ -433,7 +437,7 @@
                         });
                     }
                 })
-                .catch((error) => {
+                .catch(error => {
                     console.error("Error:", error);
                     Swal.fire({
                         icon: "error",

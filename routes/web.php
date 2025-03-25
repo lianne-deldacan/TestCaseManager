@@ -36,7 +36,7 @@ Route::post('/testcases/import', [TestCaseController::class, 'import'])->name('t
 Route::get('/testcases/export/csv', [TestCaseController::class, 'exportCSV'])->name('testcases.export.csv');
 Route::get('/testcases/export/excel', [TestCaseController::class, 'exportExcel'])->name('testcases.export.excel');
 Route::get('/testcases/export/pdf', [TestCaseController::class, 'exportPDF'])->name('testcases.export.pdf');
-
+Route::post('/get-testcases', [TestCaseController::class, 'getTestCasesByProject'])->name('testcases.getByProject');
 
 
 // Project Routes
