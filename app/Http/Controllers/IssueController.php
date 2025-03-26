@@ -76,27 +76,29 @@ class IssueController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'test_case_id' => 'required|integer',
-            'project_id' => 'required|integer|exists:projects,id',
-            'issue_title' => 'required|string|max:255',
-            'execution_id' => 'nullable',
-            'issue_description' => 'required|string',
-            'tester' => 'required|string',
-            'environment' => 'required|string',
-            'status' => 'required|string',
-            'project_name' => 'required|string',
-            'assigned_developer' => 'nullable|string',
-        ]);
+        // $validated = $request->validate([
+        //     'test_case_id' => 'required|integer',
+        //     'project_name' => 'required|string',
+        //     'project_service' => 'nullable|string',
+        //     'tester' => 'required|string',
+        //     'date_time_report' => 'required|date',
+        //     'environment' => 'required|string',
+        //     'status' => 'required|string',
+        //     'failed_test_case_no' => 'nullable|string',
+        //     'category' => 'nullable|string',
+        //     'assigned_developer' => 'nullable|string',
+        //     'issue_title' => 'required|string|max:255',
+        //     'issue_description' => 'required|string', // Test step
+        //     'screenshot_url' => 'nullable|url',
+        // ]);
+        dd($request->all());
 
-        // Generate a unique issue number
-        $validated['issue_number'] = uniqid('ISSUE_');
+        // Handle project ID and other dependent fields if needed
+        $validated['project_id'] = $request->input('project_id') ?? null; // Handle missing project ID gracefully
 
-        // Create the issue
         Issue::create($validated);
 
-        // Redirect back to the issue table page with a success message
-        return redirect()->route('issue.index')->with('success', 'Issue created successfully!');
+        return redirect()->route('issue.index')->with('success', 'Issue added successfully!');
     }
 
 
