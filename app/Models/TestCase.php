@@ -37,4 +37,9 @@ class TestCase extends Model
     {
         return $this->belongsTo(Category::class); // Define relationship to Category
     }
+
+    public function issue()
+    {
+        return $this->hasOne(Issue::class, 'test_case_id');
+    }
 }

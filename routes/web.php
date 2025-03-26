@@ -93,9 +93,6 @@ Route::get('/testcases/project-details/{id}', [TestCaseController::class, 'getPr
 // Execute test cases
 Route::get('/execute-testcases', [TestCaseController::class, 'executeTest'])->name('executeTestcases');
 
-
-
-
 //execute
 Route::post('/execute/update-status', [ExecutionController::class, 'updateStatus'])->name('execute.updateStatus');
 Route::get('/execute/create-issue', [ExecutionController::class, 'createIssue'])->name('execute.createIssue');
@@ -106,12 +103,12 @@ Route::get('/execute/test/{projectId}', [ExecutionController::class, 'showExecut
 //auto issue
 Route::get('/execute/generate-issue-number', [ExecutionController::class, 'generateIssueNumber'])->name('execute.generateIssueNumber');
 
-Route::post('/create-issue', [ExecutionController::class, 'createIssue'])->name('create.issue');
+
 
 
 
 // Issue routes
-// Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
+Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
 Route::get('/index-issue', [IssueController::class, 'index'])->name('issue.index'); // For displaying the list of issues
 Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
 Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
@@ -123,6 +120,7 @@ Route::post('/update-status', [TestCaseController::class, 'updateStatus'])->name
 Route::post('/create-issue', [IssueController::class, 'createIssue'])->name('create.issue');
 Route::get('/issue-audit-trail/{issue_number}', [IssueController::class, 'getAuditTrail'])->name('issue.audittrail');
 
+Route::get('/issues/last/{projectId}', [IssueController::class, 'getLastIssueNumber']);
 
 
 

@@ -172,11 +172,6 @@ class TestCaseController extends Controller
         ]);
     }
 
-
-
-
-
-
     public function create(Request $request)
     {
         // Get project ID from the request
@@ -218,9 +213,10 @@ class TestCaseController extends Controller
                 'date_of_input' => 'required|date',
                 'status' => 'required|string|max:255',
                 'priority' => 'required|string|max:255',
+                'test_environment' => 'required|string|in:SIT,UAT', // Add this validation
             ]);
 
-            // Create the test case
+            // Create the test case with test_environment
             $testCase = TestCase::create($request->only([
                 'project_id',
                 'test_case_no',
@@ -231,6 +227,7 @@ class TestCaseController extends Controller
                 'date_of_input',
                 'status',
                 'priority',
+                'test_environment', // Ensure this is included
             ]));
 
             // Fetch the newly created test case with relationships
@@ -250,6 +247,20 @@ class TestCaseController extends Controller
     }
 
 
+
+    public function updateStatus(Request $request)
+    {
+        $request->validate([
+            'test_case_id' => 'required|exists:test_cases,id',
+            'status' => 'required|string',
+        ]);
+
+        $testCase = TestCase::findOrFail($request->test_case_id);
+        $testCase->status = $request->status;
+        $testCase->save();
+
+        return response()->json(['message' => 'Status updated successfully.']);
+    }
 
 
 

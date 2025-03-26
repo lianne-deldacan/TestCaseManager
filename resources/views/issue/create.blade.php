@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<head>
 
-</head>
 <body>
     <div class="container">
         <button class="close-btn">X</button>
@@ -13,11 +11,13 @@
             <div class="row">
                 <div class="form-group">
                     <label>Issue Number</label>
-                    <input type="text" name="issue_number" value="{{ uniqid() }}" readonly>
+                    <input type="text" name="issue_number" class="form-control" value="{{ request('issue_number') }}" readonly>
+                    <input type="hidden" name="test_case_id" value="{{ request('test_case_id') ?? $testCase->id ?? '' }}">
+                    <input type="hidden" name="project_id" value="{{ $project->id ?? 'MISSING' }}">
                 </div>
                 <div class="form-group">
                     <label>Failed Test Case No.</label>
-                    <input type="text" name="failed_test_case_no" value="{{ request('test_case_no') ?? '' }}" readonly>
+                    <input type="text" name="failed_test_case_no" value="{{ $testCase -> test_case_no }}" readonly>
                 </div>
                 <div class="form-group">
                     <label>Date and Time Report</label>
@@ -31,7 +31,7 @@
                 </div>
                 <div class="form-group">
                     <label>Test Environment</label>
-                    <input type="text" name="environment" value="{{ $execution->environment ?? '' }}" readonly>
+                    <input type="text" name="environment" value="{{ $testCase -> test_title }}" readonly>
                 </div>
                 <div class="form-group">
                     <label>Status</label>
@@ -47,12 +47,12 @@
                 </div>
                 <div class="form-group">
                     <label>Tester</label>
-                    <input type="text" name="tester" value="{{ $tester ?? '' }}" readonly>
+                    <input type="text" name="tester" value="{{ $testCase -> tester }}" readonly>
                 </div>
             </div>
             <div class="form-group">
                 <label>Test Step</label>
-                <textarea name="issue_description">{{ request('test_step') ?? '' }}</textarea>
+                <textarea name="issue_description">{{ $testCase -> test_step }}</textarea>
             </div>
             <div class="form-group">
                 <label>Add Screenshot URL</label>
@@ -61,11 +61,11 @@
             <div class="form-group">
                 <label>Assign Developer</label>
                 <select name="assigned_developer" class="form-control">
-                <option value="">Select Developer</option>
-                @foreach($developers as $developer)
+                    <option value="">Select Developer</option>
+                    @foreach($developers as $developer)
                     <option value="{{ $developer }}">{{ $developer }}</option>
-                @endforeach
-            </select>
+                    @endforeach
+                </select>
 
             </div>
             <div class="buttons">
@@ -77,34 +77,33 @@
 </body>
 
 @if(session('success'))
-    <script>
+<script>
+    function handleIssueAction() {
+        let testCaseNo = document.getElementById("issueTestCaseNo").innerText;
+        let testTitle = document.getElementById("issueTestTitle").innerText;
+        let testStep = document.getElementById("issueTestStep").innerText;
 
-function handleIssueAction() {
-    let testCaseNo = document.getElementById("issueTestCaseNo").innerText;
-    let testTitle = document.getElementById("issueTestTitle").innerText;
-    let testStep = document.getElementById("issueTestStep").innerText;
-    
-    if (testCaseNo) {
-        let queryParams = new URLSearchParams({
-            test_case_no: testCaseNo,
-            test_title: testTitle,
-            test_step: testStep
-        }).toString();
+        if (testCaseNo) {
+            let queryParams = new URLSearchParams({
+                test_case_no: testCaseNo,
+                test_title: testTitle,
+                test_step: testStep
+            }).toString();
 
-        window.location.href = `/issue/create?${queryParams}`;
-    } else {
-        alert("Failed test case number not found!");
+            window.location.href = `/issue/create?${queryParams}`;
+        } else {
+            alert("Failed test case number not found!");
+        }
     }
-}
-        document.addEventListener("DOMContentLoaded", function () {
-            Swal.fire({
-                icon: 'success',
-                title: 'Issue Added Successfully',
-                text: '{{ session("success") }}',
-            }).then(() => {
-                window.location.href = "{{ route('issue.index') }}";
-            });
+    document.addEventListener("DOMContentLoaded", function() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Issue Added Successfully',
+            text: '{{ session("success") }}',
+        }).then(() => {
+            window.location.href = "{{ route('issue.index') }}";
         });
-    </script>
+    });
+</script>
 @endif
 @endsection

@@ -15,6 +15,7 @@ class Issue extends Model
         'execution_id',
         'project_name',
         'environment',
+        'test_case_id',
         'date_time_report',
         'status',
         'issue_title',
@@ -22,7 +23,7 @@ class Issue extends Model
         'issue_description',
         'screenshot_url',
         'assigned_developer',
-        'developer_notes' // Added developer notes field (if needed)
+        'developer_notes'
     ];
 
     // Relationship with Project
