@@ -261,8 +261,9 @@
             return;
         }
 
-        let url = "{{ route('issue.create') }}?issue_number=" + issueNumber + "&test_case_id=" + testCaseId;
+        let url = "{{ route('issue.create') }}?issue_number=" + issueNumber + "&test_case_id=" + testCaseId + "&project_id=" + currentProjectId;
         window.location.href = url;
     }
+
 </script>
 @endsection

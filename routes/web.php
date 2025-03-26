@@ -38,7 +38,6 @@ Route::get('/testcases/export/excel', [TestCaseController::class, 'exportExcel']
 Route::get('/testcases/export/pdf', [TestCaseController::class, 'exportPDF'])->name('testcases.export.pdf');
 Route::post('/get-testcases', [TestCaseController::class, 'getTestCasesByProject'])->name('testcases.getByProject');
 
-
 // Project Routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
@@ -105,14 +104,14 @@ Route::get('/execute/generate-issue-number', [ExecutionController::class, 'gener
 
 
 
-
-
 // Issue routes
 Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
 Route::get('/index-issue', [IssueController::class, 'index'])->name('issue.index'); // For displaying the list of issues
 Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
 Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
 Route::get('/issues/list', [IssueController::class, 'getIssues'])->name('issue.list');
+
+Route::get('/api/issue-counter', [IssueController::class, 'getIssueCounter']);
 
 
 // routes/web.php

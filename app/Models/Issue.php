@@ -12,7 +12,6 @@ class Issue extends Model
     protected $fillable = [
         'issue_number',
         'project_id',
-        'execution_id',
         'project_name',
         'environment',
         'test_case_id',
@@ -23,22 +22,20 @@ class Issue extends Model
         'issue_description',
         'screenshot_url',
         'assigned_developer',
-        'developer_notes'
+        'developer_notes',
     ];
 
-    // Relationship with Project
+    /**
+     * Relationship with Project
+     */
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    // Relationship with Execution
-    public function execution()
-    {
-        return $this->belongsTo(Execution::class, 'execution_id');
-    }
-
-    // Get human-readable date format
+    /**
+     * Human-readable formatted date.
+     */
     public function getFormattedDateAttribute()
     {
         return $this->created_at ? $this->created_at->format('Y-m-d H:i:s') : 'N/A';
