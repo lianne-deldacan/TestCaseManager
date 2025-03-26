@@ -8,6 +8,11 @@
         <h2>ISSUE</h2>
         <form action="{{ route('issue.store') }}" method="POST">
             @csrf
+
+            <input type="hidden" name="issue_number" value="{{ request('issue_number') }}">
+            <input type="hidden" name="project_id" value="{{ request('project_id') }}">
+            <input type="hidden" name="test_case_id" value="{{ request('test_case_id') }}">
+
             <!-- First Row: Project Name, Project Service, Tester -->
             <div class="row mb-3">
                 <div class="col-md-4">
@@ -41,7 +46,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Test Environment</label>
-                        <input type="text" name="environment" class="form-control" value="{{ $testCase->test_title ?? '' }}" readonly>
+                        <input type="text" name="environment" class="form-control" value="{{ $testCase->test_environment ?? '' }}" readonly>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -65,7 +70,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Category</label>
-                       <input type="text" name="category" class="form-control" value="{{ $testCase->category->name ?? 'N/A' }}" readonly>
+                        <input type="text" name="category" class="form-control" value="{{ $testCase->category->name ?? 'N/A' }}" readonly>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -86,7 +91,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Issue Title</label>
-                        <input type="text" name="issue_title" class="form-control" value="{{ request('test_title') ?? '' }}">
+                        <input type="text" name="issue_title" class="form-control">
                     </div>
                 </div>
             </div>
@@ -94,7 +99,12 @@
             <!-- Fifth Row: Test Step -->
             <div class="mb-3">
                 <label>Test Step</label>
-                <textarea name="issue_description" class="form-control" rows="4">{{ $testCase->test_step ?? '' }}</textarea>
+                <textarea name="test_step" class="form-control" rows="2" disabled>{{ $testCase->test_step ?? '' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>Issue Description</label>
+                <textarea name="issue_description" class="form-control" rows="3"></textarea>
             </div>
 
             <!-- Sixth Row: Screenshot -->
