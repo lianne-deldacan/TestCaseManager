@@ -30,6 +30,7 @@ class IssueController extends Controller
 
     public function saveNewIssue(Request $request)
     {
+    
         $validated = $request->validate([
             'test_case_id' => 'required|integer',
             'project_id' => 'required|integer',
@@ -45,10 +46,7 @@ class IssueController extends Controller
             'assigned_developer' => 'nullable|string',
         ]);
 
-        // Debugging: Check if validation passes
-        dd($validated);
-
-        // Issue::create($validated);
+        Issue::create($validated);
 
         return redirect()->route('issue.index')->with('success', 'Issue added successfully!');
     }
