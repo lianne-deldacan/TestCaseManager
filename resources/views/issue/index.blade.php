@@ -1,7 +1,9 @@
-=@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 <div class="container mt-4">
+
+    
     <h2>Issue List</h2>
 
     <div class="d-flex justify-content-between mb-3">
@@ -67,15 +69,9 @@
                         <td>{{ $issue->tester }}</td>
                         <td>{{ $issue->created_at->format('Y-m-d') }}</td>
                         <td>{{ $issue->status }}</td>
-                        <td>{{ $issue->title }}</td>
-                        <td>{{ $issue->description }}</td>
-                        <td>
-                            @if ($issue->screenshot)
-                                <a href="{{ asset('storage/screenshots/'.$issue->screenshot) }}" target="_blank">View Screenshot</a>
-                            @else
-                                N/A
-                            @endif
-                        </td>
+                        <td>{{ $issue->issue_title }}</td>
+                        <td>{{ $issue->issue_description }}</td>
+                        <td>{{ $issue->screenshot_url }} </td>
                         <td>{{ $issue->developer }}</td>
                         <td>{{ $issue->notes }}</td>
                         <td>
@@ -138,7 +134,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('issue.list') }}",
+                url: "{{ route('issue.fetch') }}",
                 data: function (d) {
                     d.status = $('#statusFilter').val();
                     d.project_id = $('#project_id').val();

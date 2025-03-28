@@ -10,6 +10,73 @@ use Illuminate\Http\Request;
 class IssueController extends Controller
 {
 
+    /**
+     * Other way of adding issue
+     */
+
+    public function showAddIssueForm()
+    {
+        $services = Project::select('service')->distinct()->pluck('service');
+        $projects = Project::all(['id', 'name', 'service']);
+
+        // Fetch failed test cases with category name
+        $failedTestCases = TestCase::where('status', 'Fail')->get(['id', 'test_title', 'test_environment', 'test_step', 'test_case_no', 'category_id', 'tester']);
+
+        $developers = ['Dev1', 'Dev2', 'Dev3'];
+
+        return view('issue.add', compact('projects', 'failedTestCases', 'developers', 'services'));
+    }
+
+
+    public function saveNewIssue(Request $request)
+    {
+        $validated = $request->validate([
+            'test_case_id' => 'required|integer',
+            'project_id' => 'required|integer',
+            'issue_number' => 'required|string',
+            'issue_title' => 'required|string|max:255',
+            'issue_description' => 'required|string',
+            'date_time_report' => 'required',
+            'tester' => 'required',
+            'environment' => 'required',
+            'status' => 'required',
+            'project_name' => 'required|string',
+            'screenshot_url' => 'nullable|string',
+            'assigned_developer' => 'nullable|string',
+        ]);
+
+        // Debugging: Check if validation passes
+        dd($validated);
+
+        // Issue::create($validated);
+
+        return redirect()->route('issue.index')->with('success', 'Issue added successfully!');
+    }
+
+
+
+    public function fetchIssues()
+    {
+        $issues = Issue::with('project')->get();
+        return response()->json($issues);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function getIssueCounter(Request $request)
     {
         $projectId = $request->query('projectId');

@@ -114,6 +114,15 @@ Route::get('/issues/list', [IssueController::class, 'getIssues'])->name('issue.l
 Route::get('/api/issue-counter', [IssueController::class, 'getIssueCounter']);
 
 
+Route::get('/issue/add/{project_id?}/{test_case_id?}', [IssueController::class, 'showAddIssueForm'])->name('issue.add');
+Route::post('/issue/save', [IssueController::class, 'saveNewIssue'])->name('issue.save');
+Route::get('/issues/fetch', [IssueController::class, 'fetchIssues'])->name('issue.fetch');
+
+
+
+
+
+
 // routes/web.php
 Route::post('/update-status', [TestCaseController::class, 'updateStatus'])->name('update.status');
 Route::post('/create-issue', [IssueController::class, 'createIssue'])->name('create.issue');
