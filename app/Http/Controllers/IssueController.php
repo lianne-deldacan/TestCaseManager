@@ -46,6 +46,7 @@ class IssueController extends Controller
 
     public function saveNewIssue(Request $request)
     {
+    
 
         $validated = $request->validate([
             'test_case_id' => 'required|integer',
@@ -68,25 +69,11 @@ class IssueController extends Controller
     }
 
 
-
     public function fetchIssues()
     {
         $issues = Issue::with('project')->get();
         return response()->json($issues);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -175,7 +162,6 @@ class IssueController extends Controller
             'screenshot_url' => 'nullable|string',
             'assigned_developer' => 'nullable|string',
         ]);
-
 
         // Create the issue
         $issue = Issue::create($validated);
