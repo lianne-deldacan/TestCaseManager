@@ -26,6 +26,7 @@ class ExecutionController extends Controller
     public function showExecutionPage($projectId)
     {
         $project = Project::findOrFail($projectId);
+        
         $testCases = TestCase::where('project_id', $projectId)->get();
 
         return view('execute.executeTest', compact('project', 'testCases'));

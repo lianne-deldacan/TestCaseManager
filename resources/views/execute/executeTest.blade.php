@@ -366,6 +366,7 @@
 
         // Populate issue modal
         $("#generatedIssueNumber").text(`Issue Number: ${issueNumber}`);
+        $('input[name="issue_number"]').val(issueNumber);
         $("#createIssueModal").modal("show");
 
         // Hide execution modal

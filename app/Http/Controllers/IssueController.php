@@ -146,6 +146,8 @@ class IssueController extends Controller
 
     public function store(Request $request)
     {
+    
+
         // Validate input data
         $validated = $request->validate([
             'test_case_id' => 'required|integer',
