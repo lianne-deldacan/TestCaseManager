@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-md-6">
                     <label for="test_step" class="form-label">Test Step</label>
-                    <input type="text" id="test_step" name="test_step" class="form-control" required>
+                    <textarea id="test_step" name="test_step" rows="1" cols="50" required></textarea>
                 </div>
                 <div class="col-md-6">
                     <label for="category" class="form-label">Category</label>

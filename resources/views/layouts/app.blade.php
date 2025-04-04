@@ -93,7 +93,7 @@
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
                             <li><a href="{{ route('landing', ['page' => 'add']) }}" class="text-white d-inline-flex text-decoration-none rounded">Add Test Cases</a></li>
                             <li><a href="{{ route('landing', ['page' => 'view']) }}" class="text-white d-inline-flex text-decoration-none rounded">View Test Cases</a></li>
-                            <li><a href="{{ route('executeTestcases') }}" class="text-white d-inline-flex text-decoration-none rounded">Execute Test Cases</a></li>
+                            <li><a href="{{ route('executeTestcases') }}" class="text-white d-inline-flex text-decoration-none rounded">Run Test Cases</a></li>
                         </ul>
                     </div>
                 </li>

@@ -14,22 +14,39 @@ class IssueController extends Controller
      * Other way of adding issue
      */
 
-    public function showAddIssueForm()
+    // public function showAddIssueForm()
+    // {
+    //     $services = Project::select('service')->distinct()->pluck('service');
+    //     $projects = Project::all(['id', 'name', 'service']);
+
+    //     // Fetch failed test cases with category name
+    //     $failedTestCases = TestCase::where('status', 'Fail')->get(['id', 'test_title', 'test_environment', 'test_step', 'test_case_no', 'category_id', 'tester']);
+
+    //     $developers = ['Dev1', 'Dev2', 'Dev3'];
+
+    //     return view('issue.add', compact('projects', 'failedTestCases', 'developers', 'services'));
+    // }
+
+    public function showAddIssueForm(Request $request)
     {
-        $services = Project::select('service')->distinct()->pluck('service');
+        // Fetch projects, failed test cases, and developers
         $projects = Project::all(['id', 'name', 'service']);
-
-        // Fetch failed test cases with category name
         $failedTestCases = TestCase::where('status', 'Fail')->get(['id', 'test_title', 'test_environment', 'test_step', 'test_case_no', 'category_id', 'tester']);
-
         $developers = ['Dev1', 'Dev2', 'Dev3'];
 
-        return view('issue.add', compact('projects', 'failedTestCases', 'developers', 'services'));
+        // Fetch the project and service based on the provided project_id
+        $project = Project::find($request->input('project_id'));
+        $project_name = $project ? $project->name : null;
+        $service = $project ? $project->service : null;
+
+        // Return the view with the necessary data
+        return view('issue.add', compact('projects', 'failedTestCases', 'developers', 'project_name', 'service'));
     }
 
 
     public function saveNewIssue(Request $request)
     {
+
         $validated = $request->validate([
             'test_case_id' => 'required|integer',
             'project_id' => 'required|integer',
@@ -45,10 +62,7 @@ class IssueController extends Controller
             'assigned_developer' => 'nullable|string',
         ]);
 
-        // Debugging: Check if validation passes
-        dd($validated);
-
-        // Issue::create($validated);
+        Issue::create($validated);
 
         return redirect()->route('issue.index')->with('success', 'Issue added successfully!');
     }
@@ -109,13 +123,12 @@ class IssueController extends Controller
     /**
      * Show the form for creating a new issue.
      */
+
     public function create(Request $request)
     {
-        // Retrieve project and test case IDs from request
         $testCaseId = $request->input('test_case_id');
         $projectId = $request->input('project_id');
 
-        // Fetch project and test case
         $project = Project::find($projectId);
         $testCase = TestCase::find($testCaseId);
 
@@ -123,16 +136,17 @@ class IssueController extends Controller
             return redirect()->back()->with('error', 'Invalid project or test case ID.');
         }
 
-        // Generate issue number for the selected test case and project
+        // Provide dummy developers since there's no Developer model
+        $developers = ['Dev1', 'Dev2', 'Dev3']; // Replace with real logic if needed
+
         $existingIssues = Issue::where('project_id', $projectId)->count();
         $issueNumber = sprintf('BELL-%d-%03d', $project->id, $existingIssues + 1);
 
-        // Pass data to the view
         return view('issue.create', [
             'testCase' => $testCase,
             'project' => $project,
             'issueNumber' => $issueNumber,
-            'developers' => ['Dev1', 'Dev2', 'Dev3'], // Replace with dynamic developer data
+            'developers' => $developers, // Pass dummy developers
         ]);
     }
 
@@ -142,29 +156,40 @@ class IssueController extends Controller
      * Store a newly created issue in storage.
      */
 
+
     public function store(Request $request)
     {
+        // Validate input data
         $validated = $request->validate([
             'test_case_id' => 'required|integer',
             'project_id' => 'required|integer',
             'issue_number' => 'required|string',
             'issue_title' => 'required|string|max:255',
-            'execution_id' => 'nullable',
+            'execution_id' => 'nullable|string',
             'issue_description' => 'required|string',
-            'date_time_report' => 'required',
-            'project_id' => 'required',
-            'tester' => 'required',
-            'environment' => 'required',
-            'status' => 'required',
+            'date_time_report' => 'required|date',  
+            'tester' => 'required|string',
+            'environment' => 'required|string',
+            'status' => 'required|string',
             'project_name' => 'required|string',
             'screenshot_url' => 'nullable|string',
             'assigned_developer' => 'nullable|string',
         ]);
-        
-        $validated['project_name'] = $validated['project_name'] ?? $request->input('project_name');
-        Issue::create($validated);
-        return redirect()->route('issue.index')->with('success', 'Issue added successfully!');
+
+
+        // Create the issue
+        $issue = Issue::create($validated);
+
+        // Return JSON response
+        return response()->json([
+            'success' => (bool) $issue,
+            'message' => $issue ? 'Issue added successfully!' : 'Failed to create issue.'
+        ], $issue ? 200 : 500);
     }
+
+
+
+
 
 
 

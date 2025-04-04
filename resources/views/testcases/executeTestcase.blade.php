@@ -29,7 +29,8 @@
                 </div>
 
                 <!-- Other form fields -->
-                @foreach (['tester', 'test_environment', 'test_case_no', 'test_title', 'test_step', 'category_id', 'date_of_input', 'priority'] as $field)
+                {{-- 'test_case_no', 'test_title', 'test_step', 'category_id', 'date_of_input', 'priority' --}}
+                @foreach (['tester', 'test_environment'] as $field)
                 <div class="col-md-6">
                     <label for="{{ $field }}" class="form-label">{{ ucfirst(str_replace('_', ' ', $field)) }}</label>
                     <input type="{{ $field === 'date_of_input' ? 'date' : 'text' }}" id="{{ $field }}" class="form-control" disabled>

@@ -105,9 +105,11 @@ Route::get('/execute/generate-issue-number', [ExecutionController::class, 'gener
 
 
 // Issue routes
+Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store');
+
 Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
 Route::get('/index-issue', [IssueController::class, 'index'])->name('issue.index'); // For displaying the list of issues
-Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
+// Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
 Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
 Route::get('/issues/list', [IssueController::class, 'getIssues'])->name('issue.list');
 
