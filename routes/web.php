@@ -11,10 +11,31 @@ use App\Http\Controllers\ExecutionController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+//User routes
+Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+Route::post('/users', [UserController::class, 'store'])->name('users.store');
+Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+// Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+// Route::post('/users', [UserController::class, 'store'])->name('users.store');
+// // Route::get('/users', [UserController::class, 'index'])->name('users.index'); // Removed temporarily for test 
+// Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+// Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+// Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+//Auth routes
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 // Test case routes
 Route::get('/testcases', [TestCaseController::class, 'index'])->name('testcases.index');
