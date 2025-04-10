@@ -130,6 +130,20 @@
                         </div>
                     </li>
 
+                    {{-- Users --}}
+                    <li class="mb-1 border-bottom">
+                        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"
+                            data-bs-toggle="collapse" data-bs-target="#users-collapse" aria-expanded="true">
+                            Users
+                        </button>
+                        <div class="collapse show" id="categories-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
+                                {{-- <li><a href="/users" class="text-white d-inline-flex text-decoration-none rounded">View Users</a></li> --}}
+                                <li><a href="/users/create" class="text-white d-inline-flex text-decoration-none rounded">Add Users</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
                     {{-- Account --}}
                     <li class="mb-1 border-bottom">
                         <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed fw-bold fs-4 text-white"

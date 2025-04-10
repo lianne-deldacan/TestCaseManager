@@ -19,11 +19,16 @@
       </div>
     @endif
 
-    {{-- Success Message --}}
+    {{-- Success Message (Trigger Swal if success session exists) --}}
     @if (session('success'))
-      <div style="color: green; margin-bottom: 20px;">
-        {{ session('success') }}
-      </div>
+      <script>
+        Swal.fire({
+          title: 'User Created Successfully!',
+          icon: 'success',
+          draggable: true,
+          confirmButtonText: 'OK'
+        });
+      </script>
     @endif
 
     <form method="POST" action="{{ route('users.store') }}">
@@ -40,13 +45,18 @@
       </div>
 
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group" style="position: relative;">
           <label for="password">Password</label>
           <input type="password" name="password" id="password" required />
+          <i id="togglePassword" class="bi bi-eye-slash"
+            style="position: absolute; right: 10px; top: 37px; cursor: pointer; font-size: 18px; color: #666;"></i>
         </div>
-        <div class="form-group">
+
+        <div class="form-group" style="position: relative;">
           <label for="password_confirmation">Confirm Password</label>
           <input type="password" name="password_confirmation" id="password_confirmation" required />
+          <i id="toggleConfirmPassword" class="bi bi-eye-slash"
+            style="position: absolute; right: 10px; top: 37px; cursor: pointer; font-size: 18px; color: #666;"></i>
         </div>
       </div>
 
@@ -75,14 +85,18 @@
               <td>{{ $user->id }}</td>
               <td>{{ $user->name }}</td>
               <td>{{ $user->email }}</td>
-              <td>
-                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
-              </td>
+            <td>
+              <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">
+                <i class="bi bi-pencil-square"></i> Edit
+              </a>
+              <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger">
+                  <i class="bi bi-trash3-fill"></i> Delete
+                </button>
+              </form>
+            </td>
             </tr>
           @endforeach
         </tbody>
@@ -100,6 +114,26 @@
       columnDefs: [
         { targets: [3], orderable: false }
       ]
+    });
+
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    togglePassword.addEventListener('click', function () {
+      const isPassword = password.type === 'password';
+      password.type = isPassword ? 'text' : 'password';
+      this.classList.toggle('bi-eye-slash');
+      this.classList.toggle('bi-eye');
+    });
+
+    // Toggle confirm password visibility
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const confirmPassword = document.getElementById('password_confirmation');
+    toggleConfirmPassword.addEventListener('click', function () {
+      const isPassword = confirmPassword.type === 'password';
+      confirmPassword.type = isPassword ? 'text' : 'password';
+      this.classList.toggle('bi-eye-slash');
+      this.classList.toggle('bi-eye');
     });
   });
 </script>
