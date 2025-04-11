@@ -219,4 +219,45 @@ class IssueController extends Controller
 
         return response()->json(['last_issue_number' => 0]); // No issues exist
     }
+
+    
+
+    // Show the form for editing an existing issue
+    public function edit($id)
+    {
+        $issue = Issue::findOrFail($id);
+        $projects = Project::all();
+        $developers = ['Dev1', 'Dev2', 'Dev3'];
+
+        return view('issue.edit', compact('issue', 'projects', 'developers'));
+    }
+
+    // Update the issue in the database
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'issue_title' => 'required|string|max:255',
+            'issue_description' => 'required|string',
+            'status' => 'required|string',
+            'assigned_developer' => 'nullable|string',
+            'tester' => 'required|string',
+            'environment' => 'required|string',
+            'project_name' => 'required|string',
+            'screenshot_url' => 'nullable|string',
+        ]);
+
+        $issue = Issue::findOrFail($id);
+        $issue->update($validated);
+
+        return redirect()->route('issue.index')->with('success', 'Issue updated successfully!');
+    }
+
+    // Delete an issue
+    public function destroy($id)
+    {
+        $issue = Issue::findOrFail($id);
+        $issue->delete();
+
+        return response()->json(['message' => 'Issue deleted successfully']);
+    }
 }

@@ -131,7 +131,7 @@ Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.stor
 Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
 Route::get('/index-issue', [IssueController::class, 'index'])->name('issue.index'); // For displaying the list of issues
 // Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
-Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
+// Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
 Route::get('/issues/list', [IssueController::class, 'getIssues'])->name('issue.list');
 
 Route::get('/api/issue-counter', [IssueController::class, 'getIssueCounter']);
@@ -142,7 +142,15 @@ Route::post('/issue/save', [IssueController::class, 'saveNewIssue'])->name('issu
 Route::get('/issues/fetch', [IssueController::class, 'fetchIssues'])->name('issue.fetch');
 
 
+// Edit an issue (show form)
+Route::get('/issue/edit/{id}', [IssueController::class, 'edit'])->name('issue.edit');
 
+// Update an issue (process form submission)
+Route::put('/issue/update/{id}', [IssueController::class, 'update'])->name('issue.updateById');
+Route::put('/issue/update/{id}', [IssueController::class, 'update'])->name('issue.update');
+
+// Delete an issue
+Route::delete('/issues/{id}', [IssueController::class, 'destroy'])->name('issue.destroy');
 
 
 
