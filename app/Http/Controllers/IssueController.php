@@ -46,7 +46,7 @@ class IssueController extends Controller
 
     public function saveNewIssue(Request $request)
     {
-    
+
 
         $validated = $request->validate([
             'test_case_id' => 'required|integer',
@@ -146,7 +146,7 @@ class IssueController extends Controller
 
     public function store(Request $request)
     {
-    
+
 
         // Validate input data
         $validated = $request->validate([
@@ -156,7 +156,7 @@ class IssueController extends Controller
             'issue_title' => 'required|string|max:255',
             'execution_id' => 'nullable|string',
             'issue_description' => 'required|string',
-            'date_time_report' => 'required|date',  
+            'date_time_report' => 'required|date',
             'tester' => 'required|string',
             'environment' => 'required|string',
             'status' => 'required|string',
@@ -220,7 +220,7 @@ class IssueController extends Controller
         return response()->json(['last_issue_number' => 0]); // No issues exist
     }
 
-    
+
 
     // Show the form for editing an existing issue
     public function edit($id)
@@ -258,6 +258,6 @@ class IssueController extends Controller
         $issue = Issue::findOrFail($id);
         $issue->delete();
 
-        return response()->json(['message' => 'Issue deleted successfully']);
+        return redirect()->back()->with('success', 'Issue deleted successfully.');
     }
 }
