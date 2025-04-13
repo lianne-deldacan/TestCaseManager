@@ -145,7 +145,7 @@
             title: 'Issue Added Successfully',
             text: '{{ session("success") }}',
         }).then(() => {
-            window.location.href = "{{ route('issue.index') }}";
+            window.location.href = "{{ route('issues') }}";
         });
     });
 </script>

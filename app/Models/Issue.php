@@ -41,6 +41,11 @@ class Issue extends Model
         return $this->belongsTo(Project::class, 'project_id');
     }
 
+    public function tester()
+    {
+        return $this->belongsTo(User::class, 'tester_id');
+    }
+
     /**
      * Human-readable formatted date.
      */

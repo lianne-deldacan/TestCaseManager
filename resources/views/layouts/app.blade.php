@@ -111,7 +111,7 @@
                         <div class="collapse show" id="issues-collapse">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
                                 <li><a href="{{ route('issue.add') }}" class="text-white d-inline-flex text-decoration-none rounded">Add Issues</a></li>
-                                <li><a href="{{ route('issue.index') }}" class="text-white d-inline-flex text-decoration-none rounded">View Issues</a></li>
+                                <li><a href="{{ route('issues') }}" class="text-white d-inline-flex text-decoration-none rounded">View Issues</a></li>
                             </ul>
                         </div>
                     </li>

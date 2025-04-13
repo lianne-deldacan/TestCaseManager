@@ -32,9 +32,11 @@
 
             <select id="testerFilter" class="form-select" style="width: 150px;">
                 <option value="">All Testers</option>
-                @foreach($testers as $tester)
-                <option value="{{ $tester }}">{{ $tester }}</option>
-                @endforeach
+                {{--
+                    @foreach($testers as $tester)
+                        <option value="{{ $tester }}">{{ $tester }}</option>
+                    @endforeach
+                --}}
             </select>
         </div>
     </div>

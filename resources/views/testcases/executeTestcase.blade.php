@@ -15,8 +15,8 @@
                     <label for="service" class="form-label">Service</label>
                     <select id="service-select" name="service" class="form-control">
                         <option value="">-- Select Service --</option>
-                        @foreach($services as $service)
-                        <option value="{{ $service }}">{{ $service }}</option>
+                        @foreach(config('global.services') as $k => $service)
+                            <option value="{{ $k }}">{{ $service }}</option>
                         @endforeach
                     </select>
                 </div>

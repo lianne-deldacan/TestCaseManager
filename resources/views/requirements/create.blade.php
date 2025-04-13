@@ -119,7 +119,7 @@
 </div>
 @endsection
 
-<script>
+<!-- <script>
     function printTable() {
         var printWindow = window.open('', '', 'width=800,height=1000');
         printWindow.document.write('<html><head><title>Print Requirements Table</title>');
@@ -140,7 +140,7 @@
         printWindow.print();
         printWindow.close();
     }
-</script>
+</script> -->
 
 <!-- For Requirements Type -->
 <script>

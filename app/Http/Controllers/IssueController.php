@@ -31,7 +31,8 @@ class IssueController extends Controller
     {
         // Fetch projects, failed test cases, and developers
         $projects = Project::all(['id', 'name', 'service']);
-        $failedTestCases = TestCase::where('status', 'Fail')->get(['id', 'test_title', 'test_environment', 'test_step', 'test_case_no', 'category_id', 'tester']);
+        // $failedTestCases = TestCase::where('status', 'Fail')->get(['id', 'test_title', 'test_environment', 'test_step', 'test_case_no', 'category_id', 'tester']);
+        $failedTestCases = TestCase::where('status', 2)->get();
         $developers = ['Dev1', 'Dev2', 'Dev3'];
 
         // Fetch the project and service based on the provided project_id
@@ -65,7 +66,7 @@ class IssueController extends Controller
 
         Issue::create($validated);
 
-        return redirect()->route('issue.index')->with('success', 'Issue added successfully!');
+        return redirect()->route('issues')->with('success', 'Issue added successfully!');
     }
 
 
@@ -102,9 +103,15 @@ class IssueController extends Controller
     {
         $issues = Issue::with('project')->latest()->get();
         $projects = Project::all();
-        $testers = Issue::select('tester')->distinct()->pluck('tester');
+        // $testers = Issue::select('tester')->distinct()->pluck('tester');
+        // $testers = get_users_with_role('Tester');
+        // dd($testers);
 
-        return view('issue.index', compact('issues', 'projects', 'testers'));
+        return view('issue.index', compact(
+            'issues', 
+            'projects', 
+            // 'testers'
+        ));
     }
 
     /**
@@ -250,7 +257,7 @@ class IssueController extends Controller
         $issue = Issue::findOrFail($id);
         $issue->update($validated);
 
-        return redirect()->route('issue.index')->with('success', 'Issue updated successfully!');
+        return redirect()->route('issues')->with('success', 'Issue updated successfully!');
     }
 
     // Delete an issue

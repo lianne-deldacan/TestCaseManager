@@ -18,6 +18,7 @@ if (!function_exists('generateIssueNumber')) {
 }
 
 if (!function_exists('get_users_with_role')) {
+    // retrun roles Tester
     function get_users_with_role($role = null)
     {
         $users = User::whereHas('roles', function ($q) use ($role) {

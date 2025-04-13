@@ -23,7 +23,7 @@ return new class extends Migration {
             // $table->unsignedBigInteger('execution_id');
             // $table->string('project_name')->nullable(); 
             $table->string('environment');
-            $table->string('status')->default('Open');
+            // $table->string('status')->default('Open');
             $table->unsignedTinyInteger('status')->default(0);
             $table->string('issue_title');
             // $table->string('tester');

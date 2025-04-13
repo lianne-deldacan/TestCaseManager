@@ -26,7 +26,7 @@ class TestCaseSeeder extends Seeder
         // 'priority',
         // 'test_environment', // Ensure this is included
         $faker = fake('en_PH');
-        for ($i = 1; $i <= rand(5, 10); $i++) {
+        for ($i = 1; $i <= rand(20, 30); $i++) {
             $project = Project::inRandomOrder()->first();
             $category = Category::inRandomOrder()->first();
             $tester = get_users_with_role('Tester')->random();

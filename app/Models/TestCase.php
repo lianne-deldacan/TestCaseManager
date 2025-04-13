@@ -33,6 +33,7 @@ class TestCase extends Model
     const STATUSES = [
         'Pending',
         'Ongoing',
+        'Fail',
         'Complete',
     ];
 

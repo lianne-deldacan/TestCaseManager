@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - @yield('title')</title>
     <!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Swal CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <style>
@@ -27,15 +30,15 @@
             align-items: center;
         }
 
-      .login-box {
-          background-color: #ffffff;
-          border-radius: 12px;
-          padding: 3rem 4rem;
-          width: 550px; 
-          text-align: center;
-          position: relative;
-          box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.15);
-      }
+        .login-box {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 3rem 4rem;
+            width: 550px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.15);
+        }
 
         .logo-circle {
             background-color: white;
@@ -118,6 +121,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         @yield('content')
@@ -125,4 +129,5 @@
 
     @stack('scripts')
 </body>
+
 </html>

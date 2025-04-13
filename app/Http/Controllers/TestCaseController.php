@@ -67,9 +67,9 @@ class TestCaseController extends Controller
     {
         $service = $request->input('service');
 
-        if (!$service) {
-            return response()->json(['error' => 'Service is required'], 400);
-        }
+        // if (!$service) {
+        //     return response()->json(['error' => 'Service is required'], 400);
+        // }
 
         $projects = Project::where('service', $service)->pluck('name', 'id'); // Get project names and IDs
 
@@ -83,7 +83,7 @@ class TestCaseController extends Controller
     public function executeTest(Request $request)
     {
         // Fetch services
-        $services = Project::select('service')->distinct()->pluck('service');
+        // $services = Project::select('service')->distinct()->pluck('service');
 
         // Fetch projects if service is selected
         $projects = [];
@@ -108,7 +108,7 @@ class TestCaseController extends Controller
         // Fetch categories (whether active or disabled)
         $categories = Category::all();
         
-        return view('testcases.executeTestcase', compact('services', 'projects', 'testCases', 'categories'));
+        return view('testcases.executeTestcase', compact('projects', 'testCases', 'categories'));
     }
 
 
@@ -132,11 +132,15 @@ class TestCaseController extends Controller
         // $testCases = TestCase::where('project_id', $project->id)->get();
         $service = $project->service ?? 'Default Service';
 
-        return view('testcases.view', [
-            // 'testCases' => $testCases,
-            'project' => $project, // Pass the project variable
-            'service' => $service, // Pass the service variable
-        ]);
+        // return view('testcases.view', [
+        //     // 'testCases' => $testCases,
+        //     'project' => $project, // Pass the project variable
+        //     'service' => $service, // Pass the service variable
+        // ]);
+        return view('testcases.view', compact(
+            'project',
+            'service',
+        ));
     }
 
 
@@ -181,6 +185,7 @@ class TestCaseController extends Controller
     {
         // Get project ID from the request
         $projectId = $request->query('project_id');
+        $testers = get_users_with_role('Tester');
 
         if (!$projectId) {
             return redirect()->route('projects.index')->with('error', 'Project ID is required.');
@@ -201,7 +206,8 @@ class TestCaseController extends Controller
             'projectName' => $project->name,
             'service' => $project->service ?? 'Default Service',
             'categories' => $categories,
-            'testCases' => $testCases
+            'testCases' => $testCases,
+            'testers' => $testers->where('status', 1)
         ]);
     }
 

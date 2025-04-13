@@ -11,11 +11,11 @@
             <input type="hidden" name="project_id" value="{{ $projectId ?? '' }}">
             <input type="hidden" name="status" value="Not Run">
             <div class="row g-3">
-                <div class="mb-3">
+                <div class="form-group col-6">
                     <label for="project-name" class="form-label">Project Name</label>
                     <input type="text" id="project-name" class="form-control" value="{{ $project->name }}" disabled>
                 </div>
-                <div class="form-group">
+                <div class="form-group col-6">
                     <label for="service">Service</label>
                     <input type="text" id="service" class="form-control" value="{{ $service ?? 'No service available' }}" disabled>
                     <input type="hidden" name="service" value="{{ $service ?? 'No service available' }}">
@@ -30,7 +30,14 @@
 
                 <div class="col-md-6">
                     <label for="tester" class="form-label">Tester</label>
-                    <input type="text" id="tester" name="tester" class="form-control" value="Tester Name">
+                    <!-- <input type="text" id="tester" name="tester" class="form-control" value="Tester Name"> -->
+                    <select id="tester" name="tester" class="form-control" required>
+                        <!-- TODO: change to SELECT 2 plugin with pagination -->
+                        @foreach($testers as $tester)
+                        <option value="{{ $tester->id }}">{{ $tester->name }}</option>
+                        @endforeach
+                    </select>
+                     
                 </div>
                 <div class="col-md-6">
                     <label for="test_case_no" class="form-label">Test Case No.</label>

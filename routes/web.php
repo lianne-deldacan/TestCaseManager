@@ -36,22 +36,27 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // });
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     // Project Routes
-    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
-    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+    Route::prefix('projects')->group(function () {
+        Route::get('/', [ProjectController::class, 'index'])->name('projects.index');
+        Route::get('/create', [ProjectController::class, 'create'])->name('projects.create');
+        Route::post('/', [ProjectController::class, 'store'])->name('projects.store');
+    });
+    
     //Route for getting the list of projects based on service. (ajax)
     Route::get('/get-projects/{service}', [ProjectController::class, 'getProjects']);
 
     //Route for Requirements
-    Route::get('/requirements', [RequirementController::class, 'index'])->name('requirements.index');
-    Route::get('/requirements/create', [RequirementController::class, 'create'])->name('requirements.create');
-    Route::post('/requirements', [RequirementController::class, 'store'])->name('requirements.store');
-    Route::delete('/requirements/{id}', [RequirementController::class, 'destroy'])->name('requirements.destroy');
-    Route::get('/requirements/export/csv', [RequirementController::class, 'exportCSV'])->name('requirements.export.csv');
-    Route::get('/requirements/export/excel', [RequirementController::class, 'exportExcel'])->name('requirements.export.excel');
-    Route::get('/requirements/export/pdf', [RequirementController::class, 'exportPDF'])->name('requirements.export.pdf');
-    Route::get('/requirements/{requirement}/edit', [RequirementController::class, 'edit'])->name('requirements.edit');
-    Route::put('/requirements/{requirement}', [RequirementController::class, 'update'])->name('requirements.update');
+    Route::prefix('requirements')->group(function () {
+        Route::get('/', [RequirementController::class, 'index'])->name('requirements.index');
+        Route::get('/create', [RequirementController::class, 'create'])->name('requirements.create');
+        Route::post('/', [RequirementController::class, 'store'])->name('requirements.store');
+        Route::get('/{requirement}', [RequirementController::class, 'edit'])->name('requirements.edit');
+        Route::put('/{requirement}', [RequirementController::class, 'update'])->name('requirements.update');
+        Route::delete('/{id}', [RequirementController::class, 'destroy'])->name('requirements.destroy');
+        Route::get('/export/csv', [RequirementController::class, 'exportCSV'])->name('requirements.export.csv');
+        Route::get('/export/excel', [RequirementController::class, 'exportExcel'])->name('requirements.export.excel');
+        Route::get('/export/pdf', [RequirementController::class, 'exportPDF'])->name('requirements.export.pdf');
+    });
 
     //User routes
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -73,6 +78,32 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/testcases/export/excel', [TestCaseController::class, 'exportExcel'])->name('testcases.export.excel');
     Route::get('/testcases/export/pdf', [TestCaseController::class, 'exportPDF'])->name('testcases.export.pdf');
 
+    //issue
+    Route::prefix('issues')->group(function () {
+        Route::get('/', [IssueController::class, 'index'])->name('issues'); // For displaying the list of issues
+        Route::get('/add/{project_id?}/{test_case_id?}', [IssueController::class, 'showAddIssueForm'])->name('issue.add');
+    });
+
+    // Issue routes
+    Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store');
+    Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
+    
+    // Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
+    // Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
+    Route::get('/issues/list', [IssueController::class, 'getIssues'])->name('issue.list');
+    Route::get('/api/issue-counter', [IssueController::class, 'getIssueCounter']);
+    
+    Route::post('/issue/save', [IssueController::class, 'saveNewIssue'])->name('issue.save');
+    Route::get('/issues/fetch', [IssueController::class, 'fetchIssues'])->name('issue.fetch');
+
+    //Test case to get project details (ajax)
+    Route::get('/get-project-details/{id}', [TestCaseController::class, 'getProjectDetails']);
+    //Execute a test case
+    Route::get('/execute-testcases', [TestCaseController::class, 'executeTest'])->name('executeTestcases');
+    // Route::get('/execute/{id}', [ExecuteController::class, 'index'])->name('execute.index'); // Execute test case
+
+    Route::get('/select', [TestCaseController::class, 'showLanding'])->name('landing');
+
     //Auth routes
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
@@ -82,14 +113,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 // Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 // Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 // Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-//Test case to get project details
-Route::get('/get-project-details/{id}', [TestCaseController::class, 'getProjectDetails']);
-//Execute a test case
-Route::get('/execute-testcases', [TestCaseController::class, 'executeTestcase'])->name('executeTestcases');
-// Route::get('/execute/{id}', [ExecuteController::class, 'index'])->name('execute.index'); // Execute test case
 
-Route::post('/get-testcases', [TestCaseController::class, 'getTestCasesByProject'])->name('testcases.getByProject');
-Route::get('/select', [TestCaseController::class, 'showLanding'])->name('landing');
+Route::post('/get-testcases', [TestCaseController::class, 'getTestCasesByProject'])->name('testcases.getByProject'); //need pa ba?
+
 //Route for edit, delete, get
 Route::put('/testcases/{id}', [TestCaseController::class, 'update'])->name('testcases.update');
 Route::delete('/delete-case/{id}', [TestCaseController::class, 'destroy'])->name('delete-case');
@@ -103,7 +129,7 @@ Route::post('/testcases/getTestCaseData', [TestCaseController::class, 'getTestCa
 // Fetch project details
 Route::get('/testcases/project-details/{id}', [TestCaseController::class, 'getProjectDetails'])->name('testcases.getDetails');
 // Execute test cases
-Route::get('/execute-testcases', [TestCaseController::class, 'executeTest'])->name('executeTestcases');
+// Route::get('/execute-testcases', [TestCaseController::class, 'executeTest'])->name('executeTestcases');
 
 //Route for Categories
 Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -125,23 +151,6 @@ Route::get('/execute/test/{projectId}', [ExecutionController::class, 'showExecut
 //auto issue
 Route::get('/execute/generate-issue-number', [ExecutionController::class, 'generateIssueNumber'])->name('execute.generateIssueNumber');
 
-
-
-// Issue routes
-Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store');
-
-Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
-Route::get('/index-issue', [IssueController::class, 'index'])->name('issue.index'); // For displaying the list of issues
-// Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
-// Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
-Route::get('/issues/list', [IssueController::class, 'getIssues'])->name('issue.list');
-
-Route::get('/api/issue-counter', [IssueController::class, 'getIssueCounter']);
-
-
-Route::get('/issue/add/{project_id?}/{test_case_id?}', [IssueController::class, 'showAddIssueForm'])->name('issue.add');
-Route::post('/issue/save', [IssueController::class, 'saveNewIssue'])->name('issue.save');
-Route::get('/issues/fetch', [IssueController::class, 'fetchIssues'])->name('issue.fetch');
 
 
 // Edit an issue (show form)
