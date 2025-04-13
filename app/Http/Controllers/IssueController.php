@@ -127,7 +127,8 @@ class IssueController extends Controller
         $developers = ['Dev1', 'Dev2', 'Dev3']; // Replace with real logic if needed
 
         $existingIssues = Issue::where('project_id', $projectId)->count();
-        $issueNumber = sprintf('BELL-%d-%03d', $project->id, $existingIssues + 1);
+        // $issueNumber = sprintf('BELL-%d-%03d', $project->id, $existingIssues + 1);
+        $issueNumber = generateIssueNumber($project->id);
 
         return view('issue.create', [
             'testCase' => $testCase,

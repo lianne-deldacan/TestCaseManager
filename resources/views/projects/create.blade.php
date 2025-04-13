@@ -11,8 +11,13 @@
                     <label for="service" class="form-label">Service</label>
                     <select id="service" name="service" class="form-control" required>
                         <option value="" disabled selected>Select a service</option>
-                        <option value="IT">IT</option>
-                        <option value="Marketing">Marketing</option>
+                        @foreach(config('global.services') as $k => $service)
+                            <option value="{{ $k }}">{{ $service }}</option>
+                        @endforeach
+                        {{--  
+                            <option value="IT">IT</option>
+                            <option value="Marketing">Marketing</option>    
+                        --}}
                     </select>
                 </div>
                 <div class="col-md-4">
@@ -54,7 +59,7 @@
                         <td>{{ $project->id }}</td>
                         <td>{{ $project->service }}</td>
                         <td>{{ $project->name }}</td>
-                        <td>{{ $project->manager }}</td>
+                        <td>{{ $project->manager->name }}</td>
                         <td>
                             <a href="{{ route('testcases.index', ['project_id' => $project->id]) }}" class="btn btn-primary">
                                 Go to Test Cases

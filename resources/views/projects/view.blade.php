@@ -20,9 +20,9 @@
                 <td>{{ $project->id }}</td>
                 <td>{{ $project->service }}</td>
                 <td>{{ $project->name }}</td>
-                <td>{{ $project->manager }}</td>
-                <td>{{ $project->created_at }}</td>
-                <td>{{ $project->updated_at }}</td>
+                <td>{{ $project->manager->name }}</td>
+                <td>{{ $project->created_at->format('F j, Y') }}</td>
+                <td>{{ $project->updated_at->format('F j, Y') }}</td>
             </tr>
             @endforeach
         </tbody>

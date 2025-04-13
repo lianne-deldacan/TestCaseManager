@@ -15,7 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->text('description')->nullable();
-            $table->string('service')->nullable();
+            $table->unsignedTinyInteger('service')->nullable();
             $table->timestamps();
         });
     }

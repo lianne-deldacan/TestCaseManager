@@ -30,14 +30,14 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($testCases as $case)
+            @foreach ($project->test_cases as $case)
             <tr>
-                <td>{{ $case->input_by }}</td>
+                <td>{{ $case->tester->name }}</td>
                 <td>{{ $case->test_case_no }}</td>
                 <td>{{ $case->test_title }}</td>
                 <td>{{ $case->test_step }}</td>
                 <td>{{ $case->category->name }}</td>
-                <td>{{ $case->date_of_input }}</td>
+                <td>{{ $case->date_of_input->format('F j, Y') }}</td>
                 <td>{{ $case->status }}</td>
             </tr>
             @endforeach

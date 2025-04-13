@@ -13,17 +13,20 @@ return new class extends Migration
     {
         Schema::create('test_cases', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('project_id')->index('fk_project');
+            // $table->unsignedBigInteger('project_id')->index('fk_project');
+            $table->foreignId('project_id')->constrained('projects');
+            $table->foreignId('category_id')->constrained('categories');
+            $table->foreignId('tester_id')->constrained('users');
             $table->enum('test_environment', ['SIT', 'UAT']);
             $table->string('test_case_no');
             $table->string('test_title');
             $table->text('test_step');
             $table->string('priority');
-            $table->string('tester');
+            // $table->string('tester');
             $table->string('status');
             $table->date('date_of_input');
             $table->timestamps();
-            $table->unsignedBigInteger('category_id');
+            // $table->unsignedBigInteger('category_id');
         });
     }
 

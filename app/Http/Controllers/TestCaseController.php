@@ -107,7 +107,7 @@ class TestCaseController extends Controller
 
         // Fetch categories (whether active or disabled)
         $categories = Category::all();
-
+        
         return view('testcases.executeTestcase', compact('services', 'projects', 'testCases', 'categories'));
     }
 
@@ -120,16 +120,20 @@ class TestCaseController extends Controller
             return redirect()->back()->with('error', 'Project ID is required');
         }
 
-        $project = Project::find($projectId);
+        $project = Project::with([
+            'test_cases.category',
+            'test_cases.tester',
+        ])->find($projectId);
+
         if (!$project) {
             return redirect()->back()->with('error', 'Project not found');
         }
 
-        $testCases = TestCase::where('project_id', $project->id)->get();
+        // $testCases = TestCase::where('project_id', $project->id)->get();
         $service = $project->service ?? 'Default Service';
 
         return view('testcases.view', [
-            'testCases' => $testCases,
+            // 'testCases' => $testCases,
             'project' => $project, // Pass the project variable
             'service' => $service, // Pass the service variable
         ]);
@@ -141,7 +145,8 @@ class TestCaseController extends Controller
 
     public function showLanding(Request $request)
     {
-        return view('landing');
+        $projects = Project::get();
+        return view('landing', compact('projects'));
     }
 
 

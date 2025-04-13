@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('requirements', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('project_id')->index('requirements_project_id_foreign');
+            // $table->unsignedBigInteger('project_id')->index('requirements_project_id_foreign');
+            $table->foreignId('project_id')->constrained('projects');
             $table->string('user');
             $table->string('title');
             $table->string('category');

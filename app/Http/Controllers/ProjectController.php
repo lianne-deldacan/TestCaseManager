@@ -9,7 +9,10 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::with('manager')
+            ->latest()
+            ->get();
+            // ->all();
         $projectName = $projects->isNotEmpty() ? $projects->first()->name : 'Default Project Name';
         return view('projects.view', compact('projects', 'projectName'));
     }

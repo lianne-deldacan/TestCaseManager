@@ -59,9 +59,12 @@
                 <div class="col-md-6">
                     <label for="priority" class="form-label">Priority</label>
                     <select id="priority" name="priority" class="form-control" required>
-                        <option value="High">High</option>
+                        <!-- <option value="High">High</option>
                         <option value="Medium">Medium</option>
-                        <option value="Low">Low</option>
+                        <option value="Low">Low</option> -->
+                        @foreach(\App\Models\TestCase::PRIORITIES as $k => $priority)
+                            <option value="{{ $k }}">{{ $priority }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>

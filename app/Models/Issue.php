@@ -12,9 +12,11 @@ class Issue extends Model
     protected $fillable = [
         'issue_number',
         'project_id',
-        'project_name',
-        'environment',
         'test_case_id',
+        'developer_id',
+        'tester_id',
+        // 'project_name',
+        'environment',
         'date_time_report',
         'status',
         'issue_title',
@@ -23,6 +25,12 @@ class Issue extends Model
         'screenshot_url',
         'assigned_developer',
         'developer_notes',
+    ];
+
+    const STATUSES = [
+        'Open',
+        'Ongoing',
+        'Resolved',
     ];
 
     /**

@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('requirements', function (Blueprint $table) {
-            $table->foreign(['project_id'])->references(['id'])->on('projects')->onUpdate('no action')->onDelete('cascade');
+        Schema::create('issue_code_sequences', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedInteger('project_id');
+            $table->unsignedInteger('last_sequence');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('requirements', function (Blueprint $table) {
-            $table->dropForeign('requirements_project_id_foreign');
-        });
+        Schema::dropIfExists('issue_code_sequences');
     }
 };

@@ -15,14 +15,20 @@
                     <label for="service-select" class="form-label">Select Service:</label>
                     <select id="service-select" name="service" class="form-control" required>
                         <option value="" disabled selected>Select Service</option>
-                        <option value="IT">IT</option>
-                        <option value="Marketing">Marketing</option>
+                        @foreach(config('global.services') as $k => $service)
+                            <option value="{{ $k }}">{{ $service }}</option>
+                        @endforeach
+                        <!-- <option value="IT">IT</option>
+                        <option value="Marketing">Marketing</option> -->
                     </select>
                 </div>
                 <div class="col-md-6">
                     <label for="project-select" class="form-label">Select Project:</label>
                     <select id="project-select" name="project" class="form-control" required>
                         <option value="" disabled selected>Select Project</option>
+                        @foreach($projects as $project)
+                        <option value="{{ $project->id }}">{{ $project->name }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-6">
