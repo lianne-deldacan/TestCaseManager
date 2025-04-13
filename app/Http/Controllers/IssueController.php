@@ -46,7 +46,7 @@ class IssueController extends Controller
 
     public function saveNewIssue(Request $request)
     {
-    
+
 
         $validated = $request->validate([
             'test_case_id' => 'required|integer',
@@ -147,7 +147,7 @@ class IssueController extends Controller
 
     public function store(Request $request)
     {
-    
+
 
         // Validate input data
         $validated = $request->validate([
@@ -157,7 +157,7 @@ class IssueController extends Controller
             'issue_title' => 'required|string|max:255',
             'execution_id' => 'nullable|string',
             'issue_description' => 'required|string',
-            'date_time_report' => 'required|date',  
+            'date_time_report' => 'required|date',
             'tester' => 'required|string',
             'environment' => 'required|string',
             'status' => 'required|string',
@@ -219,5 +219,46 @@ class IssueController extends Controller
         }
 
         return response()->json(['last_issue_number' => 0]); // No issues exist
+    }
+
+
+
+    // Show the form for editing an existing issue
+    public function edit($id)
+    {
+        $issue = Issue::findOrFail($id);
+        $projects = Project::all();
+        $developers = ['Dev1', 'Dev2', 'Dev3'];
+
+        return view('issue.edit', compact('issue', 'projects', 'developers'));
+    }
+
+    // Update the issue in the database
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'issue_title' => 'required|string|max:255',
+            'issue_description' => 'required|string',
+            'status' => 'required|string',
+            'assigned_developer' => 'nullable|string',
+            'tester' => 'required|string',
+            'environment' => 'required|string',
+            'project_name' => 'required|string',
+            'screenshot_url' => 'nullable|string',
+        ]);
+
+        $issue = Issue::findOrFail($id);
+        $issue->update($validated);
+
+        return redirect()->route('issue.index')->with('success', 'Issue updated successfully!');
+    }
+
+    // Delete an issue
+    public function destroy($id)
+    {
+        $issue = Issue::findOrFail($id);
+        $issue->delete();
+
+        return redirect()->back()->with('success', 'Issue deleted successfully.');
     }
 }

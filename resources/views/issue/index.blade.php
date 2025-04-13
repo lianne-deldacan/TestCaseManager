@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mt-4">
 
-    
+
     <h2>Issue List</h2>
 
     <div class="d-flex justify-content-between mb-3">
@@ -26,14 +26,14 @@
             <select id="project_id" class="form-select me-2">
                 <option value="">All Projects</option>
                 @foreach ($projects as $project)
-                    <option value="{{ $project->id }}">{{ $project->name }}</option>
+                <option value="{{ $project->id }}">{{ $project->name }}</option>
                 @endforeach
             </select>
 
             <select id="testerFilter" class="form-select" style="width: 150px;">
                 <option value="">All Testers</option>
                 @foreach($testers as $tester)
-                    <option value="{{ $tester }}">{{ $tester }}</option>
+                <option value="{{ $tester }}">{{ $tester }}</option>
                 @endforeach
             </select>
         </div>
@@ -75,12 +75,15 @@
                         <td>{{ $issue->developer }}</td>
                         <td>{{ $issue->notes }}</td>
                         <td>
-                            <a href="" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            <a href="{{ route('issue.edit', $issue->id) }}" class="btn btn-warning btn-sm">Edit</a>
+
+                            <form style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="confirmDelete(event, {{ $issue->id }})">
+                                    Delete
+                                </button>
                             </form>
+
+
                         </td>
                     </tr>
                     @endforeach
@@ -129,102 +132,278 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        var table = $('#issuesTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('issue.fetch') }}",
-                data: function (d) {
-                    d.status = $('#statusFilter').val();
-                    d.project_id = $('#project_id').val();
-                    d.tester = $('#testerFilter').val();
-                }
-            },
-            columns: [
-                { data: 'issue_number' },
-                { data: 'project.name', defaultContent: 'N/A' },
-                { data: 'execution.id', defaultContent: 'N/A' },
-                { data: 'execution.environment', defaultContent: 'N/A' },
-                { data: 'tester' },
-                { data: 'formatted_date' },
-                { data: 'status' },
-                { data: 'issue_title' },
-                { data: 'issue_description' },
-                { 
-                    data: 'screenshot_url',
-                    render: function (data) {
-                        return data ? `<a href="${data}" target="_blank">View Screenshot</a>` : "No Screenshot";
-                    }
-                },
-                { data: 'assigned_developer', defaultContent: 'Not Assigned' },
-                { data: 'developer_notes', defaultContent: 'No Notes' },
-                { data: 'actions', orderable: false, searchable: false }
-            ]
+    function confirmDelete(event, id) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/issues/${id}`;
+
+                const method = document.createElement('input');
+                method.type = 'hidden';
+                method.name = '_method';
+                method.value = 'DELETE';
+
+                form.appendChild(method);
+                document.body.appendChild(form);
+                form.submit();
+            }
         });
+    }
+</script>
 
-        $('#statusFilter, #project_id, #testerFilter').on('change', function () {
-            table.ajax.reload();
-        });
+<script>
+    $(document).ready(function() {
+                var table = $('#issuesTable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "{{ route('issue.fetch') }}",
+                        data: function(d) {
+                            d.status = $('#statusFilter').val();
+                            d.project_id = $('#project_id').val();
+                            d.tester = $('#testerFilter').val();
+                        }
+                    },
+                    columns: [{
+                            data: 'issue_number'
+                        },
+                        {
+                            data: 'project.name',
+                            defaultContent: 'N/A'
+                        },
+                        {
+                            data: 'execution.id',
+                            defaultContent: 'N/A'
+                        },
+                        {
+                            data: 'execution.environment',
+                            defaultContent: 'N/A'
+                        },
+                        {
+                            data: 'tester'
+                        },
+                        {
+                            data: 'formatted_date'
+                        },
+                        {
+                            data: 'status'
+                        },
+                        {
+                            data: 'issue_title'
+                        },
+                        {
+                            data: 'issue_description'
+                        },
+                        {
+                            data: 'screenshot_url',
+                            render: function(data) {
+                                return data ? `<a href="${data}" target="_blank">View Screenshot</a>` : "No Screenshot";
+                            }
+                        },
+                        {
+                            data: 'assigned_developer',
+                            defaultContent: 'Not Assigned'
+                        },
+                        {
+                            data: 'developer_notes',
+                            defaultContent: 'No Notes'
+                        },
+                        {
+                            data: 'actions',
+                            orderable: false,
+                            searchable: false
+                        }
+                    ]
+                });
 
-        // Edit Issue Modal
-        window.editIssue = function (id, status, notes) {
-            $('#issueId').val(id);
-            $('#status').val(status);
-            $('#developer_notes').val(notes);
-            $('#editModal').modal('show');
-        };
-
-        $('#editForm').submit(function (e) {
-            e.preventDefault();
-            let id = $('#issueId').val();
-
-            $.ajax({
-                url: `/issues/${id}`,
-                type: 'PUT',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    status: $('#status').val(),
-                    developer_notes: $('#developer_notes').val()
-                },
-                success: function () {
-                    $('#editModal').modal('hide');
-                    Swal.fire('Success!', 'Issue updated.', 'success');
+                $('#statusFilter, #project_id, #testerFilter').on('change', function() {
                     table.ajax.reload();
-                },
-                error: function () {
-                    Swal.fire('Error!', 'Could not update issue.', 'error');
-                }
-            });
-        });
+                });
 
-        // Delete Issue
-        window.deleteIssue = function (id) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
+                // Edit Issue Modal
+                window.editIssue = function(id, status, notes) {
+                    $('#issueId').val(id);
+                    $('#status').val(status);
+                    $('#developer_notes').val(notes);
+                    $('#editModal').modal('show');
+                };
+
+                $('#editForm').submit(function(e) {
+                    e.preventDefault();
+                    let id = $('#issueId').val();
+
                     $.ajax({
                         url: `/issues/${id}`,
-                        type: 'DELETE',
-                        data: { _token: '{{ csrf_token() }}' },
-                        success: function () {
-                            Swal.fire('Deleted!', 'The issue has been deleted.', 'success');
+                        type: 'PUT',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            status: $('#status').val(),
+                            developer_notes: $('#developer_notes').val()
+                        },
+                        success: function() {
+                            $('#editModal').modal('hide');
+                            Swal.fire({
+                                title: "Drag me!",
+                                icon: "success",
+                                draggable: true
+                            });
                             table.ajax.reload();
                         },
-                        error: function () {
-                            Swal.fire('Error!', 'Something went wrong.', 'error');
+                        error: function() {
+                            Swal.fire('Error!', 'Could not update issue.', 'error');
                         }
                     });
-                }
-            });
-        };
-    });
+                });
+
+                // Delete Issue
+                // Delete Issue
+                window.deleteIssue = function(id) {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: `/issues/${id}`,
+                                type: 'DELETE',
+                                data: {
+                                    _token: '{{ csrf_token() }}'
+                                },
+                                success: function() {
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Issue has been deleted.",
+                                        icon: "success",
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        table.ajax.reload(); // Reload only after Swal finishes
+                                    });
+                                },
+                                error: function() {
+                                    Swal.fire('Error!', 'Something went wrong.', 'error');
+                                }
+                            });
+                        }
+                    });
+                };
 </script>
+
+
+// {{--
+// <script>
+//     $(document).ready(function () {
+//         var table = $('#issuesTable').DataTable({
+//             processing: true,
+//             serverSide: true,
+//             ajax: {
+//                 url: "{{ route('issue.fetch') }}",
+// data: function (d) {
+// d.status = $('#statusFilter').val();
+// d.project_id = $('#project_id').val();
+// d.tester = $('#testerFilter').val();
+// }
+// },
+// columns: [
+// { data: 'issue_number' },
+// { data: 'project.name', defaultContent: 'N/A' },
+// { data: 'execution.id', defaultContent: 'N/A' },
+// { data: 'execution.environment', defaultContent: 'N/A' },
+// { data: 'tester' },
+// { data: 'formatted_date' },
+// { data: 'status' },
+// { data: 'issue_title' },
+// { data: 'issue_description' },
+// {
+// data: 'screenshot_url',
+// render: function (data) {
+// return data ? `<a href="${data}" target="_blank">View Screenshot</a>` : "No Screenshot";
+// }
+// },
+// { data: 'assigned_developer', defaultContent: 'Not Assigned' },
+// { data: 'developer_notes', defaultContent: 'No Notes' },
+// { data: 'actions', orderable: false, searchable: false }
+// ]
+// });
+
+// $('#statusFilter, #project_id, #testerFilter').on('change', function () {
+// table.ajax.reload();
+// });
+
+// // Edit Issue Modal
+// window.editIssue = function (id, status, notes) {
+// $('#issueId').val(id);
+// $('#status').val(status);
+// $('#developer_notes').val(notes);
+// $('#editModal').modal('show');
+// };
+
+// $('#editForm').submit(function (e) {
+// e.preventDefault();
+// let id = $('#issueId').val();
+
+// $.ajax({
+// url: `/issues/${id}`,
+// type: 'PUT',
+// data: {
+// _token: '{{ csrf_token() }}',
+// status: $('#status').val(),
+// developer_notes: $('#developer_notes').val()
+// },
+// success: function () {
+// $('#editModal').modal('hide');
+// Swal.fire('Success!', 'Issue updated.', 'success');
+// table.ajax.reload();
+// },
+// error: function () {
+// Swal.fire('Error!', 'Could not update issue.', 'error');
+// }
+// });
+// });
+
+// // Delete Issue
+// window.deleteIssue = function (id) {
+// Swal.fire({
+// title: 'Are you sure?',
+// text: "You won't be able to revert this!",
+// icon: 'warning',
+// showCancelButton: true,
+// confirmButtonColor: '#d33',
+// cancelButtonColor: '#3085d6',
+// confirmButtonText: 'Yes, delete it!'
+// }).then((result) => {
+// if (result.isConfirmed) {
+// $.ajax({
+// url: `/issues/${id}`,
+// type: 'DELETE',
+// data: { _token: '{{ csrf_token() }}' },
+// success: function () {
+// Swal.fire('Deleted!', 'The issue has been deleted.', 'success');
+// table.ajax.reload();
+// },
+// error: function () {
+// Swal.fire('Error!', 'Something went wrong.', 'error');
+// }
+// });
+// }
+// });
+// };
+// });
+// </script> --}}
 @endsection

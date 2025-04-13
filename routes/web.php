@@ -11,6 +11,8 @@ use App\Http\Controllers\ExecutionController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -18,26 +20,26 @@ use App\Http\Controllers\DashboardController;
 
 Route::group(['middleware' => ['guest']], function () {
     // login, forgot password, email verification
-    Route::get('/login', function(){
+    Route::get('/login', function () {
         //login page
         dd('login page');
     })->name('login');
+
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
-// Route::group(['middleware' => ['auth', 'verified']], function () {
+Route::group(['middleware' => ['auth', 'verified']], function () {
     //Home page
     // Route::get('/', function () {
     //     return view('index');
     // });
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
-    //dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-
     // Project Routes
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
-    //Route for getting the list of projects based on service.
+    //Route for getting the list of projects based on service. (ajax)
     Route::get('/get-projects/{service}', [ProjectController::class, 'getProjects']);
 
     //Route for Requirements
@@ -50,25 +52,42 @@ Route::group(['middleware' => ['guest']], function () {
     Route::get('/requirements/export/pdf', [RequirementController::class, 'exportPDF'])->name('requirements.export.pdf');
     Route::get('/requirements/{requirement}/edit', [RequirementController::class, 'edit'])->name('requirements.edit');
     Route::put('/requirements/{requirement}', [RequirementController::class, 'update'])->name('requirements.update');
-// });
 
-// Test case routes
-Route::get('/testcases', [TestCaseController::class, 'index'])->name('testcases.index');
-Route::get('/testcases/create', [TestCaseController::class, 'create'])->name('testcases.create'); // Show create form
-Route::post('/testcases', [TestCaseController::class, 'store'])->name('testcases.store'); // Store a new test case
-Route::get('/testcases/view', [TestCaseController::class, 'view'])->name('testcases.view'); // View specific test case
-Route::get('/testcases/{id}/edit', [TestCaseController::class, 'edit'])->name('testcases.edit'); // Edit a test case
-Route::put('/testcases/{id}', [TestCaseController::class, 'update'])->name('testcases.update'); // Update test case
-Route::delete('/testcases/{id}', [TestCaseController::class, 'destroy'])->name('testcases.destroy'); // Delete test case
+    //User routes
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    // Test case routes
+    Route::get('/testcases', [TestCaseController::class, 'index'])->name('testcases.index');
+    Route::get('/testcases/create', [TestCaseController::class, 'create'])->name('testcases.create'); // Show create form
+    Route::post('/testcases', [TestCaseController::class, 'store'])->name('testcases.store'); // Store a new test case
+    Route::get('/testcases/view', [TestCaseController::class, 'view'])->name('testcases.view'); // View specific test case
+    Route::get('/testcases/{id}/edit', [TestCaseController::class, 'edit'])->name('testcases.edit'); // Edit a test case
+    Route::put('/testcases/{id}', [TestCaseController::class, 'update'])->name('testcases.update'); // Update test case
+    Route::delete('/testcases/{id}', [TestCaseController::class, 'destroy'])->name('testcases.destroy'); // Delete test case
+    Route::post('/testcases/import', [TestCaseController::class, 'import'])->name('testcases.import');
+    Route::get('/testcases/export/csv', [TestCaseController::class, 'exportCSV'])->name('testcases.export.csv');
+    Route::get('/testcases/export/excel', [TestCaseController::class, 'exportExcel'])->name('testcases.export.excel');
+    Route::get('/testcases/export/pdf', [TestCaseController::class, 'exportPDF'])->name('testcases.export.pdf');
+
+    //Auth routes
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
+// Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+// Route::post('/users', [UserController::class, 'store'])->name('users.store');
+// // Route::get('/users', [UserController::class, 'index'])->name('users.index'); // Removed temporarily for test 
+// Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+// Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+// Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 //Test case to get project details
 Route::get('/get-project-details/{id}', [TestCaseController::class, 'getProjectDetails']);
 //Execute a test case
 Route::get('/execute-testcases', [TestCaseController::class, 'executeTestcase'])->name('executeTestcases');
 // Route::get('/execute/{id}', [ExecuteController::class, 'index'])->name('execute.index'); // Execute test case
-Route::post('/testcases/import', [TestCaseController::class, 'import'])->name('testcases.import');
-Route::get('/testcases/export/csv', [TestCaseController::class, 'exportCSV'])->name('testcases.export.csv');
-Route::get('/testcases/export/excel', [TestCaseController::class, 'exportExcel'])->name('testcases.export.excel');
-Route::get('/testcases/export/pdf', [TestCaseController::class, 'exportPDF'])->name('testcases.export.pdf');
+
 Route::post('/get-testcases', [TestCaseController::class, 'getTestCasesByProject'])->name('testcases.getByProject');
 Route::get('/select', [TestCaseController::class, 'showLanding'])->name('landing');
 //Route for edit, delete, get
@@ -114,7 +133,7 @@ Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.stor
 Route::get('/create-issue', [IssueController::class, 'create'])->name('issue.create'); // For showing the issue creation form
 Route::get('/index-issue', [IssueController::class, 'index'])->name('issue.index'); // For displaying the list of issues
 // Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store'); // For storing the new issue
-Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
+// Route::put('/issues/update', [IssueController::class, 'updateIssue'])->name('issue.update');
 Route::get('/issues/list', [IssueController::class, 'getIssues'])->name('issue.list');
 
 Route::get('/api/issue-counter', [IssueController::class, 'getIssueCounter']);
@@ -125,7 +144,15 @@ Route::post('/issue/save', [IssueController::class, 'saveNewIssue'])->name('issu
 Route::get('/issues/fetch', [IssueController::class, 'fetchIssues'])->name('issue.fetch');
 
 
+// Edit an issue (show form)
+Route::get('/issue/edit/{id}', [IssueController::class, 'edit'])->name('issue.edit');
 
+// Update an issue (process form submission)
+Route::put('/issue/update/{id}', [IssueController::class, 'update'])->name('issue.updateById');
+Route::put('/issue/update/{id}', [IssueController::class, 'update'])->name('issue.update');
+
+// Delete an issue
+Route::delete('/issues/{id}', [IssueController::class, 'destroy'])->name('issue.destroy');
 
 
 
