@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     });
 
     //User routes
+    Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
