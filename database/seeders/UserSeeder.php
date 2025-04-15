@@ -79,6 +79,14 @@ class UserSeeder extends Seeder
         ]);
         $dev->assignRole('Developer');
 
-        
+        //for testing pirposes
+        $lianne = User::create([
+            'name' => 'Lianne',
+            'email' => 'lianne@gmail.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('liannedeldacan'),
+            'status' => 1,
+        ]);
+        $lianne->assignRole('Developer');
     }
 }

@@ -10,6 +10,34 @@ use Illuminate\Http\Request;
 class IssueController extends Controller
 {
 
+    //When selecting issue via landing page
+    public function add(Request $request)
+    {
+        $projectId = $request->input('project_id');
+        $service = $request->input('service');
+
+        if (!$projectId || !$service) {
+            return redirect()->route('landing')->with('error', 'Please select a project and service.');
+        }
+
+        $project = Project::findOrFail($projectId);
+
+        $failedTestCases = TestCase::where('project_id', $projectId)
+            ->where('status', 'Failed')
+            ->get();
+
+        $developers = ['John Doe', 'Jane Smith', 'Alex Johnson']; // dummy devs
+
+        return view('issue.add', [
+            'project_name' => $project->name,
+            'service' => $service,
+            'failedTestCases' => $failedTestCases,
+            'developers' => $developers,
+        ]);
+    }
+
+
+
     /**
      * Other way of adding issue
      */

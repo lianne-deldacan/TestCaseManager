@@ -84,6 +84,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/', [IssueController::class, 'index'])->name('issues'); // For displaying the list of issues
         Route::get('/add/{project_id?}/{test_case_id?}', [IssueController::class, 'showAddIssueForm'])->name('issue.add');
     });
+    Route::get('/issue/add', [IssueController::class, 'add'])->name('issue.add');
 
     // Issue routes
     Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store');
