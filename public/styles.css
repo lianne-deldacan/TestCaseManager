@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
-    padding: 20px;
+    padding: 0;
 }
 
 /* Add Case Button */
@@ -75,7 +75,11 @@ button[type="submit"] {
     cursor: pointer;
     font-size: 16px;
     display: block;
+<<<<<<< HEAD
+    margin: 0 auto 0;
+=======
     margin: 30px auto 0;
+>>>>>>> origin/master
     border-radius: 8px;
     transition: background-color 0.3s ease;
 }
@@ -137,3 +141,54 @@ table.dataTable th {
 table.dataTable tbody tr:nth-child(even) {
     background-color: #f9f9f9;
 }
+<<<<<<< HEAD
+
+/* CSS for project */
+
+.project-form-container {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 420px;
+    margin: auto;
+}
+
+.project-title {
+    text-align: center;
+    color: #2896d6; 
+}
+
+.project-label {
+    font-weight: bold;
+    display: block;
+    margin-top: 12px;
+}
+
+.project-input, .project-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.project-btn {
+    background-color: #2896d6; 
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    margin-top: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 17px;
+    transition: background 0.3s ease;
+}
+
+.project-btn:hover {
+    background-color: #1e7cb3; 
+}
+=======
+>>>>>>> origin/master

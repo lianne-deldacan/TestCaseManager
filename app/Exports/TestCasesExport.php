@@ -6,22 +6,34 @@ use App\Models\TestCase;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-
 class TestCasesExport implements FromCollection, WithHeadings
 {
-  /**
-   * @return \Illuminate\Support\Collection
-   */
-  public function collection()
-  {
-    return TestCase::select('test_case_no', 'test_environment', 'tester', 'date_of_input', 'test_title', 'test_description', 'status', 'priority', 'severity', 'screenshot')->get();
-  }
+    protected $project_id;
 
-  /**
-   * @return array
-   */
-  public function headings(): array
-  {
-    return ['Test Case No.', 'Environment', 'Tester', 'Date', 'Title', 'Description', 'Pass/Fail', 'Priority', 'Severity', 'Screenshot'];
-  }
+    public function __construct($project_id)
+    {
+        $this->project_id = $project_id;
+    }
+
+    public function collection()
+    {
+        return TestCase::where('project_id', $this->project_id)->with(['project', 'category'])->get()->map(function ($case) {
+            return [
+                'Project Name' => $case->project->name ?? 'N/A',
+                'Tester' => $case->tester,
+                'Test Case No.' => $case->test_case_no,
+                'Test Title' => $case->test_title,
+                'Test Step' => $case->test_step,
+                'Category' => $case->category->name ?? 'N/A',
+                'Date' => $case->date_of_input,
+                'Priority' => $case->priority,
+                'Status' => $case->status,
+            ];
+        });
+    }
+
+    public function headings(): array
+    {
+        return ['Project', 'Tester', 'Test Case No.', 'Test Title', 'Test Step', 'Category', 'Date', 'Priority', 'Status'];
+    }
 }
