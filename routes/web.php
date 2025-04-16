@@ -143,6 +143,13 @@ Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])-
 Route::get('/get-services-from-categories', [CategoryController::class, 'getUniqueServices']);
 Route::get('/get-categories-by-service/{service}', [CategoryController::class, 'getCategoriesByService']);
 
+// Landing page for selecting service + project
+Route::get('categories/landing', [CategoryController::class, 'landing'])->name('categories.landing');
+Route::get('/api/projects/by-service/{serviceKey}', [\App\Http\Controllers\CategoryController::class, 'getProjectsByService']);
+
+
+
+
 //execute
 Route::post('/execute/update-status', [ExecutionController::class, 'updateStatus'])->name('execute.updateStatus');
 Route::get('/execute/create-issue', [ExecutionController::class, 'createIssue'])->name('execute.createIssue');

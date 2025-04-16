@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form[action='{{ route('projects.store') }}']");
 
     form.addEventListener("submit", function (event) {
-        event.preventDefault();
+        event.preventDefault();  // Prevent the traditional form submission
 
         let formData = new FormData(form);
 
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "X-CSRF-TOKEN": document.querySelector("input[name='_token']").value
             }
         })
-        .then(response => response.json()) 
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 Swal.fire({
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </tr>
                 `;
                 document.querySelector("#projectsTable tbody").innerHTML += newRow;
-                document.querySelector("#project_id").value = parseInt(data.project.id) + 1;
+                document.querySelector("#project_id").value = parseInt(data.project.id) + 1;  // Update Project ID
             } else {
                 Swal.fire({
                     icon: "error",
@@ -129,5 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
 </script>
 @endsection

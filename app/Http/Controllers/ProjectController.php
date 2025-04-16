@@ -21,26 +21,31 @@ class ProjectController extends Controller
     {
         $projects = Project::all();
         $nextID = (Project::max('id') ?? 0) + 1;
+        
         return view('projects.create', compact('projects', 'nextID'));
     }
 
     public function store(Request $request)
     {
+        
+        // Validate input data
         $request->validate([
             'service' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'manager' => 'required|string|max:255',
         ]);
 
+        // Create the project
         $project = Project::create($request->only(['service', 'name', 'manager']));
 
+        // Return a JSON response with the project data
         return response()->json([
             'success' => true,
             'message' => 'Project added successfully!',
             'project' => $project
         ]);
     }
-    
+
     public function show(string $id)
     {
         $project = Project::with('testCases')->find($id);

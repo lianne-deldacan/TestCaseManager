@@ -81,47 +81,36 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Find the user by ID
         $user = User::findOrFail($id);
 
-        // Validate the request data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed', // Password is optional for update
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        // Update user details
         $user->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => $validated['password'] ? Hash::make($validated['password']) : $user->password,
+            'password' => $validated['password']
+                ? Hash::make($validated['password'])
+                : $user->password,
         ]);
 
-        // Fetch all users and return the create page with success message
-        $users = User::all();
-
         return redirect()->route('users.create')
-            ->with('success', 'User updated successfully.')
-            ->with('users', $users);
+            ->with('success', 'User updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        // Find the user by ID
         $user = User::findOrFail($id);
-
-        // Delete the user
         $user->delete();
 
-        // Fetch all users and return to the create page with success message
-        $users = User::all();
-
         return redirect()->route('users.create')
-            ->with('success', 'User deleted successfully.')
-            ->with('users', $users);
+            ->with('success', 'User deleted successfully.');
     }
 }

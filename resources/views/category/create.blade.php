@@ -18,12 +18,15 @@
                     <textarea id="description" name="description" class="form-control" rows="3"></textarea>
                 </div>
                 <div class="col-md-12">
-                    <label for="service" class="form-label">Service</label>
-                    <select id="service" name="service" class="form-control" required>
-                        <option value="" disabled selected>Select a service</option>
-                        <option value="IT">IT</option>
-                        <option value="Marketing">Marketing</option>
-                    </select>
+                    <label class="form-label">Project</label>
+                    <input type="text" class="form-control" value="{{ $projectId }}" readonly>
+                    <input type="hidden" name="project" value="{{ $projectId }}">
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Service</label>
+                    <input type="text" class="form-control" value="{{ $serviceName }}" readonly>
+                    <input type="hidden" name="service" value="{{ $serviceKey }}">
                 </div>
             </div>
             <div class="text-center mt-4">

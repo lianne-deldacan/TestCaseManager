@@ -13,16 +13,35 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Fetch Projects and Services for dropdowns
+        $projects = Project::all();
+        $services = config('global.services'); // Assuming services are in a global config
+
+        // Get filter values
+        $selectedProject = request('project');
+        $selectedService = request('service');
+
+        // Get the filtered counts
+        $query = Issue::query();
+
+        if ($selectedProject) {
+            $query->where('project_id', $selectedProject);
+        }
+
+        if ($selectedService) {
+            $query->where('service', $selectedService);
+        }
+
+        $issuesCount = $query->count();
+        $passCount = $query->where('status', 'pass')->count();
+        $failCount = $query->where('status', 'fail')->count();
+        $naCount = $query->where('status', 'N/A')->count();
+        $nrCount = $query->where('status', 'N/R')->count();
+
         $projectsCount = Project::count();
         $testCasesCount = TestCase::count();
         $categoriesCount = Category::count();
         $requirementsCount = Requirement::count();
-
-        $issuesCount = Issue::count();
-        $passCount = Issue::where('status', 'pass')->count();
-        $failCount = Issue::where('status', 'fail')->count();
-        $naCount = Issue::where('status', 'N/A')->count();
-        $nrCount = Issue::where('status', 'N/R')->count();
 
         Log::debug('Pass Count: ' . $passCount);
         Log::debug('Fail Count: ' . $failCount);
@@ -39,7 +58,9 @@ class DashboardController extends Controller
             'projectsCount',
             'testCasesCount',
             'categoriesCount',
-            'requirementsCount'
+            'requirementsCount',
+            'projects',
+            'services'
         ));
     }
 }

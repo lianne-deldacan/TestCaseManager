@@ -2,7 +2,7 @@
 
 return [
     'services' => [
-        'IT',
-        'Marketing',
-    ]
+        'IT' => 'Information Technology',
+        'Marketing' => 'Marketing Department',
+    ],
 ];

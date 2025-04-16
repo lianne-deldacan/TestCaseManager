@@ -125,7 +125,7 @@
                         <div class="collapse show" id="categories-collapse">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
                                 
-                                <li><a href="/categories/create" class="text-white d-inline-flex text-decoration-none rounded">Add Category</a></li>
+                                <li><a href="/categories/landing" class="text-white d-inline-flex text-decoration-none rounded">Add Category</a></li>
                                 <li><a href="/categories" class="text-white d-inline-flex text-decoration-none rounded">View Categories</a></li>
                             </ul>
                         </div>
