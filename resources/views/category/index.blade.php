@@ -6,12 +6,6 @@
     <div class="card shadow-lg p-4">
         <h2 class="text-center mb-4">Category List</h2>
 
-        <div class="text-end mb-3">
-            <a href="{{ route('categories.create') }}" class="btn btn-success">
-                <i class="bi bi-plus-circle"></i> Add Category
-            </a>
-        </div>
-
         <table class="table table-bordered table-hover">
             <thead class="table-dark">
                 <tr>

@@ -85,6 +85,11 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="mb-3">
+                <label>Test Step</label>
+                <textarea name="test_step" class="form-control" rows="2" disabled>{{ $testCase->test_step ?? '' }}</textarea>
+            </div>
 
             <!-- Fourth Row: Issue Title -->
             <div class="row mb-3">
@@ -97,10 +102,6 @@
             </div>
 
             <!-- Fifth Row: Test Step -->
-            <div class="mb-3">
-                <label>Test Step</label>
-                <textarea name="test_step" class="form-control" rows="2" disabled>{{ $testCase->test_step ?? '' }}</textarea>
-            </div>
 
             <div class="mb-3">
                 <label>Issue Description</label>
