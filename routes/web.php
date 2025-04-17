@@ -148,8 +148,6 @@ Route::get('categories/landing', [CategoryController::class, 'landing'])->name('
 Route::get('/api/projects/by-service/{serviceKey}', [\App\Http\Controllers\CategoryController::class, 'getProjectsByService']);
 
 
-
-
 //execute
 Route::post('/execute/update-status', [ExecutionController::class, 'updateStatus'])->name('execute.updateStatus');
 Route::get('/execute/create-issue', [ExecutionController::class, 'createIssue'])->name('execute.createIssue');
