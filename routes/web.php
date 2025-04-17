@@ -87,6 +87,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/', [IssueController::class, 'index'])->name('issues'); // For displaying the list of issues
         Route::get('/add/{project_id?}/{test_case_id?}', [IssueController::class, 'showAddIssueForm'])->name('issue.add');
     });
+  
+    Route::get('/issue/add', [IssueController::class, 'add'])->name('issue.add');
+
 
     // Issue routes
     Route::post('/store-issue', [IssueController::class, 'store'])->name('issue.store');
@@ -144,6 +147,10 @@ Route::get('/categories', [CategoryController::class, 'index'])->name('categorie
 Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 Route::get('/get-services-from-categories', [CategoryController::class, 'getUniqueServices']);
 Route::get('/get-categories-by-service/{service}', [CategoryController::class, 'getCategoriesByService']);
+
+// Landing page for selecting service + project
+Route::get('categories/landing', [CategoryController::class, 'landing'])->name('categories.landing');
+Route::get('/api/projects/by-service/{serviceKey}', [\App\Http\Controllers\CategoryController::class, 'getProjectsByService']);
 
 //execute
 Route::post('/execute/update-status', [ExecutionController::class, 'updateStatus'])->name('execute.updateStatus');

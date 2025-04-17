@@ -4,6 +4,31 @@
 <div class="container">
     <h1 class="mb-4">Dashboard Analytics</h1>
     
+    <!-- Filters -->
+    <form method="GET" action="{{ route('dashboard.index') }}">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <select name="project" class="form-control">
+                    <option value="">Select Project</option>
+                    @foreach($projects as $project)
+                        <option value="{{ $project->id }}" {{ request('project') == $project->id ? 'selected' : '' }}>{{ $project->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="service" class="form-control">
+                    <option value="">Select Service</option>
+                    @foreach($services as $service)
+                        <option value="{{ $service }}" {{ request('service') == $service ? 'selected' : '' }}>{{ ucfirst($service) }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+
     <!-- Analytics Cards -->
     <div class="row">
         <div class="col-md-3 mb-3">

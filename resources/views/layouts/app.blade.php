@@ -110,7 +110,7 @@
                         </button>
                         <div class="collapse show" id="issues-collapse">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
-                                <li><a href="{{ route('issue.add') }}" class="text-white d-inline-flex text-decoration-none rounded">Add Issues</a></li>
+                                <li><a href="{{ route('landing') }}" class="text-white d-inline-flex text-decoration-none rounded">Add Issues</a></li>
                                 <li><a href="{{ route('issues') }}" class="text-white d-inline-flex text-decoration-none rounded">View Issues</a></li>
                             </ul>
                         </div>
@@ -124,8 +124,9 @@
                         </button>
                         <div class="collapse show" id="categories-collapse">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
+                                
+                                <li><a href="/categories/landing" class="text-white d-inline-flex text-decoration-none rounded">Add Category</a></li>
                                 <li><a href="/categories" class="text-white d-inline-flex text-decoration-none rounded">View Categories</a></li>
-                                <li><a href="/categories/create" class="text-white d-inline-flex text-decoration-none rounded">Add Category</a></li>
                             </ul>
                         </div>
                     </li>
@@ -140,6 +141,7 @@
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-3 ms-3">
                                 {{-- <li><a href="/users" class="text-white d-inline-flex text-decoration-none rounded">View Users</a></li> --}}
                                 <li><a href="/users/create" class="text-white d-inline-flex text-decoration-none rounded">Add Users</a></li>
+                                <li><a href="{{ route('users') }}" class="text-white d-inline-flex text-decoration-none rounded">View Users</a></li>
                             </ul>
                         </div>
                     </li>
