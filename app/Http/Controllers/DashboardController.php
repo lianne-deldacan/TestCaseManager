@@ -29,7 +29,8 @@ class DashboardController extends Controller
         Log::debug('N/A Count: ' . $naCount);
         Log::debug('N/R Count: ' . $nrCount);
         Log::debug('Total Issues Count: ' . $issuesCount);
-
+        $projects = Project::all();
+        
         return view('dashboard.index', compact(
             'issuesCount',
             'passCount',
@@ -39,7 +40,8 @@ class DashboardController extends Controller
             'projectsCount',
             'testCasesCount',
             'categoriesCount',
-            'requirementsCount'
+            'requirementsCount',
+            'projects'
         ));
     }
 }

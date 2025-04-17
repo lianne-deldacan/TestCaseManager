@@ -18,8 +18,8 @@
             <div class="col-md-4">
                 <select name="service" class="form-control">
                     <option value="">Select Service</option>
-                    @foreach($services as $service)
-                        <option value="{{ $service }}" {{ request('service') == $service ? 'selected' : '' }}>{{ ucfirst($service) }}</option>
+                    @foreach(config('global.services') as $k => $service)
+                    <option value="{{ $service }}" {{ request('service') == $service ? 'selected' : '' }}>{{ ucfirst($service) }}</option>
                     @endforeach
                 </select>
             </div>
